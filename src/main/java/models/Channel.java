@@ -7,6 +7,7 @@ public class Channel {
     private User admin;
     private List<User> allowedUsers;
     private String channelName;
+    private String channelDescription;
     private List<Message> messages;
     private boolean publicState;//true = a public channel.
 

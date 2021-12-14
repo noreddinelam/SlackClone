@@ -37,6 +37,7 @@ public class ServerImpl {
 
         // initialisation of parsers;
         listOfParsers.put(ParsersName.connectionParser,ServerImpl::connexionParser);
+        listOfParsers.put(ParsersName.createChannelParser,ServerImpl::creationChannelParser);
     }
 
     public static Consumer<HashMap<String,String>> getFunctionWithRequestCode(String code){
@@ -53,6 +54,15 @@ public class ServerImpl {
         HashMap<String,String> data = new HashMap<String,String>();
         data.put(FieldsRequestName.netCode,dataArray[0]);
         data.put(FieldsRequestName.userId,dataArray[1]);
+        return data;
+    }
+
+    private static HashMap<String,String> creationChannelParser(String[] dataArray){
+        HashMap<String,String> data = new HashMap<String,String>();
+        data.put(FieldsRequestName.netCode,dataArray[0]);
+        data.put(FieldsRequestName.userId,dataArray[1]);
+        data.put(FieldsRequestName.channelName,dataArray[2]);
+        data.put(FieldsRequestName.channelDescription,dataArray[3]);
         return data;
     }
 }
