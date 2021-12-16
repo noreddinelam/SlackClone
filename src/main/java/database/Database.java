@@ -13,9 +13,14 @@ public class Database {
     }
 
     public static Connection getDatabaseConnection() throws SQLException {
-        if(database == null)
+        java.util.Properties properties = new java.util.Properties();
+        properties.setProperty("user", Properties.DATABASE_USER);
+        properties.setProperty("password", Properties.DATABASE_PASSWORD);
+        properties.setProperty("useSSL", Properties.DATABASE_USE_SSL);
+        properties.setProperty("serverTimezone",Properties.SERVER_TIME_ZONE);
+        if (database == null)
             database = DriverManager.getConnection(Properties.DATABASE_URL,
-                    Properties.DATABASE_USER, Properties.DATABASE_PASSWORD);
+                    properties);
         return database;
     }
 }

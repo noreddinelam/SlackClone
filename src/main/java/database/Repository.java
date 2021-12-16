@@ -1,22 +1,37 @@
 package database;
 
+import models.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.Server;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
-//Pour faire les requetes vers la base de donnée.
+//The repository to use for using requests on the database.
 public class Repository {
-    private static Connection connectionDB;
     private static final Repository repository = new Repository();
-    private Repository(){}
-    public static Repository getRepository(){
+    private static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static Connection connectionDB;
+
+    private Repository() {
+    }
+
+    public static Repository getRepository() {
         initConnectionToDatabase();
         return repository;
     }
-    private static void initConnectionToDatabase(){
+
+    private static void initConnectionToDatabase() {
         try {
             connectionDB = Database.getDatabaseConnection();
+            logger.info("Initialisation of connection to database");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public static void saveChannelInDB(Channel channel) {
+    }
+
 }
