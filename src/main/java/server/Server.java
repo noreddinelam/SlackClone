@@ -6,7 +6,6 @@ import shared.Properties;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -27,7 +26,7 @@ public class Server {
             serverSocket.bind(new InetSocketAddress(Properties.PORT));
             logger.info("Waiting a connection...");
             while (true) {
-                serverSocket.accept("Connection Started", new CompletionHandler<AsynchronousSocketChannel, Object>() {
+                serverSocket.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
                     @Override
                     public void completed(AsynchronousSocketChannel result, Object attachment) {
                         try {
@@ -35,17 +34,11 @@ public class Server {
                                 serverSocket.accept(null, this);
                             }
                             SocketAddress socketAddress = result.getRemoteAddress();
-                            listOfClients.put(socketAddress.toString(),result);
+                            listOfClients.put(socketAddress.toString(), result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
-                            int nbChar = result.read(buffer).get();
-                            buffer.flip();
-                            String requestData = new String(buffer.array()).substring(0, nbChar);
-                            //HashMap<String, String> requestAfterParsing = ServerImpl.requestParser(requestData);
-                            //ServerImpl.getFunctionWithRequestCode(requestAfterParsing.get(FieldsRequestName
-                            // .netCode)).accept(requestAfterParsing);
-                            logger.info("Client has sent {}", new String(buffer.array()).substring(0, nbChar));
-                        } catch (IOException | InterruptedException | ExecutionException e) {
+                            result.read(buffer, buffer, new ReaderCompletionHandler(result));
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }

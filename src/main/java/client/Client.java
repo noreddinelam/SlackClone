@@ -1,5 +1,7 @@
 package client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import shared.Properties;
 
 import java.io.IOException;
@@ -13,16 +15,21 @@ import java.util.concurrent.Future;
 public class Client {
     private static InetSocketAddress ipAddress = new InetSocketAddress("localhost", Properties.PORT);
     private static Scanner scanner = new Scanner(System.in);
+    private static Logger logger = LoggerFactory.getLogger(Client.class);
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         try (AsynchronousSocketChannel socket = AsynchronousSocketChannel.open()) {
             socket.connect(ipAddress).get();
-            while (socket.isOpen() && scanner.hasNext()){
-                String line = scanner.nextLine();
+            String line = "SOMETHING WRONG";
+            ByteBuffer buffer;
+            while (socket.isOpen() && scanner.hasNext()) {
+                line = scanner.nextLine();
+                buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
+                Future<Integer> future = socket.write(buffer);
+                int nbWrittenChars = future.get();
+                logger.info("{} chars have been sent to the server", nbWrittenChars);
             }
-                ByteBuffer buffer = ByteBuffer.wrap("salut".getBytes("UTF-8"));
-            Future<Integer> future = socket.write(buffer);
-            future.get();
+
         }
     }
 }
