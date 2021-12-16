@@ -1,8 +1,9 @@
 package server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import shared.FieldsRequestName;
 import shared.NetCodes;
-import shared.ParsersName;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -12,8 +13,11 @@ import java.util.function.Function;
 public class ServerImpl {
     private static Hashtable<String, Consumer<HashMap<String,String>>> listOfFunctions = new Hashtable<>();
     private static Hashtable<String, Function<String[], HashMap<String,String>>> listOfParsers = new Hashtable<>();
+    private static Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public static void connect( HashMap<String,String> data){}
+    public static void connect( HashMap<String,String> data){
+        logger.info("Function : Connection to server");
+    }
     public static void createChannel( HashMap<String,String> data){}
     public static void joinChannel( HashMap<String,String> data){}
     public static void deleteMessage( HashMap<String,String> data){}
@@ -36,8 +40,8 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.CONSUME_MESSAGE, ServerImpl::consumeMessage);
 
         // initialisation of parsers;
-        listOfParsers.put(ParsersName.connectionParser,ServerImpl::connexionParser);
-        listOfParsers.put(ParsersName.createChannelParser,ServerImpl::creationChannelParser);
+        listOfParsers.put(NetCodes.CONNECTION,ServerImpl::connexionParser);
+        listOfParsers.put(NetCodes.CREATE_CHANNEL,ServerImpl::creationChannelParser);
     }
 
     public static Consumer<HashMap<String,String>> getFunctionWithRequestCode(String code){
@@ -51,14 +55,14 @@ public class ServerImpl {
 
     //TODO : define the parsers;
     private static HashMap<String,String> connexionParser(String[] dataArray){
-        HashMap<String,String> data = new HashMap<String,String>();
+        HashMap<String,String> data = new HashMap<>();
         data.put(FieldsRequestName.netCode,dataArray[0]);
         data.put(FieldsRequestName.userId,dataArray[1]);
         return data;
     }
 
     private static HashMap<String,String> creationChannelParser(String[] dataArray){
-        HashMap<String,String> data = new HashMap<String,String>();
+        HashMap<String,String> data = new HashMap<>();
         data.put(FieldsRequestName.netCode,dataArray[0]);
         data.put(FieldsRequestName.userId,dataArray[1]);
         data.put(FieldsRequestName.channelName,dataArray[2]);
