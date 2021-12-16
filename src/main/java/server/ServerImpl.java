@@ -1,5 +1,6 @@
 package server;
 
+import database.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.FieldsRequestName;
@@ -11,6 +12,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ServerImpl {
+
+    private static Repository repository = Repository.getRepository();
+
     private static Hashtable<String, Consumer<HashMap<String,String>>> listOfFunctions = new Hashtable<>();
     private static Hashtable<String, Function<String[], HashMap<String,String>>> listOfParsers = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
@@ -18,7 +22,9 @@ public class ServerImpl {
     public static void connect( HashMap<String,String> data){
         logger.info("Function : Connection to server");
     }
-    public static void createChannel( HashMap<String,String> data){}
+    public static void createChannel( HashMap<String,String> data){
+
+    }
     public static void joinChannel( HashMap<String,String> data){}
     public static void deleteMessage( HashMap<String,String> data){}
     public static void modifyMessage( HashMap<String,String> data){}

@@ -14,7 +14,7 @@ public class ReaderCompletionHandler implements CompletionHandler<Integer, ByteB
     private AsynchronousSocketChannel client;
 
     ReaderCompletionHandler(AsynchronousSocketChannel client) {
-        this.logger.info("ReaderCompletionHandlerInstantiated");
+        this.logger.info("ReaderCompletionHandler instantiated");
         this.client = client;
     }
 
@@ -26,6 +26,7 @@ public class ReaderCompletionHandler implements CompletionHandler<Integer, ByteB
         ServerImpl.getFunctionWithRequestCode(requestAfterParsing.get(FieldsRequestName
                 .netCode)).accept(requestAfterParsing);
         logger.info("Client has sent \"{}\"", requestData);
+
     }
 
     @Override

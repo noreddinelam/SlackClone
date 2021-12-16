@@ -18,6 +18,7 @@ public class FieldsRequestName {
 
     //Messages Fields
     public static String messageID = "MessageID";
+    public static String messageContent = "MessageCONTENT";
 
     private FieldsRequestName(){}
 }
