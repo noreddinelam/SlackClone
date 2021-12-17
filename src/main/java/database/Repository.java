@@ -13,7 +13,7 @@ import java.sql.Statement;
 //The repository to use for using requests on the database.
 public class Repository {
     private static final Repository repository = new Repository();
-    private static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static Logger logger = LoggerFactory.getLogger(Repository.class);
     private static Connection connectionDB;
 
     private Repository() {
@@ -31,17 +31,6 @@ public class Repository {
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Error on getting connection from DB");
-        }
-    }
-
-    public void initDB(){
-        String createTable = "CREATE TABLE user(";
-        try (PreparedStatement stmt = connectionDB.prepareStatement(createTable)) {
-            this.connectionDB.setAutoCommit(false);
-
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            logger.error("Error on creating tables");
         }
     }
 

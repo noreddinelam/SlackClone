@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import shared.Properties;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -19,14 +20,33 @@ public class Client {
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         try (AsynchronousSocketChannel socket = AsynchronousSocketChannel.open()) {
             socket.connect(ipAddress).get();
-            String line = "SOMETHING WRONG";
-            ByteBuffer buffer;
-            while (socket.isOpen() && scanner.hasNext()) {
-                line = scanner.nextLine();
-                buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
-                socket.write(buffer,buffer,new ClientWriterCompletionHandler());
-            }
 
+            Thread writer = new Thread(()->{
+                logger.info("Thread writer is running");
+                String line = "SOMETHING WRONG";
+                ByteBuffer buffer;
+                while (scanner.hasNext()) {
+                    logger.info("Thread looping");
+                    try {
+                        line = scanner.nextLine();
+                        buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
+                        socket.write(buffer,buffer,new ClientWriterCompletionHandler());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            Thread reader = new Thread(()->{
+                logger.info("Thread reader is running");
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+//                while(socket.isOpen()){
+//                    logger.info("Thread looping");
+//                    socket.read(buffer,buffer,new ClientReaderCompletionHandler(socket));
+//                }
+            });
+            writer.start();
+            //reader.start();
         }
     }
 }
