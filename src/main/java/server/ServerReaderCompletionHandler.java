@@ -7,13 +7,13 @@ import shared.FieldsRequestName;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.HashMap;
+import java.util.Map;
 
-public class ReaderCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
-    private static Logger logger = LoggerFactory.getLogger(ReaderCompletionHandler.class);
+public class ServerReaderCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
+    private static Logger logger = LoggerFactory.getLogger(ServerReaderCompletionHandler.class);
     private AsynchronousSocketChannel client;
 
-    ReaderCompletionHandler(AsynchronousSocketChannel client) {
+    ServerReaderCompletionHandler(AsynchronousSocketChannel client) {
         this.logger.info("ReaderCompletionHandler instantiated");
         this.client = client;
     }
@@ -22,11 +22,11 @@ public class ReaderCompletionHandler implements CompletionHandler<Integer, ByteB
     public void completed(Integer result, ByteBuffer attachment) {
         attachment.flip();
         String requestData = new String(attachment.array()).substring(0, result);
-        HashMap<String, String> requestAfterParsing = ServerImpl.requestParser(requestData);
+        Map<String, String> requestAfterParsing = ServerImpl.requestParser(requestData);
         ServerImpl.getFunctionWithRequestCode(requestAfterParsing.get(FieldsRequestName
                 .netCode)).accept(requestAfterParsing);
         logger.info("Client has sent \"{}\"", requestData);
-
+        this.client.write(attachment,attachment,new ServerWriterCompletionHandler(this.client));
     }
 
     @Override

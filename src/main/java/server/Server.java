@@ -37,7 +37,7 @@ public class Server {
                             listOfClients.put(socketAddress.toString(), result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
-                            result.read(buffer, buffer, new ReaderCompletionHandler(result));
+                            result.read(buffer, buffer, new ServerReaderCompletionHandler(result));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class Client {
     private static InetSocketAddress ipAddress = new InetSocketAddress("localhost", Properties.PORT);
@@ -25,9 +24,7 @@ public class Client {
             while (socket.isOpen() && scanner.hasNext()) {
                 line = scanner.nextLine();
                 buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
-                Future<Integer> future = socket.write(buffer);
-                int nbWrittenChars = future.get();
-                logger.info("{} chars have been sent to the server", nbWrittenChars);
+                socket.write(buffer,buffer,new ClientWriterCompletionHandler());
             }
 
         }

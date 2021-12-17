@@ -8,6 +8,7 @@ import shared.NetCodes;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -15,23 +16,23 @@ public class ServerImpl {
 
     private static Repository repository = Repository.getRepository();
 
-    private static Hashtable<String, Consumer<HashMap<String,String>>> listOfFunctions = new Hashtable<>();
-    private static Hashtable<String, Function<String[], HashMap<String,String>>> listOfParsers = new Hashtable<>();
+    private static Hashtable<String, Consumer<Map<String,String>>> listOfFunctions = new Hashtable<>();
+    private static Hashtable<String, Function<String[], Map<String,String>>> listOfParsers = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public static void connect( HashMap<String,String> data){
+    public static void connect( Map<String,String> data){
         logger.info("Function : Connection to server");
     }
-    public static void createChannel( HashMap<String,String> data){
+    public static void createChannel( Map<String,String> data){
 
     }
-    public static void joinChannel( HashMap<String,String> data){}
-    public static void deleteMessage( HashMap<String,String> data){}
-    public static void modifyMessage( HashMap<String,String> data){}
-    public static void deleteChannel( HashMap<String,String> data){}
-    public static void listChannelsInServer( HashMap<String,String> data){}
-    public static void listOfUserInChannel( HashMap<String,String> data){}
-    public static void consumeMessage( HashMap<String,String> data){}
+    public static void joinChannel( Map<String,String> data){}
+    public static void deleteMessage( Map<String,String> data){}
+    public static void modifyMessage( Map<String,String> data){}
+    public static void deleteChannel( Map<String,String> data){}
+    public static void listChannelsInServer( Map<String,String> data){}
+    public static void listOfUserInChannel( Map<String,String> data){}
+    public static void consumeMessage( Map<String,String> data){}
 
     public static void initListOfFunctionsAndParsers(){
         // initialisation of methods;
@@ -50,11 +51,11 @@ public class ServerImpl {
         listOfParsers.put(NetCodes.CREATE_CHANNEL,ServerImpl::creationChannelParser);
     }
 
-    public static Consumer<HashMap<String,String>> getFunctionWithRequestCode(String code){
+    public static Consumer<Map<String,String>> getFunctionWithRequestCode(String code){
         return listOfFunctions.get(code);
     }
 
-    public static  HashMap<String,String> requestParser(String request){
+    public static  Map<String,String> requestParser(String request){
         String[] dataArray = request.split(" ");
         return listOfParsers.get(dataArray[0]).apply(dataArray);// TODO: change this after.
     }
@@ -67,7 +68,7 @@ public class ServerImpl {
         return data;
     }
 
-    private static HashMap<String,String> creationChannelParser(String[] dataArray){
+    private static Map<String,String> creationChannelParser(String[] dataArray){
         HashMap<String,String> data = new HashMap<>();
         data.put(FieldsRequestName.netCode,dataArray[0]);
         data.put(FieldsRequestName.userId,dataArray[1]);
