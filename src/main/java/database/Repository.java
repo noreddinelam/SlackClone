@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import server.Server;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 //The repository to use for using requests on the database.
@@ -31,7 +32,14 @@ public class Repository {
         }
     }
 
-    public static void saveChannelInDB(Channel channel) {
+    public static void saveChannelInDB(Channel channel) { // TODO: explication of saveChannelInDB
+        try(PreparedStatement stmt = connectionDB.prepareCall(SQLStatements.fetchMessageFromChannel)){
+            stmt.setNString(1,"amine");
+            stmt.setInt(2,2020);
+            stmt.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }

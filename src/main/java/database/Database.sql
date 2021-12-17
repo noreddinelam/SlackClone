@@ -44,15 +44,18 @@ CREATE TABLE `Message`
 );
 
 -- ************************************** `Client_Channel`
-CREATE TABLE `Client_Channel`
+CREATE TABLE `Client_Channel_Message`
 (
  `idChannel` integer NOT NULL ,
  `username`  integer NOT NULL ,
+ `idMessage` integer NOT NULL,
 
 KEY `FK_30` (`idChannel`),
 CONSTRAINT `FK_28` FOREIGN KEY `FK_30` (`idChannel`) REFERENCES `Channel` (`id`),
 KEY `FK_33` (`username`),
-CONSTRAINT `FK_31` FOREIGN KEY `FK_33` (`username`) REFERENCES `Client` (`username`)
+CONSTRAINT `FK_31` FOREIGN KEY `FK_33` (`username`) REFERENCES `Client` (`username`),
+KEY `FK_36` (`idMessage`),
+CONSTRAINT  `FK_34` FOREIGN KEY `FK_36` (`idMessage`) REFERENCES `Message` (`id`)
 );
 
 
