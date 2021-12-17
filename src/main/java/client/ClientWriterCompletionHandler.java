@@ -12,6 +12,9 @@ public class ClientWriterCompletionHandler implements CompletionHandler<Integer,
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
         logger.info("{} chars have been sent to the server", result);
+        String dataSent = new String(attachment.array());
+        logger.info("Data sent to the server \n{}",dataSent);
+        //attachment.clear();
     }
 
     @Override

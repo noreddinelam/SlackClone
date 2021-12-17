@@ -27,6 +27,7 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
 
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
+        this.logger.info("ReaderCompletionHandler completed");
         attachment.flip();
         String requestData = new String(attachment.array()).substring(0, result);
         Map<String, String> requestAfterParsing = ServerImpl.requestParser(requestData);
@@ -36,7 +37,6 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
         attachment.clear();
         String jsonRes = gson.toJson(new Channel(new User(),"test","test",true));
         attachment = ByteBuffer.wrap(jsonRes.getBytes());
-        //attachment.flip();
        this.client.write(attachment,attachment,new ServerWriterCompletionHandler(this.client));
     }
 

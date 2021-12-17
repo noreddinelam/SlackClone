@@ -21,12 +21,9 @@ public class Client {
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
         socket.connect(ipAddress).get();
         Thread writer = new Thread(() -> {
-            logger.info("Thread looping {}", socket.isOpen());
-            logger.info("Thread writer is running");
             String line = "SOMETHING WRONG";
             ByteBuffer buffer;
-            while (socket.isOpen() && scanner.hasNext()) {
-
+            while (true) {
                 try {
                     line = scanner.nextLine();
                     buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
@@ -38,12 +35,17 @@ public class Client {
         });
 
         Thread reader = new Thread(() -> {
-            logger.info("Thread reader is running");
             ByteBuffer buffer = ByteBuffer.allocate(1024);
-                while(socket.isOpen()){
-                    logger.info("Thread looping");
-                    socket.read(buffer,buffer,new ClientReaderCompletionHandler(socket));
+            try {
+                while (socket.isOpen()) {
+                    int nb = socket.read(buffer).get();
+                    logger.info("The received response {}", new String(buffer.array()).substring(0, nb));
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         });
         writer.start();
         reader.start();

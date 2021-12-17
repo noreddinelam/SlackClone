@@ -57,6 +57,7 @@ public class ServerImpl {
 
     public static  Map<String,String> requestParser(String request){
         String[] dataArray = request.split(" ");
+        logger.info("Received request {}",request);
         return listOfParsers.get(dataArray[0]).apply(dataArray);// TODO: change this after.
     }
 
