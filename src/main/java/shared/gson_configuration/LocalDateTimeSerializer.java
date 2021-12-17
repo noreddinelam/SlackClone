@@ -1,4 +1,4 @@
-package shared.adapters;
+package shared.gson_configuration;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
