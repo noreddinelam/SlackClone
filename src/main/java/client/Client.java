@@ -18,35 +18,34 @@ public class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        try (AsynchronousSocketChannel socket = AsynchronousSocketChannel.open()) {
-            socket.connect(ipAddress).get();
+        AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
+        socket.connect(ipAddress).get();
+        Thread writer = new Thread(() -> {
+            logger.info("Thread looping {}", socket.isOpen());
+            logger.info("Thread writer is running");
+            String line = "SOMETHING WRONG";
+            ByteBuffer buffer;
+            while (socket.isOpen() && scanner.hasNext()) {
 
-            Thread writer = new Thread(()->{
-                logger.info("Thread writer is running");
-                String line = "SOMETHING WRONG";
-                ByteBuffer buffer;
-                while (scanner.hasNext()) {
-                    logger.info("Thread looping");
-                    try {
-                        line = scanner.nextLine();
-                        buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
-                        socket.write(buffer,buffer,new ClientWriterCompletionHandler());
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    line = scanner.nextLine();
+                    buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
+                    socket.write(buffer, buffer, new ClientWriterCompletionHandler());
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        });
 
-            Thread reader = new Thread(()->{
-                logger.info("Thread reader is running");
-                ByteBuffer buffer = ByteBuffer.allocate(1024);
-//                while(socket.isOpen()){
-//                    logger.info("Thread looping");
-//                    socket.read(buffer,buffer,new ClientReaderCompletionHandler(socket));
-//                }
-            });
-            writer.start();
-            //reader.start();
-        }
+        Thread reader = new Thread(() -> {
+            logger.info("Thread reader is running");
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+                while(socket.isOpen()){
+                    logger.info("Thread looping");
+                    socket.read(buffer,buffer,new ClientReaderCompletionHandler(socket));
+                }
+        });
+        writer.start();
+        reader.start();
     }
 }

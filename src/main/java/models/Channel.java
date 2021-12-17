@@ -9,7 +9,15 @@ public class Channel {
     private String channelName;
     private String channelDescription;
     private List<Message> messages;
-    private boolean publicState;//true = a public channel.
+    private boolean isPublic;//true = a public channel.
 
+    public Channel(){}
+
+    public Channel(User admin,String channelName,String channelDescription,boolean isPublic){
+        this.admin = admin;
+        this.channelName = channelName;
+        this.channelDescription = channelDescription;
+        this.isPublic = isPublic;
+    }
 
 }

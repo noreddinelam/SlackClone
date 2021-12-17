@@ -61,7 +61,7 @@ public class ServerImpl {
     }
 
     //TODO : define the parsers;
-    private static HashMap<String,String> connexionParser(String[] dataArray){
+    private static Map<String,String> connexionParser(String[] dataArray){
         HashMap<String,String> data = new HashMap<>();
         data.put(FieldsRequestName.netCode,dataArray[0]);
         data.put(FieldsRequestName.userId,dataArray[1]);
