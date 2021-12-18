@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// TODO : blacklist user when refusing to join private channel.
+//
 public class Database {
     private static Connection database;
 

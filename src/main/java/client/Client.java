@@ -1,22 +1,20 @@
 package client;
 
-import com.google.gson.reflect.TypeToken;
-import models.Channel;
-import models.User;
-import shared.communication.Request;
-import shared.communication.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.CommunicationTypes;
+import shared.FieldsRequestName;
 import shared.Properties;
+import shared.communication.Request;
 import shared.gson_configuration.GsonConfiguration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -34,7 +32,10 @@ public class Client {
             while (true) {
                 try {
                     line = scanner.nextLine();
-                    Request request = new Request(line,GsonConfiguration.gson.toJson(new Channel(new User(),"test","test",true)));
+                    Map<String,String> requestData = new HashMap<>();
+                    // TODO switch or consumer to adapt to each request
+                    requestData.put(FieldsRequestName.messageID,"10");
+                    Request request = new Request(line,GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());

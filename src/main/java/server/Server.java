@@ -11,12 +11,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
 
     private static Logger logger = LoggerFactory.getLogger(Server.class);
-    private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
         ServerImpl.initListOfFunctionsAndParsers();
@@ -33,7 +31,7 @@ public class Server {
                                 serverSocket.accept(null, this);
                             }
                             SocketAddress socketAddress = result.getRemoteAddress();
-                            listOfClients.put(socketAddress.toString(), result);
+                            ServerImpl.addConnectedClients(result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
                             result.read(buffer, buffer, new ServerReaderCompletionHandler(result));
@@ -46,9 +44,11 @@ public class Server {
                     public void failed(Throwable exc, Object attachment) {
                         exc.printStackTrace();
                     }
-                });
+
                 System.in.read();
+                }
             }
         }
     }
-}
+    }
+
