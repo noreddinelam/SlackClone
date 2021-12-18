@@ -3,6 +3,8 @@ package client;
 import com.google.gson.reflect.TypeToken;
 import models.Channel;
 import models.User;
+import shared.CommunicationTypes;
+import shared.FieldsRequestName;
 import shared.communication.Request;
 import shared.communication.Response;
 import org.slf4j.Logger;
@@ -16,7 +18,9 @@ import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -34,7 +38,9 @@ public class Client {
             while (true) {
                 try {
                     line = scanner.nextLine();
-                    Request request = new Request(line,GsonConfiguration.gson.toJson(new Channel(new User(),"test","test",true)));
+                    Map<String,String> requestData = new HashMap<>();
+                    requestData.put(FieldsRequestName.channelName,"test");
+                    Request request = new Request(line,GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());

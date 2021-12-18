@@ -4,17 +4,24 @@ import database.Repository;
 import models.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.CommunicationTypes;
+import shared.FieldsRequestName;
 import shared.NetCodes;
 import shared.communication.Request;
+import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
 
+import java.nio.channels.AsynchronousSocketChannel;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ServerImpl {
+
+    private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
     private static Repository repository = Repository.getRepository();
 
@@ -28,28 +35,31 @@ public class ServerImpl {
     public static String createChannel( String data){
         Channel requestData = GsonConfiguration.gson.fromJson(data,Channel.class);
         logger.info("Create channel data received {}",requestData);
-        return "";
+        Response response = new Response("","");
+        return GsonConfiguration.gson.toJson(response);
     }
     public static String joinChannel( String data){
-        return "";
+        Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        logger.info("Joining channel data {}",requestData);
+        return " ";
     }
     public static String deleteMessage( String data){
-        return "";
+        return " ";
     }
     public static String modifyMessage( String data){
-        return "";
+        return " ";
     }
     public static String deleteChannel( String data){
-        return "";
+        return " ";
     }
     public static String listChannelsInServer( String data){
-        return "";
+        return " ";
     }
     public static String listOfUserInChannel( String data){
-        return "";
+        return " ";
     }
     public static String consumeMessage( String data){
-        return "";
+        return " ";
     }
 
     public static void initListOfFunctionsAndParsers(){
@@ -69,10 +79,8 @@ public class ServerImpl {
         return listOfFunctions.get(request.getNetCode());
     }
 
-//    public static  Map<String,String> requestParser(Request request){
-//        String[] dataArray = request.split(" ");
-//        logger.info("Received request {}",request);
-//        return listOfParsers.get(dataArray[0]).apply(dataArray);// TODO: change this after.
-//    }
+    public static void addConnectedClients(AsynchronousSocketChannel client){
+        listOfClients.put(client.toString(), client);
+    }
 
 }
