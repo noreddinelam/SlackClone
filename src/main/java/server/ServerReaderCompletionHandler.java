@@ -24,10 +24,12 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
         this.logger.info("ReaderCompletionHandler completed");
         attachment.flip();
         String requestJson = new String(attachment.array()).substring(0, result);
+        System.out.println(requestJson);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
         String response = ServerImpl.getFunctionWithRequestCode(requestObject).apply(requestObject.getRequestData());
         attachment.clear();
         attachment = ByteBuffer.wrap(response.getBytes());
+        System.out.println(response.getBytes());
         this.client.write(attachment, attachment, new ServerWriterCompletionHandler(this.client));
     }
 
