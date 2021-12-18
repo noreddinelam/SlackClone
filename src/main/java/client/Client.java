@@ -1,14 +1,22 @@
 package client;
 
+import com.google.gson.reflect.TypeToken;
+import models.Channel;
+import models.User;
+import shared.communication.Request;
+import shared.communication.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.Properties;
+import shared.gson_configuration.GsonConfiguration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -26,7 +34,9 @@ public class Client {
             while (true) {
                 try {
                     line = scanner.nextLine();
-                    buffer = ByteBuffer.wrap(line.getBytes("UTF-8"));
+                    Request request = new Request(line,GsonConfiguration.gson.toJson(new Channel(new User(),"test","test",true)));
+                    String jsonRes = GsonConfiguration.gson.toJson(request);
+                    buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -39,7 +49,11 @@ public class Client {
             try {
                 while (socket.isOpen()) {
                     int nb = socket.read(buffer).get();
-                    logger.info("The received response {}", new String(buffer.array()).substring(0, nb));
+                    String jsonRes = new String(buffer.array()).substring(0, nb);
+                    logger.info("The received response \n{}", jsonRes);
+//                    Type fooType2 = new TypeToken< Response <List<Channel>>>() {}.getType();
+//                    Response<List<Channel>> res = GsonConfiguration.gson.fromJson(jsonRes,fooType2);
+//                    logger.info("The retrieved response {}",res.getResponse().get(0).getChannelName());
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

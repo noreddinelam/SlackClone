@@ -20,4 +20,18 @@ public class Channel {
         this.isPublic = isPublic;
     }
 
+    public String getChannelName() {
+        return channelName;
+    }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "id=" + id +
+                ", admin=" + admin +
+                ", channelName='" + channelName + '\'' +
+                ", channelDescription='" + channelDescription + '\'' +
+                ", isPublic=" + isPublic +
+                '}';
+    }
 }
