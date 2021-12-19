@@ -8,14 +8,16 @@ import server.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.sql.Statement;
 
 //The repository to use for using requests on the database.
 public class Repository {
     private static final Repository repository = new Repository();
-    private static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static Logger logger = LoggerFactory.getLogger(Repository.class);
     private static Connection connectionDB;
 
     private Repository() {
@@ -32,6 +34,7 @@ public class Repository {
             logger.info("Initialisation of connection to database");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Error on getting connection from DB");
         }
     }
     // Fonction qui retourne de la DB le champs content de la table message

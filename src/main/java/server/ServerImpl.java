@@ -1,37 +1,74 @@
 package server;
 
 import database.Repository;
+import models.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;
+import shared.communication.Request;
+import shared.communication.Response;
+import shared.gson_configuration.GsonConfiguration;
 
+
+import java.nio.channels.AsynchronousSocketChannel;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+
 import java.util.function.Function;
 
 public class ServerImpl {
 
+    private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
+
     private static Repository repository = Repository.getRepository();
 
-    private static Hashtable<String, Consumer<HashMap<String,String>>> listOfFunctions = new Hashtable<>();
-    private static Hashtable<String, Function<String[], HashMap<String,String>>> listOfParsers = new Hashtable<>();
+    private static Hashtable<String, Function<String,String>> listOfFunctions = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public static void connect( HashMap<String,String> data){
+    public static String connect( String data){
         logger.info("Function : Connection to server");
+        return "";
     }
-    public static void createChannel( HashMap<String,String> data){
+    public static String createChannel( String data){
+        Channel requestData = GsonConfiguration.gson.fromJson(data,Channel.class);
+        logger.info("Create channel data received {}",requestData);
+        Response response = new Response("","");
+        return GsonConfiguration.gson.toJson(response);
+    }
+    //data simple
+    public static String joinChannel( String data){
+
+        Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        logger.info("Joining channel data {}",requestData);
+        return " ";
 
     }
-    public static void joinChannel( HashMap<String,String> data){}
-    public static void deleteMessage( HashMap<String,String> data){}
-    public static void modifyMessage( HashMap<String,String> data){}
-    public static void deleteChannel( HashMap<String,String> data){}
-    public static void listChannelsInServer( HashMap<String,String> data){}
-    public static void listOfUserInChannel( HashMap<String,String> data){}
-    public static void consumeMessage( HashMap<String,String> data){}
+    public static String deleteMessage( String data){
+        return " ";
+    }
+    public static String modifyMessage( String data){
+        return " ";
+    }
+    public static String deleteChannel( String data){
+        return " ";
+    }
+    public static String listChannelsInServer( String data){
+        return " ";
+    }
+    public static String listOfUserInChannel( String data){
+        return " ";
+    }
+    public static String listOfMessageInChannel( String data){
+        return "";
+    }
+    public static String consumeMessage( String data){
+        return " ";
+    }
 
     public static void initListOfFunctionsAndParsers(){
         // initialisation of methods;
@@ -43,36 +80,17 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER, ServerImpl::listChannelsInServer);
         listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
+        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
         listOfFunctions.put(NetCodes.CONSUME_MESSAGE, ServerImpl::consumeMessage);
-
-        // initialisation of parsers;
-        listOfParsers.put(NetCodes.CONNECTION,ServerImpl::connexionParser);
-        listOfParsers.put(NetCodes.CREATE_CHANNEL,ServerImpl::creationChannelParser);
+        listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL, ServerImpl::listOfMessageInChannel);
     }
 
-    public static Consumer<HashMap<String,String>> getFunctionWithRequestCode(String code){
-        return listOfFunctions.get(code);
+    public static Function<String,String> getFunctionWithRequestCode(Request request){
+        return listOfFunctions.get(request.getNetCode());
     }
 
-    public static  HashMap<String,String> requestParser(String request){
-        String[] dataArray = request.split(" ");
-        return listOfParsers.get(dataArray[0]).apply(dataArray);// TODO: change this after.
+    public static void addConnectedClients(AsynchronousSocketChannel client){
+        listOfClients.put(client.toString(), client);
     }
 
-    //TODO : define the parsers;
-    private static HashMap<String,String> connexionParser(String[] dataArray){
-        HashMap<String,String> data = new HashMap<>();
-        data.put(FieldsRequestName.netCode,dataArray[0]);
-        data.put(FieldsRequestName.userId,dataArray[1]);
-        return data;
-    }
-
-    private static HashMap<String,String> creationChannelParser(String[] dataArray){
-        HashMap<String,String> data = new HashMap<>();
-        data.put(FieldsRequestName.netCode,dataArray[0]);
-        data.put(FieldsRequestName.userId,dataArray[1]);
-        data.put(FieldsRequestName.channelName,dataArray[2]);
-        data.put(FieldsRequestName.channelDescription,dataArray[3]);
-        return data;
-    }
 }
