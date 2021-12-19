@@ -28,19 +28,17 @@ CONSTRAINT `FK_24` FOREIGN KEY `FK_26` (`idAdmin`) REFERENCES `Client` (`usernam
 );
 
 -- ************************************** `Message`
+
 CREATE TABLE `Message`
 (
-    `id`        integer NOT NULL ,
-    `content`   varchar(255) NOT NULL ,
-    `idChannel` integer NOT NULL ,
-    `idUser`    integer NOT NULL ,
-    `date`      datetime NOT NULL ,
+ `id`        integer NOT NULL ,
+ `content`   varchar(255) NOT NULL ,
+ `idChannel` integer NOT NULL ,
+ `date`      datetime NOT NULL ,
 
-    PRIMARY KEY (`id`),
-    KEY `FK_19` (`idUser`),
-    CONSTRAINT `FK_17` FOREIGN KEY `FK_19` (`idUser`) REFERENCES `Client` (`username`),
-    KEY `FK_22` (`idChannel`),
-    CONSTRAINT `FK_20` FOREIGN KEY `FK_22` (`idChannel`) REFERENCES `Channel` (`id`)
+PRIMARY KEY (`id`),
+KEY `FK_22` (`idChannel`),
+CONSTRAINT `FK_20` FOREIGN KEY `FK_22` (`idChannel`) REFERENCES `Channel` (`id`)
 );
 
 -- ************************************** `Client_Channel`

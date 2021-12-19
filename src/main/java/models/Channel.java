@@ -11,5 +11,7 @@ public class Channel {
     private List<Message> messages;
     private boolean publicState;//true = a public channel.
 
-
+    public int getId() {
+        return id;
+    }
 }
