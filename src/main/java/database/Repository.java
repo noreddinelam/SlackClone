@@ -4,7 +4,6 @@ import models.Channel;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.sql.Statement;
 
 //The repository to use for using requests on the database.
 public class Repository {
@@ -49,6 +47,7 @@ public class Repository {
             return Optional.empty();
         }
     }
+
 
     public static Optional<ResultSet> fetchMessageFromClientDB(User user)
     {
