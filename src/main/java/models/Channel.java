@@ -3,7 +3,6 @@ package models;
 import java.util.List;
 
 public class Channel {
-    private int id;
     private User admin;
     private List<User> allowedUsers;
     private String channelName;
@@ -27,7 +26,6 @@ public class Channel {
     @Override
     public String toString() {
         return "Channel{" +
-                "id=" + id +
                 ", admin=" + admin +
                 ", channelName='" + channelName + '\'' +
                 ", channelDescription='" + channelDescription + '\'' +
