@@ -12,16 +12,29 @@ public class Channel {
 
     public Channel(){}
 
-    public Channel(User admin,String channelName,String channelDescription,boolean isPublic){
+    public User getAdmin() {
+        return admin;
+    }
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public String getChannelDescription() {
+        return channelDescription;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public Channel(User admin, String channelName, String channelDescription, boolean isPublic){
         this.admin = admin;
         this.channelName = channelName;
         this.channelDescription = channelDescription;
         this.isPublic = isPublic;
     }
 
-    public String getChannelName() {
-        return channelName;
-    }
+
 
     @Override
     public String toString() {
