@@ -1,8 +1,11 @@
 package database;
 
 public class SQLStatements {
-    public static String fetchMessageFromChannel = "SELECT content FROM Message where idChannel=? ;";
+
     public static String createChannel = "Insert INTO channel (name,idAdmin,desc,isPublic) values(?,?,?,?) ;";
+
+    public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
+
     public static String fetchMessageFromUser=
             "SELECT m.content " +
             "FROM Message m" +
