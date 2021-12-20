@@ -39,8 +39,9 @@ public class Repository {
     // du channel passé en argument
     //TODO: test this function
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
-        try(PreparedStatement stmt = connectionDB.prepareCall(SQLStatements.fetchMessageFromChannel)){
-            stmt.setNString(1, String.valueOf(channel.getChannelName()));
+        try(PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)){
+            stmt.setNString(1, channel.getChannelName());
+            stmt.executeQuery();
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
@@ -51,7 +52,7 @@ public class Repository {
 
     public static Optional<ResultSet> fetchMessageFromClientDB(User user)
     {
-        try (PreparedStatement stmt = connectionDB.prepareCall(SQLStatements.fetchMessageFromChannel)) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setNString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {

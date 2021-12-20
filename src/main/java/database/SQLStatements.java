@@ -1,7 +1,7 @@
 package database;
 
 public class SQLStatements {
-    public static String fetchMessageFromChannel = "SELECT content FROM Message where idChannel=? ;";
+    public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
     public static String fetchMessageFromUser=
             "SELECT m.content " +
             "FROM Message m" +
