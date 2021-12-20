@@ -5,7 +5,7 @@ public class SQLStatements {
     public static String fetchMessageFromUser=
             "SELECT m.content " +
             "FROM Message m" +
-            "where m.id = ( Select id" +
+            "where m.id = ( Select idMessage" +
                     "FROM Client_Channel_Message" +
                     "where username=? )" +
             "; ";
