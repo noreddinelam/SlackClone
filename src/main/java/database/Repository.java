@@ -41,7 +41,6 @@ public class Repository {
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try(PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)){
             stmt.setNString(1, channel.getChannelName());
-            stmt.executeQuery();
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
@@ -59,6 +58,10 @@ public class Repository {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public static Optional<ResultSet> createChannelDB(Channel channel){
+        return null;
     }
 
 

@@ -1,5 +1,6 @@
 package server;
 
+import Exceptions.CreateChannelException;
 import database.Repository;
 import models.Channel;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import shared.gson_configuration.GsonConfiguration;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -44,6 +46,12 @@ public class ServerImpl {
     public static String createChannel( String data){
         Channel requestData = GsonConfiguration.gson.fromJson(data,Channel.class);
         logger.info("Create channel data received {}",requestData);
+        try {
+            repository.createChannelDB(requestData).orElseThrow(CreateChannelException::new);
+
+        } catch (CreateChannelException e) {
+            e.printStackTrace();
+        }
         Response response = new Response("","Salut");
         String responseJson = GsonConfiguration.gson.toJson(response);
         ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());

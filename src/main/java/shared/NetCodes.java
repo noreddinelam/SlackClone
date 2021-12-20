@@ -2,7 +2,12 @@ package shared;
 
 public class NetCodes {
     public static String CONNECTION = "100";
+
+    // Channel :
     public static String CREATE_CHANNEL = "200";
+    public static String CREATE_CHANNEL_SUCCEED = "201";
+    public static String CREATE_CHANNEL_FAILED = "202";
+
     public static String JOIN_CHANNEL = "300";
     public static String DELETE_MESSAGE = "400";
     public static String MODIFY_MESSAGE = "500";
