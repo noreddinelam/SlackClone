@@ -20,6 +20,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -52,10 +53,13 @@ public class ServerImpl {
         new ArrayList<>(listOfClients.values()).get(1).read(newByteBuffer,newByteBuffer,new ServerReaderCompletionHandler(null));
         return GsonConfiguration.gson.toJson(response);
     }
+    //data simple
     public static String joinChannel( String data){
+
         Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         logger.info("Joining channel data {}",requestData);
         return " ";
+
     }
     public static String deleteMessage( String data){
         return " ";
@@ -72,6 +76,9 @@ public class ServerImpl {
     public static String listOfUserInChannel( String data){
         return " ";
     }
+    public static String listOfMessageInChannel( String data){
+        return "";
+    }
     public static String consumeMessage( String data){
         return " ";
     }
@@ -86,7 +93,9 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER, ServerImpl::listChannelsInServer);
         listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
+        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
         listOfFunctions.put(NetCodes.CONSUME_MESSAGE, ServerImpl::consumeMessage);
+        listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL, ServerImpl::listOfMessageInChannel);
     }
 
     public static Function<String,String> getFunctionWithRequestCode(Request request){

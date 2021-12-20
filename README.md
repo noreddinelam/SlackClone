@@ -1,2 +1,2 @@
 # SlackClone
-We will clone slack functionalities 
+We will clone slack functionalities using JAVA

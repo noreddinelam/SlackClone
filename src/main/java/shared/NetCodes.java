@@ -10,6 +10,8 @@ public class NetCodes {
     public static String LIST_CHANNELS_IN_SERVER = "700";
     public static String LIST_OF_USER_IN_CHANNEL = "800";
     public static String CONSUME_MESSAGE = "900";
+    public static String List_Of_MESSAGE_IN_CHANNEL = "1000";
+
 
     private NetCodes(){}
 }
