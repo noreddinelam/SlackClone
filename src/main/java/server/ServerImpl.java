@@ -11,13 +11,24 @@ import shared.communication.Request;
 import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
 
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+
+
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ServerImpl {
+
+    private static int cpt = 0;
 
     private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
@@ -33,7 +44,15 @@ public class ServerImpl {
     public static String createChannel( String data){
         Channel requestData = GsonConfiguration.gson.fromJson(data,Channel.class);
         logger.info("Create channel data received {}",requestData);
-        Response response = new Response("","");
+        Response response = new Response("","Salut");
+        String responseJson = GsonConfiguration.gson.toJson(response);
+        ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+        listOfClients.values().forEach((client)->{
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+        });
+        attachment.clear();
+        ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+        new ArrayList<>(listOfClients.values()).get(1).read(newByteBuffer,newByteBuffer,new ServerReaderCompletionHandler(null));
         return GsonConfiguration.gson.toJson(response);
     }
     //data simple
@@ -99,8 +118,8 @@ public class ServerImpl {
         return listOfFunctions.get(request.getNetCode());
     }
 
-    public static void addConnectedClients(AsynchronousSocketChannel client){
-        listOfClients.put(client.toString(), client);
+    public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
+        listOfClients.put(String.valueOf(cpt++), client);
     }
 
 }

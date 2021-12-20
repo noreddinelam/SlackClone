@@ -18,9 +18,9 @@ public class ServerWriterCompletionHandler implements CompletionHandler<Integer,
 
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
-        logger.info("{} chars have been sent to the server", result);
+        logger.info("{} chars have been sent to the client", result);
+        logger.info("The capacity of the buffer {}",attachment.capacity());
         attachment.clear();
-        this.client.read(attachment,attachment,new ServerReaderCompletionHandler(this.client));
     }
 
     @Override
