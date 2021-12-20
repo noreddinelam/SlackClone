@@ -40,7 +40,7 @@ public class Repository {
     //TODO: test this function
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try(PreparedStatement stmt = connectionDB.prepareCall(SQLStatements.fetchMessageFromChannel)){
-            stmt.setNString(1, String.valueOf(channel.getId()));
+            stmt.setNString(1, String.valueOf(channel.getChannelName()));
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();

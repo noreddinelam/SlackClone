@@ -10,9 +10,6 @@ public class Channel {
     private List<Message> messages;
     private boolean isPublic;//true = a public channel.
 
-
-    public int getId() {
-        return id;
     public Channel(){}
 
     public Channel(User admin,String channelName,String channelDescription,boolean isPublic){
