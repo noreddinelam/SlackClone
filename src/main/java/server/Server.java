@@ -44,11 +44,11 @@ public class Server {
                     public void failed(Throwable exc, Object attachment) {
                         exc.printStackTrace();
                     }
-
+                });
                 System.in.read();
-                }
+
             }
         }
     }
-    }
+}
 

@@ -21,16 +21,12 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
 
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
-        this.logger.info("ReaderCompletionHandler completed");
+        this.logger.info("ReaderCompletionHandler completed with {}",result);
         attachment.flip();
         String requestJson = new String(attachment.array()).substring(0, result);
-        System.out.println(requestJson);
+        logger.info("Bou3lam titich {}",requestJson);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
-        String response = ServerImpl.getFunctionWithRequestCode(requestObject).apply(requestObject.getRequestData());
-        attachment.clear();
-        attachment = ByteBuffer.wrap(response.getBytes());
-        System.out.println(response.getBytes());
-        this.client.write(attachment, attachment, new ServerWriterCompletionHandler(this.client));
+        ServerImpl.getFunctionWithRequestCode(requestObject).apply(requestObject.getRequestData());
     }
 
     @Override
