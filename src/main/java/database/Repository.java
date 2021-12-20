@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+//test
+
 
 //The repository to use for using requests on the database.
 public class Repository {
@@ -58,11 +60,24 @@ public class Repository {
             e.printStackTrace();
             return Optional.empty();
         }
+    }public static Optional<ResultSet> createChannelDB(Channel channel)
+    {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
+            stmt.setNString(1, String.valueOf(channel.getChannelName()));
+            stmt.setNString(2, String.valueOf(channel.getAdmin().getUsername()));
+            stmt.setNString(3, String.valueOf(channel.getChannelDescription()));
+            stmt.setBoolean(4, true);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     public static Optional<ResultSet> createChannelDB(Channel channel){
         return null;
     }
+
 
 
 }
