@@ -7,6 +7,16 @@ public class SQLStatements {
             "(name,idAdmin,description,isPublic) " +
             "VALUES (?,?,?,?) ;";
 
+    public static String createUser=
+            "INSERT INTO CLIENT " +
+            "(username,password) " +
+            "VALUES (?,?) ;";
+
+    public static String addMessage =
+            "INSERT INTO Channel " +
+            "(id,content,idChannel,username,date) " +
+            "VALUES (?,?,?,?,?) ;";
+
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 
     public static String fetchMessageFromUser=
