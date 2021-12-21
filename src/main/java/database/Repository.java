@@ -44,7 +44,7 @@ public class Repository {
     // du channel passé en argument
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
-            stmt.setNString(1, channel.getChannelName());
+            stmt.setString(1, channel.getChannelName());
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
@@ -55,7 +55,7 @@ public class Repository {
 
     public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
-            stmt.setNString(1, String.valueOf(user.getUsername()));
+            stmt.setString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,9 +65,9 @@ public class Repository {
 
     public static Optional<Boolean> createChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
-            stmt.setNString(1, channel.getChannelName());
-            stmt.setNString(2, channel.getAdmin().getUsername());
-            stmt.setNString(3, channel.getChannelDescription());
+            stmt.setString(1, channel.getChannelName());
+            stmt.setString(2, channel.getAdmin().getUsername());
+            stmt.setString(3, channel.getChannelDescription());
             stmt.setBoolean(4, channel.isPublic());
             return Optional.of(stmt.execute());
         } catch (SQLException e) {
@@ -79,8 +79,8 @@ public class Repository {
     public static Optional<Boolean> createUserDB(User user)
     {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
-            stmt.setNString(1,user.getUsername());
-            stmt.setNString(2,user.getPassword());
+            stmt.setString(1,user.getUsername());
+            stmt.setString(2,user.getPassword());
             return Optional.of(stmt.execute());
         } catch(SQLException e)
         {
@@ -92,11 +92,11 @@ public class Repository {
     public static Optional<Boolean> addMessageDB(Message message)
     {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
-            addMessage.setNString(1, String.valueOf(message.getId()));
+            addMessage.setInt(1, message.getId());
             addMessage.setString(2,message.getContent());
-            addMessage.setNString(3,message.getChannel().getChannelName());
-            addMessage.setNString(4,message.getUser().getUsername());
-            addMessage.setNString(5, String.valueOf(message.getDate()));
+            addMessage.setString(3,message.getChannel().getChannelName());
+            addMessage.setString(4,message.getUser().getUsername());
+            addMessage.setObject(5, message.getDate());
             return Optional.of(addMessage.execute());
         } catch(SQLException e)
         {
