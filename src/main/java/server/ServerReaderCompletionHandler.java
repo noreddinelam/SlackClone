@@ -22,7 +22,7 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
         attachment.flip();
         String requestJson = new String(attachment.array()).substring(0, result);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
-        ServerImpl.getFunctionWithRequestCode(requestObject).apply(requestObject.getRequestData());
+        ServerImpl.getFunctionWithRequestCode(requestObject).accept(requestObject.getRequestData());
     }
 
     @Override
