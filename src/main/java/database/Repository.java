@@ -13,7 +13,7 @@ import java.util.Optional;
 //test
 
 
-//The repository to use for using requests on the database.
+// The repository to use for using requests on the database.
 // executeQuery : for select statements.
 // execute : return boolean
 public class Repository {
