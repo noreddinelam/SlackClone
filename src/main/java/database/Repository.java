@@ -89,10 +89,15 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> addMessageDB(Message message,User user,Channel channel)
+    public static Optional<Boolean> addMessageDB(Message message)
     {
-        try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.createChannel)) {
-            
+        try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
+            addMessage.setNString(1, String.valueOf(message.getId()));
+            addMessage.setString(2,message.getContent());
+            addMessage.setNString(3,message.getChannel().getChannelName());
+            addMessage.setNString(4,message.getUser().getUsername());
+            addMessage.setNString(5, String.valueOf(message.getDate()));
+            return Optional.of(addMessage.execute());
         } catch(SQLException e)
         {
             e.printStackTrace();

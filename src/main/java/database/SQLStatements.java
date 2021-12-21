@@ -14,8 +14,8 @@ public class SQLStatements {
 
     public static String addMessage =
             "INSERT INTO Channel " +
-            "(id,content,idChannel,date) " +
-            "VALUES (?,?,?,?) ;";
+            "(id,content,idChannel,username,date) " +
+            "VALUES (?,?,?,?,?) ;";
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 
