@@ -34,7 +34,7 @@ public class Server {
                             ServerImpl.addConnectedClients(result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
-                            result.read(buffer, buffer, new ServerReaderCompletionHandler(result));
+                            result.read(buffer, buffer, new ServerReaderCompletionHandler());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

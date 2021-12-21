@@ -1,5 +1,7 @@
 package client;
 
+import models.Channel;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
@@ -32,10 +34,12 @@ public class Client {
             while (true) {
                 try {
                     line = scanner.nextLine();
-                    Map<String,String> requestData = new HashMap<>();
                     // TODO switch or consumer to adapt to each request
-                    requestData.put(FieldsRequestName.messageID,"10");
-                    Request request = new Request(line,GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));
+                    //Map<String,String> requestData = new HashMap<>();
+                    //requestData.put(FieldsRequestName.messageID,"10");
+
+                    Channel requestData =new Channel(new User("dola"),"test","test",true);
+                    Request request = new Request(line,GsonConfiguration.gson.toJson(requestData));
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -15,6 +14,8 @@ import java.util.Optional;
 
 
 //The repository to use for using requests on the database.
+// executeQuery : for select statements.
+// execute : return boolean
 public class Repository {
     private static final Repository repository = new Repository();
     private static Logger logger = LoggerFactory.getLogger(Repository.class);
@@ -37,11 +38,12 @@ public class Repository {
             logger.error("Error on getting connection from DB");
         }
     }
+
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
     //TODO: test this function
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
-        try(PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)){
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setNString(1, channel.getChannelName());
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
@@ -51,8 +53,7 @@ public class Repository {
     }
 
 
-    public static Optional<ResultSet> fetchMessageFromClientDB(User user)
-    {
+    public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setNString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
@@ -60,24 +61,18 @@ public class Repository {
             e.printStackTrace();
             return Optional.empty();
         }
-    }public static Optional<ResultSet> createChannelDB(Channel channel)
-    {
+    }
+
+    public static Optional<Boolean> createChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
-            stmt.setNString(1, String.valueOf(channel.getChannelName()));
-            stmt.setNString(2, String.valueOf(channel.getAdmin().getUsername()));
-            stmt.setNString(3, String.valueOf(channel.getChannelDescription()));
-            stmt.setBoolean(4, true);
-            return Optional.of(stmt.executeQuery());
+            stmt.setNString(1, channel.getChannelName());
+            stmt.setNString(2, channel.getAdmin().getUsername());
+            stmt.setNString(3, channel.getChannelDescription());
+            stmt.setBoolean(4, channel.isPublic());
+            return Optional.of(stmt.execute());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
-
-    public static Optional<ResultSet> createChannelDB(Channel channel){
-        return null;
-    }
-
-
-
 }

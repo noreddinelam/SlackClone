@@ -17,7 +17,7 @@ CREATE TABLE `Channel`
 (
  `name`     varchar(45) NOT NULL ,
  `idAdmin`  varchar(45) NOT NULL ,
- `desc`     varchar(45) NOT NULL ,
+ `description`     varchar(45) NOT NULL ,
  `isPublic` binary NOT NULL ,
 
 PRIMARY KEY (`name`),

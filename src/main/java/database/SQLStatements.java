@@ -2,7 +2,10 @@ package database;
 
 public class SQLStatements {
 
-    public static String createChannel = "Insert INTO channel (name,idAdmin,desc,isPublic) values(?,?,?,?) ;";
+    public static String createChannel =
+            "INSERT INTO Channel " +
+            "(name,idAdmin,description,isPublic) " +
+            "VALUES (?,?,?,?) ;";
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 
