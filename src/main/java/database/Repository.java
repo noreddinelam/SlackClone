@@ -1,6 +1,7 @@
 package database;
 
 import models.Channel;
+import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,6 @@ public class Repository {
 
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
-    //TODO: test this function
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setNString(1, channel.getChannelName());
@@ -71,6 +71,30 @@ public class Repository {
             stmt.setBoolean(4, channel.isPublic());
             return Optional.of(stmt.execute());
         } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Boolean> createUserDB(User user)
+    {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
+            stmt.setNString(1,user.getUsername());
+            stmt.setNString(2,user.getPassword());
+            return Optional.of(stmt.execute());
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Boolean> addMessageDB(Message message,User user,Channel channel)
+    {
+        try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.createChannel)) {
+            
+        } catch(SQLException e)
+        {
             e.printStackTrace();
             return Optional.empty();
         }

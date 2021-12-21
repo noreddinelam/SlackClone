@@ -21,7 +21,6 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
         this.logger.info("ReaderCompletionHandler completed with {}", result);
         attachment.flip();
         String requestJson = new String(attachment.array()).substring(0, result);
-        logger.info("Bou3lam titich {}", requestJson);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
         ServerImpl.getFunctionWithRequestCode(requestObject).apply(requestObject.getRequestData());
     }
