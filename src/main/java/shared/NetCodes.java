@@ -11,6 +11,11 @@ public class NetCodes {
     public static String JOIN_CHANNEL = "300";
 
     public static String DELETE_MESSAGE = "400";
+    public static String DELETE_MESSAGE_SUCCEED = "401";
+    public static String DELETE_MESSAGE_FAILED = "402";
+
+
+
     public static String MODIFY_MESSAGE = "500";
 
     public static String DELETE_CHANNEL = "600";

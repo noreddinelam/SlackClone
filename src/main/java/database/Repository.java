@@ -42,7 +42,7 @@ public class Repository {
 
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
-    public Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
+    public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, channel.getChannelName());
             return Optional.of(stmt.executeQuery());
@@ -53,7 +53,7 @@ public class Repository {
     }
 
 
-    public Optional<ResultSet> fetchMessageFromClientDB(User user) {
+    public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
@@ -63,7 +63,7 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> createChannelDB(Channel channel) {
+    public static Optional<Boolean> createChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
             stmt.setString(1, channel.getChannelName());
             stmt.setString(2, channel.getAdmin().getUsername());
@@ -76,7 +76,7 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> createUserDB(User user)
+    public static Optional<Boolean> createUserDB(User user)
     {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
             stmt.setString(1,user.getUsername());
@@ -89,7 +89,7 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> addMessageDB(Message message)
+    public static Optional<Boolean> addMessageDB(Message message)
     {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
             addMessage.setString(1,message.getContent());
@@ -99,6 +99,17 @@ public class Repository {
             return Optional.of(addMessage.execute());
         } catch(SQLException e)
         {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Boolean> deleteMessageDB(int idMessage)
+    {
+        try (PreparedStatement deleteMessage = connectionDB.prepareStatement(SQLStatements.deleteMessage)) {
+            deleteMessage.setInt(1,idMessage);
+            return Optional.of(deleteMessage.execute());
+        } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
