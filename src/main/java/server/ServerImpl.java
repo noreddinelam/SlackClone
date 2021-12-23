@@ -18,12 +18,10 @@ import shared.gson_configuration.GsonConfiguration;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ServerImpl {
 
@@ -36,12 +34,11 @@ public class ServerImpl {
     private static Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public static String connect(String data) {
+    public static void connect(String data) {
         logger.info("Function : Connection to server");
-        return " ";
     }
 
-    public static String createChannel(String data) {
+    public static void createChannel(String data) {
         Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
         logger.info("Create channel data received {}", requestData);
         try {
@@ -55,18 +52,16 @@ public class ServerImpl {
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-            return GsonConfiguration.gson.toJson(response);
         } catch (CreateChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.CREATE_CHANNEL_FAILED, "Channel creation failed");
-            return GsonConfiguration.gson.toJson(response);
         }
     }
 
-    public static String joinChannel(String data) {
+    public static void joinChannel(String data) {
         logger.info("joining channel {} ", data);
         //Channel requestDataChannel = GsonConfiguration.gson.fromJson(dataChannel, Channel.class);
-            Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
 
         try {
             String username = requestData.get(FieldsRequestName.userName);
@@ -74,17 +69,15 @@ public class ServerImpl {
             Response response = new Response(NetCodes.JOIN_CHANNEL, "Channel joined");
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            logger.info("username {}",username);
+            logger.info("username {}", username);
             AsynchronousSocketChannel client = listOfClients.get(username);
             client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-            return GsonConfiguration.gson.toJson(response);
-        } catch ( JoinChannelException e) {
+        } catch (JoinChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL, "joining channel failed");
-            return GsonConfiguration.gson.toJson(response);
         }
     }
 
@@ -120,24 +113,23 @@ public class ServerImpl {
     }
 
     public static void consumeMessage(String data) {
-        Message messageReceived = GsonConfiguration.gson.fromJson(data,Message.class);
+        Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
         try {
             repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
-            listOfClients.entrySet().forEach((entry)->{
+            listOfClients.entrySet().forEach((entry) -> {
                 AsynchronousSocketChannel client = entry.getValue();
                 String responseJson;
-                if(entry.getKey().equalsIgnoreCase(messageReceived.getUser().getUsername())){
+                if (entry.getKey().equalsIgnoreCase(messageReceived.getUser().getUsername())) {
                     Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
                     responseJson = GsonConfiguration.gson.toJson(responseSucceed);
                     ByteBuffer bufferReader = ByteBuffer.allocate(1024);
-                    client.read(bufferReader,bufferReader,new ServerReaderCompletionHandler());
-                }
-                else{
-                    Response responseBroadcast = new Response(NetCodes.MESSAGE_BROADCAST,data);
+                    client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
+                } else {
+                    Response responseBroadcast = new Response(NetCodes.MESSAGE_BROADCAST, data);
                     responseJson = GsonConfiguration.gson.toJson(responseBroadcast);
                 }
                 ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(buffer,buffer,new ServerWriterCompletionHandler(client));
+                client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
             });
         } catch (AddMessageException e) {
             e.printStackTrace();
@@ -145,9 +137,9 @@ public class ServerImpl {
             String responseJson = GsonConfiguration.gson.toJson(response);
             AsynchronousSocketChannel client = listOfClients.get(messageReceived.getUser().getUsername());
             ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(buffer,buffer,new ServerWriterCompletionHandler(client));
+            client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
             ByteBuffer bufferReader = ByteBuffer.allocate(1024);
-            client.read(bufferReader,bufferReader,new ServerReaderCompletionHandler());
+            client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
         }
     }
 
@@ -155,7 +147,7 @@ public class ServerImpl {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl:: joinChannel);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl::joinChannel);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE, ServerImpl::deleteMessage);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE, ServerImpl::modifyMessage);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
