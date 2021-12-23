@@ -1,7 +1,10 @@
 package database;
 
 public class SQLStatements {
-
+    public static String joinChannel =
+            "INSERT INTO client_channel " +
+                    "(idChannel,username) " +
+                    "VALUES (?,?) ;";
     public static String createChannel =
             "INSERT INTO Channel " +
             "(name,idAdmin,description,isPublic) " +

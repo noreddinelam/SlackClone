@@ -51,7 +51,17 @@ public class Repository {
             return Optional.empty();
         }
     }
-
+    public static Optional<Boolean> joinChannelDB(String channelName , String userId ) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel)) {
+            stmt.setString(1, channelName);
+            stmt.setString(2, userId);
+            return Optional.of(stmt.execute());
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {

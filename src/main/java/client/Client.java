@@ -38,7 +38,12 @@ public class Client {
                     //Map<String,String> requestData = new HashMap<>();
                     //requestData.put(FieldsRequestName.messageID,"10");
 
-                    Channel requestData =new Channel(new User("dola"),"test","test",true);
+                    //Channel requestData =new Channel(new User("dola"),"test","test",true);
+
+                    Map<String,String>  requestData =new HashMap<String,String>();
+                    requestData.put(FieldsRequestName.channelName,"test");
+                    requestData.put(FieldsRequestName.userName,"dola");
+
                     Request request = new Request(line,GsonConfiguration.gson.toJson(requestData));
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
