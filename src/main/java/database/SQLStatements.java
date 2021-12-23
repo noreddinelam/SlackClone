@@ -19,6 +19,10 @@ public class SQLStatements {
             "INSERT INTO message " +
             "(content,idChannel,username,date) " +
             "VALUES (?,?,?,?) ;";
+    public static String modifyMessage =
+            "UPDATE message " +
+                    "set content=? " +
+                    "WHERE id = ? ;";
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 

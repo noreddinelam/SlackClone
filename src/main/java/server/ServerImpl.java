@@ -3,6 +3,7 @@ package server;
 import Exceptions.AddMessageException;
 import Exceptions.CreateChannelException;
 import Exceptions.JoinChannelException;
+import Exceptions.ModifyMessageException;
 import database.Repository;
 import models.Channel;
 import models.Message;
@@ -18,7 +19,6 @@ import shared.gson_configuration.GsonConfiguration;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -96,10 +96,27 @@ public class ServerImpl {
     }
 
     public static void modifyMessage(String data) {
-        //message id
+        logger.info("modify message {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        int idMessage = Integer.valueOf(requestData.get(FieldsRequestName.messageID));
-        logger.info("Message delated {}", requestData);
+        String idmessage = requestData.get(FieldsRequestName.messageID);
+        String username = requestData.get(FieldsRequestName.userName);
+        try {
+            repository.modifyMessageDB(requestData.get(FieldsRequestName.messageContent), idmessage).orElseThrow(ModifyMessageException::new);
+            Response response = new Response(NetCodes.MODIFY_MESSAGE_SUCCEED, "message modified");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            logger.info("idmessage{}", idmessage);
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+        catch (ModifyMessageException e){
+
+        }
+
     }
 
     public static void deleteChannel(String data) {
