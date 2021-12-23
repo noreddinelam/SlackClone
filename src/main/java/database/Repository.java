@@ -40,6 +40,17 @@ public class Repository {
         }
     }
 
+    public static Optional<Boolean> joinChannelDB(String channelName, String userId) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel)) {
+            stmt.setString(1, channelName);
+            stmt.setString(2, userId);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
     public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
@@ -52,8 +63,7 @@ public class Repository {
         }
     }
 
-
-    public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
+    public Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
@@ -76,29 +86,26 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> createUserDB(User user)
-    {
+    public Optional<Boolean> createUserDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
-            stmt.setString(1,user.getUsername());
-            stmt.setString(2,user.getPassword());
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
             return Optional.of(stmt.execute());
-        } catch(SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public static Optional<Boolean> addMessageDB(Message message)
-    {
+
+    public Optional<Boolean> addMessageDB(Message message) {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
-            addMessage.setString(1,message.getContent());
-            addMessage.setString(2,message.getChannel().getChannelName());
-            addMessage.setString(3,message.getUser().getUsername());
+            addMessage.setString(1, message.getContent());
+            addMessage.setString(2, message.getChannel().getChannelName());
+            addMessage.setString(3, message.getUser().getUsername());
             addMessage.setObject(4, message.getDate());
             return Optional.of(addMessage.execute());
-        } catch(SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
