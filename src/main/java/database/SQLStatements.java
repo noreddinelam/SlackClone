@@ -29,6 +29,10 @@ public class SQLStatements {
                     "FROM Client_Channel_Message" +
                     "where username=? )" +
             "; ";
+
+    public static String deleteMessage=
+            "DELETE FROM MESSAGE " +
+                    "WHERE id=? ;";
     private SQLStatements(){}
 }
 
