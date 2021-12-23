@@ -2,6 +2,7 @@ package server;
 
 import Exceptions.AddMessageException;
 import Exceptions.CreateChannelException;
+import Exceptions.JoinChannelException;
 import database.Repository;
 import models.Channel;
 import models.Message;
@@ -17,6 +18,7 @@ import shared.gson_configuration.GsonConfiguration;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +49,7 @@ public class ServerImpl {
             Response response = new Response(NetCodes.CREATE_CHANNEL_SUCCEED, "Channel created");
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            logger.info("username {}", requestData.getAdmin().getUsername());
             AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
             client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
             attachment.clear();
@@ -60,15 +63,29 @@ public class ServerImpl {
         }
     }
 
-    //data simple
-    public static void joinChannel(String data) {
+    public static String joinChannel(String data) {
+        logger.info("joining channel {} ", data);
+        //Channel requestDataChannel = GsonConfiguration.gson.fromJson(dataChannel, Channel.class);
+            Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
 
-        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-//        listOfClients.values().forEach((client)->{
-//            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
-//        });
-        logger.info("Joining channel data {}", requestData);
-
+        try {
+            String username = requestData.get(FieldsRequestName.userName);
+            repository.joinChannelDB(requestData.get(FieldsRequestName.channelName), username).orElseThrow(JoinChannelException::new);
+            Response response = new Response(NetCodes.JOIN_CHANNEL, "Channel joined");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            logger.info("username {}",username);
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            return GsonConfiguration.gson.toJson(response);
+        } catch ( JoinChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.JOIN_CHANNEL, "joining channel failed");
+            return GsonConfiguration.gson.toJson(response);
+        }
     }
 
     public static void deleteMessage(String data) {
@@ -138,7 +155,7 @@ public class ServerImpl {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl::joinChannel);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl:: joinChannel);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE, ServerImpl::deleteMessage);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE, ServerImpl::modifyMessage);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
