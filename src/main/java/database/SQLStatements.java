@@ -28,11 +28,16 @@ public class SQLStatements {
                     "where m.id = ( Select idMessage" +
                     "FROM Client_Channel_Message" +
                     "where username=? )" +
-                    "; ";
+                    ";";
 
     public static String fetchAllUsersWithIdChannel = "SELECT username " +
             "FROM  client_channel" +
-            "where idChannel= ? ";
+            "where idChannel= ? " +
+            ";";
+
+    public static String deleteMessage =
+            "DELETE FROM MESSAGE " +
+                    "WHERE id=? ;";
 
     private SQLStatements() {
     }
