@@ -17,6 +17,8 @@ public class NetCodes {
 
 
     public static String MODIFY_MESSAGE = "500";
+    public static String MODIFY_MESSAGE_SUCCEED  = "501";
+    public static String MODIFY_MESSAGE_FAILED = "502";
 
     public static String DELETE_CHANNEL = "600";
 
