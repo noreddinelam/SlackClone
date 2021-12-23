@@ -4,6 +4,7 @@ import Exceptions.CreateChannelException;
 import Exceptions.JoinChannelException;
 import database.Repository;
 import models.Channel;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
@@ -16,6 +17,7 @@ import shared.gson_configuration.GsonConfiguration;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -131,7 +133,7 @@ public class ServerImpl {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl::joinChannel);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl:: joinChannel);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE, ServerImpl::deleteMessage);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE, ServerImpl::modifyMessage);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
@@ -142,12 +144,14 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL, ServerImpl::listOfMessageInChannel);
     }
 
+
+
     public static Function<String, String> getFunctionWithRequestCode(Request request) {
         return listOfFunctions.get(request.getNetCode());
     }
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put(String.valueOf(cpt++), client);
+        listOfClients.put("dola", client);
     }
 
 }
