@@ -1,6 +1,7 @@
 package client;
 
 import models.Channel;
+import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -37,14 +39,11 @@ public class Client {
                     // TODO switch or consumer to adapt to each request
                     //Map<String,String> requestData = new HashMap<>();
                     //requestData.put(FieldsRequestName.messageID,"10");
-
-                    //Channel requestData =new Channel(new User("dola"),"test","test",true);
-
-                    Map<String,String>  requestData =new HashMap<String,String>();
-                    requestData.put(FieldsRequestName.channelName,"test");
-                    requestData.put(FieldsRequestName.userName,"dola");
-
+                    Channel channel =new Channel(new User("dola"),"test-channel","test",true);
+                    Message requestData = new Message("testing-message",new User("nouredine","123456"),channel,
+                            LocalDateTime.now());
                     Request request = new Request(line,GsonConfiguration.gson.toJson(requestData));
+                    System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());

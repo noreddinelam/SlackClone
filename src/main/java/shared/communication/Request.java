@@ -15,4 +15,12 @@ public class Request {
     public String getRequestData() {
         return requestData;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "requestData='" + requestData + '\'' +
+                ", netCode='" + netCode + '\'' +
+                '}';
+    }
 }

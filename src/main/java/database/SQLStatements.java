@@ -6,19 +6,19 @@ public class SQLStatements {
                     "(idChannel,username) " +
                     "VALUES (?,?) ;";
     public static String createChannel =
-            "INSERT INTO Channel " +
+            "INSERT INTO channel " +
             "(name,idAdmin,description,isPublic) " +
             "VALUES (?,?,?,?) ;";
 
     public static String createUser=
-            "INSERT INTO CLIENT " +
+            "INSERT INTO client " +
             "(username,password) " +
             "VALUES (?,?) ;";
 
     public static String addMessage =
-            "INSERT INTO Channel " +
-            "(id,content,idChannel,username,date) " +
-            "VALUES (?,?,?,?,?) ;";
+            "INSERT INTO message " +
+            "(content,idChannel,username,date) " +
+            "VALUES (?,?,?,?) ;";
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 

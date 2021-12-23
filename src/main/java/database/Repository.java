@@ -44,7 +44,7 @@ public class Repository {
 
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
-    public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
+    public Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, channel.getChannelName());
             return Optional.of(stmt.executeQuery());
@@ -65,7 +65,7 @@ public class Repository {
         }
     }
 
-    public static Optional<ResultSet> fetchMessageFromClientDB(User user) {
+    public Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, String.valueOf(user.getUsername()));
             return Optional.of(stmt.executeQuery());
@@ -75,7 +75,7 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> createChannelDB(Channel channel) {
+    public Optional<Boolean> createChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
             stmt.setString(1, channel.getChannelName());
             stmt.setString(2, channel.getAdmin().getUsername());
@@ -88,7 +88,7 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> createUserDB(User user)
+    public Optional<Boolean> createUserDB(User user)
     {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
             stmt.setString(1,user.getUsername());
@@ -101,14 +101,13 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> addMessageDB(Message message)
+    public Optional<Boolean> addMessageDB(Message message)
     {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
-            addMessage.setInt(1, message.getId());
-            addMessage.setString(2,message.getContent());
-            addMessage.setString(3,message.getChannel().getChannelName());
-            addMessage.setString(4,message.getUser().getUsername());
-            addMessage.setObject(5, message.getDate());
+            addMessage.setString(1,message.getContent());
+            addMessage.setString(2,message.getChannel().getChannelName());
+            addMessage.setString(3,message.getUser().getUsername());
+            addMessage.setObject(4, message.getDate());
             return Optional.of(addMessage.execute());
         } catch(SQLException e)
         {

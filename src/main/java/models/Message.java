@@ -9,6 +9,13 @@ public class Message {
     private Channel channel;
     private LocalDateTime date;
 
+    public Message(String content,User user,Channel channel, LocalDateTime date){
+        this.content = content;
+        this.user = user;
+        this.channel = channel;
+        this.date = date;
+    }
+
     public int getId() {
         return id;
     }
