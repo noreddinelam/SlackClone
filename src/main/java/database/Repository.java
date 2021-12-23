@@ -1,5 +1,6 @@
 package database;
 
+import client.Client;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Optional;
 //test
 
@@ -51,7 +53,17 @@ public class Repository {
             return Optional.empty();
         }
     }
-
+    public static Optional<Boolean> joinChannelDB(String channelName , String userId ) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel)) {
+            stmt.setString(1, channelName);
+            stmt.setString(2, userId);
+            return Optional.of(stmt.execute());
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public Optional<ResultSet> fetchMessageFromClientDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
@@ -103,4 +115,5 @@ public class Repository {
             return Optional.empty();
         }
     }
+
 }

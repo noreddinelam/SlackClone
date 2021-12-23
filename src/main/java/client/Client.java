@@ -39,7 +39,6 @@ public class Client {
                     // TODO switch or consumer to adapt to each request
                     //Map<String,String> requestData = new HashMap<>();
                     //requestData.put(FieldsRequestName.messageID,"10");
-
                     Channel channel =new Channel(new User("dola"),"test-channel","test",true);
                     Message requestData = new Message("testing-message",new User("nouredine","123456"),channel,
                             LocalDateTime.now());
