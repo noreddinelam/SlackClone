@@ -60,11 +60,9 @@ public class ServerImpl {
 
     public static void joinChannel(String data) {
         logger.info("joining channel {} ", data);
-        //Channel requestDataChannel = GsonConfiguration.gson.fromJson(dataChannel, Channel.class);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-
+        String username = requestData.get(FieldsRequestName.userName);
         try {
-            String username = requestData.get(FieldsRequestName.userName);
             repository.joinChannelDB(requestData.get(FieldsRequestName.channelName), username).orElseThrow(JoinChannelException::new);
             Response response = new Response(NetCodes.JOIN_CHANNEL, "Channel joined");
             String responseJson = GsonConfiguration.gson.toJson(response);
@@ -78,6 +76,8 @@ public class ServerImpl {
         } catch (JoinChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL, "joining channel failed");
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            requestFailure(response, client);
         }
     }
 
@@ -134,12 +134,8 @@ public class ServerImpl {
         } catch (AddMessageException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.MESSAGE_CONSUMPTION_ERROR, "Message consumption error");
-            String responseJson = GsonConfiguration.gson.toJson(response);
             AsynchronousSocketChannel client = listOfClients.get(messageReceived.getUser().getUsername());
-            ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
-            ByteBuffer bufferReader = ByteBuffer.allocate(1024);
-            client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
+            requestFailure(response, client);
         }
     }
 
@@ -164,6 +160,14 @@ public class ServerImpl {
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
         listOfClients.put("nouredine", client);
+    }
+
+    private static void requestFailure(Response response, AsynchronousSocketChannel client) {
+        String responseJson = GsonConfiguration.gson.toJson(response);
+        ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
+        client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
+        ByteBuffer bufferReader = ByteBuffer.allocate(1024);
+        client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
     }
 
 }
