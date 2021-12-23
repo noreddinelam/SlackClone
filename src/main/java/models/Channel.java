@@ -10,11 +10,22 @@ public class Channel {
     private List<Message> messages;
     private boolean isPublic;//true = a public channel.
 
-    public Channel(){}
+    public Channel() {
+    }
+
+
+    public Channel(User admin, String channelName, String channelDescription, boolean isPublic) {
+        this.admin = admin;
+        this.channelName = channelName;
+        this.channelDescription = channelDescription;
+        this.isPublic = isPublic;
+    }
+
 
     public User getAdmin() {
         return admin;
     }
+
     public String getChannelName() {
         return channelName;
     }
@@ -26,15 +37,6 @@ public class Channel {
     public boolean isPublic() {
         return isPublic;
     }
-
-    public Channel(User admin, String channelName, String channelDescription, boolean isPublic){
-        this.admin = admin;
-        this.channelName = channelName;
-        this.channelDescription = channelDescription;
-        this.isPublic = isPublic;
-    }
-
-
 
     @Override
     public String toString() {

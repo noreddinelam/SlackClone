@@ -133,4 +133,34 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<ResultSet> listChannelsInServerDB()
+    {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listChannelsInServer);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> listOfUserInChannelDB(String name)
+    {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel)) {
+            stmt.setString(1,name);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> listOfMessageInChanneleDB(String name)
+    {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel)) {
+            stmt.setString(1,name);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 }
