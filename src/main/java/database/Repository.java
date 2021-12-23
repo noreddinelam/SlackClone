@@ -103,4 +103,15 @@ public class Repository {
             return Optional.empty();
         }
     }
+
+    public Optional<Boolean> deleteMessageDB(int idMessage)
+    {
+        try (PreparedStatement deleteMessage = connectionDB.prepareStatement(SQLStatements.deleteMessage)) {
+            deleteMessage.setInt(1,idMessage);
+            return Optional.of(deleteMessage.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 }

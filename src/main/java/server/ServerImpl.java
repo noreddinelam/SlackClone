@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -71,11 +72,18 @@ public class ServerImpl {
 
     }
 
-    public static void deleteMessage(String data) {
+    public static String deleteMessage(String data) {
         //message id
+        Response fail = new Response(NetCodes.DELETE_MESSAGE_FAILED, "Message deletion failed");
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-
-        logger.info("Message delated{}", requestData);
+        int idMessage =Integer.parseInt(requestData.get(FieldsRequestName.messageID));
+        Optional<Boolean> result= repository.deleteMessageDB(idMessage);
+        if(result.isPresent())
+        {
+            if(result.get()) return GsonConfiguration.gson.toJson(
+                    new Response(NetCodes.DELETE_MESSAGE_SUCCEED, "Message deleted"));
+        }
+        return GsonConfiguration.gson.toJson(fail);
     }
 
     public static void modifyMessage(String data) {
