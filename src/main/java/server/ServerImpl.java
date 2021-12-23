@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
+import shared.Mapper;
 import shared.NetCodes;
 import shared.communication.Request;
 import shared.communication.Response;
@@ -30,7 +31,7 @@ public class ServerImpl {
     private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
     private static Repository repository = Repository.getRepository();
-
+    private static Mapper mapper = Mapper.getMapper();
     private static Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
@@ -128,6 +129,30 @@ public class ServerImpl {
     }
 
     public static void listChannelsInServer(String data) {
+        logger.info("list of channel in the server {} ", data);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        try {
+            ResultSet resultSet =repository.listChannelsInServerDB().orElseThrow(ModifyMessageException::new);
+            List<Channel> channels = mapper.resultSetToChannel(resultSet);
+            Map<String,List<Channel>> responseData = new HashMap<>();
+            responseData.put(FieldsRequestName.listChannels,channels);
+            Response response = new Response(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, GsonConfiguration.gson.toJson(responseData,CommunicationTypes.mapListChannelJsonTypeData));
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+        catch (ModifyMessageException e){
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

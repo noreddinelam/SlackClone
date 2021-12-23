@@ -2,6 +2,6 @@ package Exceptions;
 
 public class ModifyMessageException extends Exception{
     public ModifyMessageException(){
-        super("Join Channel error");
+        super("modify message error");
     }
 }
