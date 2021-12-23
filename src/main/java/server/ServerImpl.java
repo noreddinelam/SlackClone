@@ -25,8 +25,6 @@ import java.util.function.Consumer;
 
 public class ServerImpl {
 
-    private static int cpt = 0;
-
     private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
     private static Repository repository = Repository.getRepository();
@@ -55,6 +53,8 @@ public class ServerImpl {
         } catch (CreateChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.CREATE_CHANNEL_FAILED, "Channel creation failed");
+            AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
+            requestFailure(response,client);
         }
     }
 
@@ -82,7 +82,6 @@ public class ServerImpl {
     }
 
     public static void deleteMessage(String data) {
-        //message id
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String messageId = requestData.get(FieldsRequestName.messageID);
         logger.info("Message delated{}", requestData);
