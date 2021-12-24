@@ -63,8 +63,9 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> fetchAllUsersWithChannelName(String channelId){
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchAllUsersWithChannelName)) {
+    public Optional<ResultSet> fetchAllUsersWithChannelName(String channelId) {
+        try {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchAllUsersWithChannelName);
             stmt.setString(1, channelId);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException sqlE) {
@@ -110,32 +111,30 @@ public class Repository {
             return Optional.empty();
         }
     }
-    public Optional<Boolean> modifyMessageDB(String content, String idMessage)
-    {
+
+    public Optional<Boolean> modifyMessageDB(String content, String idMessage) {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.modifyMessage)) {
-            addMessage.setString(1,content);
-            addMessage.setString(2,idMessage);
+            addMessage.setString(1, content);
+            addMessage.setString(2, idMessage);
             return Optional.of(addMessage.execute());
-        } catch(SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public Optional<Boolean> deleteMessageDB(int idMessage)
-    {
+    public Optional<Boolean> deleteMessageDB(int idMessage) {
         try (PreparedStatement deleteMessage = connectionDB.prepareStatement(SQLStatements.deleteMessage)) {
-            deleteMessage.setInt(1,idMessage);
+            deleteMessage.setInt(1, idMessage);
             return Optional.of(deleteMessage.execute());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
-    public Optional<ResultSet> listChannelsInServerDB()
-    {
-        try  {
+
+    public Optional<ResultSet> listChannelsInServerDB() {
+        try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listChannelsInServer);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
@@ -143,20 +142,20 @@ public class Repository {
             return Optional.empty();
         }
     }
-    public Optional<ResultSet> listOfUserInChannelDB(String name)
-    {
+
+    public Optional<ResultSet> listOfUserInChannelDB(String name) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel)) {
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
-    public Optional<ResultSet> listOfMessageInChanneleDB(String name)
-    {
+
+    public Optional<ResultSet> listOfMessageInChanneleDB(String name) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel)) {
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();

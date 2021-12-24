@@ -23,9 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -98,7 +96,7 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (FetchAllUsersWithChannelNameException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "broadcasting message error");
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
             AsynchronousSocketChannel client = listOfClients.get(username);
             requestFailure(response, client);
         } catch (SQLException throwables) {
@@ -131,7 +129,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("idmessage{}", idmessage);
             AsynchronousSocketChannel client = listOfClients.get(username);
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -162,7 +160,7 @@ public class ServerImpl {
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             AsynchronousSocketChannel client = listOfClients.get(username);
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
