@@ -1,6 +1,7 @@
 package database;
 
 public class SQLStatements {
+    //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
     public static String listChannelsInServer =
             "SELECT * "
                     + "FROM channel "

@@ -1,12 +1,10 @@
 package server;
 
-import Exceptions.AddMessageException;
-import Exceptions.CreateChannelException;
-import Exceptions.JoinChannelException;
-import Exceptions.ModifyMessageException;
+import Exceptions.*;
 import database.Repository;
 import models.Channel;
 import models.Message;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
@@ -136,7 +134,7 @@ public class ServerImpl {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         try {
-            ResultSet resultSet =repository.listChannelsInServerDB().orElseThrow(ModifyMessageException::new);
+            ResultSet resultSet =repository.listChannelsInServerDB().orElseThrow(ListOfUserInChannelException::new);
             List<Channel> channels = mapper.resultSetToChannel(resultSet);
             Map<String,List<Channel>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.listChannels,channels);
@@ -150,9 +148,9 @@ public class ServerImpl {
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
 
         }
-        catch (ModifyMessageException e){
-
-        } catch (SQLException e) {
+        catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ListOfUserInChannelException e) {
             e.printStackTrace();
         }
 
@@ -160,10 +158,66 @@ public class ServerImpl {
     }
 
     public static void listOfUserInChannel(String data) {
+        logger.info("list of user in channel {} ", data);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName =  requestData.get(FieldsRequestName.channelName);
+        try {
+            ResultSet resultSet =repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
+            //List<Channel> channels = mapper.resultSetToChannel(resultSet);
+            List<User> users = mapper.resultSetToUser(resultSet);
+            Map<String,List<User>> responseData = new HashMap<>();
+            responseData.put(FieldsRequestName.userName,users);
+            Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(responseData,CommunicationTypes.mapListUserJsonTypeData));
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+         catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ListOfUserInChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, "list of user in channel failed");
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            requestFailure(response, client);
+        }
 
     }
 
     public static void listOfMessageInChannel(String data) {
+        logger.info("list of user in channel {} ", data);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName =  requestData.get(FieldsRequestName.channelName);
+        try {
+            ResultSet resultSet =repository.listOfMessageInChanneleDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
+            //List<Channel> channels = mapper.resultSetToChannel(resultSet);
+            List<Message> messages = mapper.resultSetToMessage(resultSet);
+            Map<String,List<Message>> responseData = new HashMap<>();
+            responseData.put(FieldsRequestName.channelName,messages);
+            Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(responseData,CommunicationTypes.mapListMessageJsonTypeData));
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ListOfMessageInChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, "list of message in channel failed");
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            requestFailure(response, client);
+        }
     }
 
     public static void consumeMessage(String data) {

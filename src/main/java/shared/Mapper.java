@@ -1,6 +1,7 @@
 package shared;
 
 import models.Channel;
+import models.Message;
 import models.User;
 
 import java.sql.ResultSet;
@@ -19,15 +20,27 @@ public class Mapper {
     }
 
     public List<Channel> resultSetToChannel(ResultSet resultSet) throws SQLException {
-        System.out.println("2");
         List<Channel> channels = new ArrayList<>();
         while (resultSet.next()) {
-            System.out.println("1");
             channels.add(new Channel(new User(resultSet.getString("username")),
                     resultSet.getString("name"),
                     resultSet.getString("description"),
                     resultSet.getBoolean("isPublic")));
         }
         return channels;
+    }
+    public List<User> resultSetToUser(ResultSet resultSet) throws SQLException {
+        List<User> users = new ArrayList<>();
+        while (resultSet.next()) {
+            users.add(new User(resultSet.getString("username")));
+        }
+        return users;
+    }
+    public List<Message> resultSetToMessage(ResultSet resultSet) throws SQLException {
+        List<Message> messages = new ArrayList<>();
+        while (resultSet.next()) {
+            messages.add(new Message(resultSet.getString("content")));
+        }
+        return messages;
     }
 }
