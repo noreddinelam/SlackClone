@@ -143,9 +143,11 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> listOfUserInChannelDB(String name) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel)) {
-            stmt.setString(1, name);
+    public Optional<ResultSet> listOfUserInChannelDB(String name)
+    {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel);
+            stmt.setString(1,name);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,9 +155,12 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> listOfMessageInChanneleDB(String name) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel)) {
-            stmt.setString(1, name);
+    public Optional<ResultSet> listOfMessageInChanneleDB(String name)
+    {
+        try  {
+        PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel);
+            stmt.setString(1,name);
+
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();

@@ -31,7 +31,12 @@ public class NetCodes {
     public static String LIST_CHANNELS_IN_SERVER_FAILED = "702";
 
     public static String LIST_OF_USER_IN_CHANNEL = "800";
+    public static String LIST_OF_USER_IN_CHANNEL_SUCCEED  = "801";
+    public static String LIST_OF_USER_IN_CHANNEL_FAILED = "802";
+
     public static String List_Of_MESSAGE_IN_CHANNEL = "900";
+    public static String List_Of_MESSAGE_IN_CHANNEL_SUCCEED  = "901";
+    public static String List_Of_MESSAGE_IN_CHANNEL_FAILED = "902";
 
     public static String CONSUME_MESSAGE = "1000";
     public static String MESSAGE_CONSUMED = "1001";

@@ -16,6 +16,10 @@ public class Message {
         this.date = date;
     }
 
+    public Message(String content) {
+        this.content=content;
+    }
+
     public int getId() {
         return id;
     }
