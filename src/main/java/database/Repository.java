@@ -40,7 +40,7 @@ public class Repository {
         }
     }
 
-    public static Optional<Boolean> joinChannelDB(String channelName, String userId) {
+    public Optional<Boolean> joinChannelDB(String channelName, String userId) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel)) {
             stmt.setString(1, channelName);
             stmt.setString(2, userId);
@@ -53,7 +53,7 @@ public class Repository {
 
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
-    public static Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
+    public Optional<ResultSet> fetchMessageFromChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
             stmt.setString(1, channel.getChannelName());
             return Optional.of(stmt.executeQuery());
@@ -63,17 +63,18 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> fetchMessageFromClientDB(User user) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchMessageFromChannel)) {
-            stmt.setString(1, String.valueOf(user.getUsername()));
+    public Optional<ResultSet> fetchAllUsersWithChannelName(String channelId) {
+        try {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.fetchAllUsersWithChannelName);
+            stmt.setString(1, channelId);
             return Optional.of(stmt.executeQuery());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqlE) {
+            sqlE.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public static Optional<Boolean> createChannelDB(Channel channel) {
+    public Optional<Boolean> createChannelDB(Channel channel) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createChannel)) {
             stmt.setString(1, channel.getChannelName());
             stmt.setString(2, channel.getAdmin().getUsername());
@@ -110,32 +111,30 @@ public class Repository {
             return Optional.empty();
         }
     }
-    public Optional<Boolean> modifyMessageDB(String content, String idMessage)
-    {
+
+    public Optional<Boolean> modifyMessageDB(String content, String idMessage) {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.modifyMessage)) {
-            addMessage.setString(1,content);
-            addMessage.setString(2,idMessage);
+            addMessage.setString(1, content);
+            addMessage.setString(2, idMessage);
             return Optional.of(addMessage.execute());
-        } catch(SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public Optional<Boolean> deleteMessageDB(int idMessage)
-    {
+    public Optional<Boolean> deleteMessageDB(int idMessage) {
         try (PreparedStatement deleteMessage = connectionDB.prepareStatement(SQLStatements.deleteMessage)) {
-            deleteMessage.setInt(1,idMessage);
+            deleteMessage.setInt(1, idMessage);
             return Optional.of(deleteMessage.execute());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
-    public Optional<ResultSet> listChannelsInServerDB()
-    {
-        try  {
+
+    public Optional<ResultSet> listChannelsInServerDB() {
+        try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listChannelsInServer);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
@@ -143,6 +142,7 @@ public class Repository {
             return Optional.empty();
         }
     }
+
     public Optional<ResultSet> listOfUserInChannelDB(String name)
     {
         try  {
@@ -154,11 +154,13 @@ public class Repository {
             return Optional.empty();
         }
     }
+
     public Optional<ResultSet> listOfMessageInChanneleDB(String name)
     {
         try  {
         PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel);
             stmt.setString(1,name);
+
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();

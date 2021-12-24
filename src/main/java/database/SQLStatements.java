@@ -1,61 +1,60 @@
 package database;
 
+import static database.SQLTablesInformation.*;
+
 public class SQLStatements {
     //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
     public static String listChannelsInServer =
             "SELECT * "
-                    + "FROM channel "
-                    + "INNER JOIN client ON channel.idAdmin=client.username";
+                    + "FROM " + channelTable
+                    + "INNER JOIN " + clientTable + "ON " + channelTable +
+                    "." + channelAdminUsernameColumn + "=" + clientTable +
+                    "." + clientUsernameColumn + ";";
     public static String listOfUserInChannel =
-            "SELECT username"
-                    + " FROM client_channel"
-                    + " where idChannel= ?";
+            "SELECT " + clientChannelUsernameColumn
+                    + " FROM " + clientChannelTable
+                    + " where " + clientChannelChannelNameColumn + "= ? ;";
     public static String listOfMessageInChannel =
-            "SELECT content"
-                    + " FROM message"
-                    + " where idChannel= ?";
+            "SELECT " + messageContentColumn
+                    + " FROM " + messageTable
+                    + " where " + messageContentColumn + " = ? ;";
     public static String joinChannel =
-            "INSERT INTO client_channel " +
-                    "(idChannel,username) " +
-                    "VALUES (?,?) ;";
+            "INSERT INTO " + clientChannelTable
+                    + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ")"
+                    + "VALUES (?,?) ;";
     public static String createChannel =
-            "INSERT INTO channel " +
-                    "(name,idAdmin,description,isPublic) " +
+            "INSERT INTO " + channelTable
+                    + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","
+                    + channelDescriptionColumn
+                    + "," + channelIsPublicChannelColumn + ")" +
                     "VALUES (?,?,?,?) ;";
 
     public static String createUser =
-            "INSERT INTO client " +
-                    "(username,password) " +
-                    "VALUES (?,?) ;";
+            "INSERT INTO " + clientTable
+                    + "(" + clientUsernameColumn + "," + clientPasswordColumn + ") "
+                    + "VALUES (?,?) ;";
 
     public static String addMessage =
-            "INSERT INTO message " +
-            "(content,idChannel,username,date) " +
-            "VALUES (?,?,?,?) ;";
-  
+            "INSERT INTO " + messageTable
+                    + "(" + messageContentColumn + "," + messageChannelNameColumn + ","
+                    + messageUsernameColumn
+                    + "," + messageDate + ")" +
+                    "VALUES (?,?,?,?) ;";
+
     public static String modifyMessage =
-            "UPDATE message " +
-                    "set content=? " +
-                    "WHERE id = ? ;";
+            "UPDATE " + messageTable
+                    + " set " + messageContentColumn + "=? "
+                    + " WHERE " + messageIdMessageColumn + " = ? ;";
 
-    public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
+    public static String fetchMessageFromChannel =
+            "SELECT * FROM " + messageTable + " where " + messageIdMessageColumn + "=? ;";
 
-    public static String fetchMessageFromUser =
-            "SELECT m.content " +
-                    "FROM Message m" +
-                    "where m.id = ( Select idMessage" +
-                    "FROM Client_Channel_Message" +
-                    "where username=? )" +
-                    ";";
+    public static String fetchAllUsersWithChannelName = "SELECT " + clientChannelChannelNameColumn
+            + "FROM  " + clientChannelTable
+            + "where " + clientChannelChannelNameColumn + "= ? ;";
 
-    public static String fetchAllUsersWithIdChannel = "SELECT username " +
-            "FROM  client_channel" +
-            "where idChannel= ? " +
-            ";";
-
-    public static String deleteMessage =
-            "DELETE FROM MESSAGE " +
-                    "WHERE id=? ;";
+    public static String deleteMessage = "DELETE FROM " + messageTable
+            + "WHERE " + messageIdMessageColumn + " =? ;";
 
     private SQLStatements() {
     }
