@@ -4,6 +4,7 @@ import Exceptions.AddMessageException;
 import Exceptions.CreateChannelException;
 import Exceptions.FetchAllUsersWithChannelNameException;
 import Exceptions.JoinChannelException;
+import Exceptions.ModifyMessageException;
 import database.Repository;
 import models.Channel;
 import models.Message;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
+import shared.Mapper;
 import shared.NetCodes;
 import shared.communication.Request;
 import shared.communication.Response;
@@ -32,7 +34,7 @@ public class ServerImpl {
     private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
     private static Repository repository = Repository.getRepository();
-
+    private static Mapper mapper = Mapper.getMapper();
     private static Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
@@ -118,10 +120,27 @@ public class ServerImpl {
     }
 
     public static void modifyMessage(String data) {
-        //message id
+        logger.info("modify message {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        int idMessage = Integer.valueOf(requestData.get(FieldsRequestName.messageID));
-        logger.info("Message delated {}", requestData);
+        String idmessage = requestData.get(FieldsRequestName.messageID);
+        String username = requestData.get(FieldsRequestName.userName);
+        try {
+            repository.modifyMessageDB(requestData.get(FieldsRequestName.messageContent), idmessage).orElseThrow(ModifyMessageException::new);
+            Response response = new Response(NetCodes.MODIFY_MESSAGE_SUCCEED, "message modified");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            logger.info("idmessage{}", idmessage);
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+        catch (ModifyMessageException e){
+
+        }
+
     }
 
     public static void deleteChannel(String data) {
@@ -131,6 +150,30 @@ public class ServerImpl {
     }
 
     public static void listChannelsInServer(String data) {
+        logger.info("list of channel in the server {} ", data);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        try {
+            ResultSet resultSet =repository.listChannelsInServerDB().orElseThrow(ModifyMessageException::new);
+            List<Channel> channels = mapper.resultSetToChannel(resultSet);
+            Map<String,List<Channel>> responseData = new HashMap<>();
+            responseData.put(FieldsRequestName.listChannels,channels);
+            Response response = new Response(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, GsonConfiguration.gson.toJson(responseData,CommunicationTypes.mapListChannelJsonTypeData));
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            AsynchronousSocketChannel client = listOfClients.get(username);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+
+        }
+        catch (ModifyMessageException e){
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

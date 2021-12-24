@@ -1,6 +1,18 @@
 package database;
 
 public class SQLStatements {
+    public static String listChannelsInServer =
+            "SELECT * "
+                    + "FROM channel "
+                    + "INNER JOIN client ON channel.idAdmin=client.username";
+    public static String listOfUserInChannel =
+            "SELECT username"
+                    + " FROM client_channel"
+                    + " where idChannel= ?";
+    public static String listOfMessageInChannel =
+            "SELECT content"
+                    + " FROM message"
+                    + " where idChannel= ?";
     public static String joinChannel =
             "INSERT INTO client_channel " +
                     "(idChannel,username) " +
@@ -17,8 +29,13 @@ public class SQLStatements {
 
     public static String addMessage =
             "INSERT INTO message " +
-                    "(content,idChannel,username,date) " +
-                    "VALUES (?,?,?,?) ;";
+            "(content,idChannel,username,date) " +
+            "VALUES (?,?,?,?) ;";
+  
+    public static String modifyMessage =
+            "UPDATE message " +
+                    "set content=? " +
+                    "WHERE id = ? ;";
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 
