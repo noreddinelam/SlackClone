@@ -9,18 +9,22 @@ public class SQLStatements {
                     + "INNER JOIN " + clientTable + "ON " + channelTable +
                     "." + channelAdminUsernameColumn + "=" + clientTable +
                     "." + clientUsernameColumn + ";";
+
     public static String listOfUserInChannel =
             "SELECT " + clientChannelUsernameColumn
                     + " FROM " + clientChannelTable
                     + " where " + clientChannelChannelNameColumn + "= ? ;";
+
     public static String listOfMessageInChannel =
             "SELECT " + messageContentColumn
                     + " FROM " + messageTable
                     + " where " + messageContentColumn + " = ? ;";
+
     public static String joinChannel =
             "INSERT INTO " + clientChannelTable
                     + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ")"
                     + "VALUES (?,?) ;";
+
     public static String createChannel =
             "INSERT INTO " + channelTable
                     + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","
@@ -48,9 +52,9 @@ public class SQLStatements {
     public static String fetchMessageFromChannel =
             "SELECT * FROM " + messageTable + " where " + messageIdMessageColumn + "=? ;";
 
-    public static String fetchAllUsersWithChannelName = "SELECT " + clientChannelChannelNameColumn
-            + "FROM  " + clientChannelTable
-            + "where " + clientChannelChannelNameColumn + "= ? ;";
+    public static String fetchAllUsersWithChannelName = "SELECT * "
+            + " FROM  " + clientChannelTable
+            + " where " + clientChannelChannelNameColumn + "= ? ;";
 
     public static String deleteMessage = "DELETE FROM " + messageTable
             + "WHERE " + messageIdMessageColumn + " =? ;";

@@ -1,10 +1,6 @@
 package server;
 
-import Exceptions.AddMessageException;
-import Exceptions.CreateChannelException;
-import Exceptions.FetchAllUsersWithChannelNameException;
-import Exceptions.JoinChannelException;
-import Exceptions.ModifyMessageException;
+import Exceptions.*;
 import database.Repository;
 import models.Channel;
 import models.Message;
@@ -28,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class ServerImpl {
+
+    private static int cpt = 0;
+    private static String usernames[] = {"nouredine", "dola", "amine", "arthur"};
 
     private static ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
 
@@ -85,7 +84,8 @@ public class ServerImpl {
             while (resultSet.next()) {
                 broadcastUsername = resultSet.getString("username");
                 broadcastClient = listOfClients.get(broadcastUsername);
-                broadcastResponseClient(broadcastClient, broadcastResponse);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
             }
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -134,8 +134,7 @@ public class ServerImpl {
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
 
-        }
-        catch (ModifyMessageException e){
+        } catch (ModifyMessageException e) {
 
         }
 
@@ -152,11 +151,12 @@ public class ServerImpl {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         try {
-            ResultSet resultSet =repository.listChannelsInServerDB().orElseThrow(ModifyMessageException::new);
+            ResultSet resultSet = repository.listChannelsInServerDB().orElseThrow(ModifyMessageException::new);
             List<Channel> channels = mapper.resultSetToChannel(resultSet);
-            Map<String,List<Channel>> responseData = new HashMap<>();
-            responseData.put(FieldsRequestName.listChannels,channels);
-            Response response = new Response(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, GsonConfiguration.gson.toJson(responseData,CommunicationTypes.mapListChannelJsonTypeData));
+            Map<String, List<Channel>> responseData = new HashMap<>();
+            responseData.put(FieldsRequestName.listChannels, channels);
+            Response response = new Response(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED,
+                    GsonConfiguration.gson.toJson(responseData, CommunicationTypes.mapListChannelJsonTypeData));
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             AsynchronousSocketChannel client = listOfClients.get(username);
@@ -165,8 +165,7 @@ public class ServerImpl {
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
 
-        }
-        catch (ModifyMessageException e){
+        } catch (ModifyMessageException e) {
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -229,7 +228,7 @@ public class ServerImpl {
     }
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put("nouredine", client);
+        listOfClients.put(usernames[cpt++], client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {

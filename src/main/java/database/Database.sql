@@ -15,12 +15,12 @@ CREATE TABLE `Client`
 
 CREATE TABLE `Channel`
 (
- `name`     varchar(45) NOT NULL ,
+ `channelName`     varchar(45) NOT NULL ,
  `adminUsername`  varchar(45) NOT NULL ,
  `description`     varchar(45) NOT NULL ,
  `isPublic` binary NOT NULL ,
 
-PRIMARY KEY (`name`),
+PRIMARY KEY (`channelName`),
 KEY `FK_26` (`adminUsername`),
 CONSTRAINT `FK_24` FOREIGN KEY `FK_26` (`adminUsername`) REFERENCES `Client` (`username`)
 );
@@ -37,7 +37,7 @@ CREATE TABLE `Message`
 
 PRIMARY KEY (`id`),
 KEY `FK_22` (`channelName`),
-CONSTRAINT `FK_20` FOREIGN KEY `FK_22` (`channelName`) REFERENCES `Channel` (`name`),
+CONSTRAINT `FK_20` FOREIGN KEY `FK_22` (`channelName`) REFERENCES `Channel` (`channelName`),
 KEY `FK_33` (`username`),
 CONSTRAINT `FK_31` FOREIGN KEY `FK_33` (`username`) REFERENCES `Client` (`username`)
 );
@@ -49,7 +49,7 @@ CREATE TABLE `Client_Channel`
  `username`  varchar(45) NOT NULL ,
 
 KEY `FK_30` (`channelName`),
-CONSTRAINT `FK_28` FOREIGN KEY `FK_30` (`channelName`) REFERENCES `Channel` (`name`),
+CONSTRAINT `FK_28` FOREIGN KEY `FK_30` (`channelName`) REFERENCES `Channel` (`channelName`),
 KEY `FK_37` (`username`),
 CONSTRAINT `FK_38` FOREIGN KEY `FK_37` (`username`) REFERENCES `Client` (`username`)
 );

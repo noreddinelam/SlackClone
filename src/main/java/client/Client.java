@@ -37,18 +37,15 @@ public class Client {
                 try {
                     line = scanner.nextLine();
                     // TODO switch or consumer to adapt to each request
-                    //Map<String,String> requestData = new HashMap<>();
+                    Map<String,String> requestData = new HashMap<>();
                     //requestData.put(FieldsRequestName.messageID,"10");
 
-                    //Channel channel =new Channel(new User("dola"),"test-channel","test",true);
+                    //Channel channel =new Channel(new User("dola"),"test","test",true);
                     //Message requestData = new Message("testing-message",new User("nouredine","123456"),channel,
                      //       LocalDateTime.now());
-                    Map<String,String> requestData = new HashMap<>();
-                    String contentmessage = "testing content";
-                    String idmessage = "1" ;
-                    requestData.put(FieldsRequestName.messageContent, contentmessage);
-                    requestData.put(FieldsRequestName.userName, "dola");
-                    requestData.put(FieldsRequestName.messageID, idmessage);
+
+                    requestData.put(FieldsRequestName.channelName, "test");
+                    requestData.put(FieldsRequestName.userName, "nouredine");
 
                     Request request = new Request(line,GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
