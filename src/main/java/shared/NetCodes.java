@@ -9,6 +9,10 @@ public class NetCodes {
     public static String CREATE_CHANNEL_FAILED = "202";
 
     public static String JOIN_CHANNEL = "300";
+    public static String JOIN_CHANNEL_SUCCEED = "301";
+    public static String JOIN_CHANNEL_FAILED = "302";
+    public static String JOIN_CHANNEL_BROADCAST = "303";
+    public static String JOIN_CHANNEL_BROADCAST_FAILED = "304";
 
     public static String DELETE_MESSAGE = "400";
     public static String DELETE_MESSAGE_SUCCEED = "401";
@@ -28,6 +32,8 @@ public class NetCodes {
     public static String MESSAGE_CONSUMED = "1001";
     public static String MESSAGE_CONSUMPTION_ERROR = "1002";
     public static String MESSAGE_BROADCAST = "1003";
+    public static String MESSAGE_BROADCAST_FAILED = "1004";
+
 
 
 

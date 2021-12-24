@@ -22,17 +22,9 @@ public class SQLStatements {
 
     public static String fetchMessageFromChannel = "SELECT * FROM Message where idChannel=? ;";
 
-    public static String fetchMessageFromUser =
-            "SELECT m.content " +
-                    "FROM Message m" +
-                    "where m.id = ( Select idMessage" +
-                    "FROM Client_Channel_Message" +
-                    "where username=? )" +
-                    ";";
-
-    public static String fetchAllUsersWithIdChannel = "SELECT username " +
+    public static String fetchAllUsersWithChannelName = "SELECT username " +
             "FROM  client_channel" +
-            "where idChannel= ? " +
+            "where channelName= ? " +
             ";";
 
     public static String deleteMessage =

@@ -45,11 +45,11 @@ CONSTRAINT `FK_31` FOREIGN KEY `FK_33` (`username`) REFERENCES `Client` (`userna
 # -- ************************************** `Client_Channel`
 CREATE TABLE `Client_Channel`
 (
- `idChannel` varchar(45) NOT NULL ,
+ `channelName` varchar(45) NOT NULL ,
  `username`  varchar(45) NOT NULL ,
 
-KEY `FK_30` (`idChannel`),
-CONSTRAINT `FK_28` FOREIGN KEY `FK_30` (`idChannel`) REFERENCES `Channel` (`name`),
+KEY `FK_30` (`channelName`),
+CONSTRAINT `FK_28` FOREIGN KEY `FK_30` (`channelName`) REFERENCES `Channel` (`name`),
 KEY `FK_37` (`username`),
 CONSTRAINT `FK_38` FOREIGN KEY `FK_37` (`username`) REFERENCES `Client` (`username`)
 );
