@@ -23,6 +23,9 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -49,7 +52,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("username {}", requestData.getAdmin().getUsername());
             AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -72,7 +75,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("username {}", username);
             AsynchronousSocketChannel client = listOfClients.get(username);
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -110,7 +113,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("idmessage{}", idmessage);
             AsynchronousSocketChannel client = listOfClients.get(username);
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -141,7 +144,7 @@ public class ServerImpl {
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             AsynchronousSocketChannel client = listOfClients.get(username);
-            client.write(attachment, attachment, new ServerWriterCompletionHandler(client));
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -180,7 +183,7 @@ public class ServerImpl {
                     responseJson = GsonConfiguration.gson.toJson(responseBroadcast);
                 }
                 ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
+                client.write(buffer, buffer, new ServerWriterCompletionHandler());
             });
         } catch (AddMessageException e) {
             e.printStackTrace();
@@ -216,7 +219,7 @@ public class ServerImpl {
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
         String responseJson = GsonConfiguration.gson.toJson(response);
         ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-        client.write(buffer, buffer, new ServerWriterCompletionHandler(client));
+        client.write(buffer, buffer, new ServerWriterCompletionHandler());
         ByteBuffer bufferReader = ByteBuffer.allocate(1024);
         client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
     }

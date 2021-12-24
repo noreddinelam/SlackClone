@@ -9,12 +9,6 @@ import java.nio.channels.CompletionHandler;
 
 public class ServerWriterCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
     private static Logger logger = LoggerFactory.getLogger(ServerWriterCompletionHandler.class);
-    private final AsynchronousSocketChannel client;
-
-
-    public ServerWriterCompletionHandler(AsynchronousSocketChannel client){
-        this.client = client;
-    }
 
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
