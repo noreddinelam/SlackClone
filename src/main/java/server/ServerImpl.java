@@ -78,8 +78,7 @@ public class ServerImpl {
                 ResultSet resultSet =
                         repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
                 Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
-                        "the " +
-                        "channel");
+                        "the channel");
                 response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
                 String broadcastUsername;
                 AsynchronousSocketChannel broadcastClient;
