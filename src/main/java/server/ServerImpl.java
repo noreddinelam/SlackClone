@@ -151,8 +151,22 @@ public class ServerImpl {
     //TODO : It's not implemented yet
     public static void deleteChannel(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        int idMessage = Integer.valueOf(requestData.get(FieldsRequestName.messageID));
-        logger.info("Message delated {}", requestData);
+        String channelName = requestData.get(FieldsRequestName.channelName);
+        AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
+        try{
+            Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, "Channel deletion succeeded");
+            repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
+            client.write(buffer,buffer,new ServerWriterCompletionHandler());
+            buffer.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        }catch(DeleteChannelException e)
+        {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
+            requestFailure(response, client);
+        }
     }
 
 
@@ -296,7 +310,7 @@ public class ServerImpl {
     }
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put(usernames[cpt++], client);
+        listOfClients.put("yeca", client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
