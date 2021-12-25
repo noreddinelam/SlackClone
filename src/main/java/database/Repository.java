@@ -143,6 +143,16 @@ public class Repository {
         }
     }
 
+    public Optional<Boolean> deleteChannelDB(String channelName) {
+        try (PreparedStatement deleteChannel = connectionDB.prepareStatement(SQLStatements.deleteChannel)) {
+            deleteChannel.setString(1,channelName);
+            return Optional.of(deleteChannel.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<ResultSet> listChannelsInServerDB() {
         try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listChannelsInServer);

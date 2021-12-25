@@ -7,6 +7,9 @@ public class NetCodes {
     public static String CREATE_CHANNEL = "200";
     public static String CREATE_CHANNEL_SUCCEED = "201";
     public static String CREATE_CHANNEL_FAILED = "202";
+    public static String DELETE_CHANNEL_FAILED = "203";
+    public static String DELETE_CHANNEL_SUCCEED = "204";
+
 
     public static String JOIN_CHANNEL = "300";
     public static String JOIN_CHANNEL_SUCCEED = "301";
