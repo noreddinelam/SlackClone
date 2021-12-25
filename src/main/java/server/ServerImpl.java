@@ -64,15 +64,47 @@ public class ServerImpl {
     }
 
     public static void joinChannel(String data) {
+        Map<String, String> verifyRequestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = verifyRequestData.get(FieldsRequestName.userName);
+        String channelName = verifyRequestData.get(FieldsRequestName.channelName);
+        Boolean verify = false;
         logger.info("joining channel {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        String username = requestData.get(FieldsRequestName.userName);
-        String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
-            ResultSet resultSet =
+            repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+            ResultSet verifyResultSet =
                     repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+            if(verifyResultSet.next()){
+                        System.out.println(verifyResultSet.getString("username"));
+                verify=true;
+            }
+            if (!verify) {
+                repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
+                ResultSet resultSet =
+                        repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+                Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined the " +
+                        "channel");
+                String responseJson = GsonConfiguration.gson.toJson(response);
+                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+                logger.info("username {}", username);
+                AsynchronousSocketChannel client = listOfClients.get(username);
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
+                attachment.clear();
+                String broadcastUsername;
+                AsynchronousSocketChannel broadcastClient;
+                while (resultSet.next()) {
+                    broadcastUsername = resultSet.getString("username");
+                    broadcastClient = listOfClients.get(broadcastUsername);
+                    if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                        broadcastResponseClient(broadcastClient, broadcastResponse);
+                }
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            }
+            else {
+                logger.info("user already joined the channel");
             Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
             Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined the " +
                     "channel");
@@ -89,8 +121,6 @@ public class ServerImpl {
                 if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
                     broadcastResponseClient(broadcastClient, broadcastResponse);
             }
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (JoinChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
@@ -101,6 +131,8 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (VerifyJoinChannelException e) {
+            e.printStackTrace();
         }
     }
 
