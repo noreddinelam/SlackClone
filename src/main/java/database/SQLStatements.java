@@ -6,11 +6,15 @@ public class SQLStatements {
     //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
     public static String listChannelsInServer =
             "SELECT * "
+                    + "FROM " + channelTable+" ;";
+     /*
+    public static String listChannelsInServer =
+            "SELECT * "
                     + "FROM " + channelTable
                     + " INNER JOIN " + clientTable + "ON " + channelTable +
                     "." + channelAdminUsernameColumn + "=" + clientTable +
                     "." + clientUsernameColumn + ";";
-
+    */
     public static String listOfUserInChannel =
             "SELECT " + clientChannelUsernameColumn
                     + " FROM " + clientChannelTable
@@ -19,13 +23,19 @@ public class SQLStatements {
     public static String listOfMessageInChannel =
             "SELECT " + messageContentColumn
                     + " FROM " + messageTable
-                    + " where " + messageContentColumn + " = ? ;";
+                    + " where " +messageChannelNameColumn + " = ? ;";
+
 
     public static String joinChannel =
             "INSERT INTO " + clientChannelTable
                     + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ")"
                     + " VALUES (?,?) ;";
-
+    public static String verifyJoinChannel =
+            "SELECT *"+" FROM "+
+                    clientChannelTable +" WHERE "+
+                    clientChannelChannelNameColumn+"=?"+
+                    " AND "+clientChannelUsernameColumn+ "=? ;";
+  
     public static String createChannel =
             "INSERT INTO " + channelTable
                     + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","

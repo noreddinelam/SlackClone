@@ -2,6 +2,7 @@ package server;
 
 import Exceptions.*;
 import database.Repository;
+import database.SQLTablesInformation;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -63,31 +64,40 @@ public class ServerImpl {
     }
 
     public static void joinChannel(String data) {
-        logger.info("joining channel {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
+        logger.info("joining channel {} ", data);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
-            ResultSet resultSet =
-                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-            Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
-            Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined the " +
-                    "channel");
+            Response response;
+            ResultSet verifyResultSet =
+                    repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+            if (!verifyResultSet.next()) {
+                repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
+                ResultSet resultSet =
+                        repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                        "the " +
+                        "channel");
+                response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
+                String broadcastUsername;
+                AsynchronousSocketChannel broadcastClient;
+                while (resultSet.next()) {
+                    broadcastUsername = resultSet.getString("username");
+                    broadcastClient = listOfClients.get(broadcastUsername);
+                    if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                        broadcastResponseClient(broadcastClient, broadcastResponse);
+                }
+            } else {
+                logger.info("user already joined the channel");
+                response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "Channel joining failed");
+            }
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("username {}", username);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            String broadcastUsername;
-            AsynchronousSocketChannel broadcastClient;
-            while (resultSet.next()) {
-                broadcastUsername = resultSet.getString("username");
-                broadcastClient = listOfClients.get(broadcastUsername);
-                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
-                    broadcastResponseClient(broadcastClient, broadcastResponse);
-            }
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (JoinChannelException e) {
@@ -97,6 +107,10 @@ public class ServerImpl {
         } catch (FetchAllUsersWithChannelNameException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
+            requestFailure(response, client);
+        } catch (VerifyJoinChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "you are already in the channel");
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -113,7 +127,7 @@ public class ServerImpl {
             Response response = new Response(NetCodes.DELETE_MESSAGE_SUCCEED, "Message deletion succeeded");
             repository.deleteMessageDB(idMessage).orElseThrow(DeleteMessageException::new);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
-            client.write(buffer,buffer,new ServerWriterCompletionHandler());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -232,14 +246,15 @@ public class ServerImpl {
     }
 
     public static void listOfMessageInChannel(String data) {
-        logger.info("list of messages in channel {} ", data);
+        logger.info("list of message in channel {} ", data);
+
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             ResultSet resultSet =
-                    repository.listOfMessageInChanneleDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
+                    repository.listOfMessageInChannelDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
             List<Message> messages = mapper.resultSetToMessage(resultSet);
             Map<String, List<Message>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.channelName, messages);
@@ -256,7 +271,7 @@ public class ServerImpl {
             e.printStackTrace();
         } catch (ListOfMessageInChannelException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, "list of message in channel " +
+            Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_FAILED, "list of message in channel " +
                     "failed");
             requestFailure(response, client);
         }
@@ -265,28 +280,35 @@ public class ServerImpl {
     //TODO : change the broadcast methodology which is static here.
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
+        String channelName = messageReceived.getChannel().getChannelName();
+        String username = messageReceived.getUser().getUsername();
+        AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
-            listOfClients.entrySet().forEach((entry) -> {
-                AsynchronousSocketChannel client = entry.getValue();
-                String responseJson;
-                if (entry.getKey().equalsIgnoreCase(messageReceived.getUser().getUsername())) {
-                    Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
-                    responseJson = GsonConfiguration.gson.toJson(responseSucceed);
-                    ByteBuffer bufferReader = ByteBuffer.allocate(1024);
-                    client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
-                } else {
-                    Response responseBroadcast = new Response(NetCodes.MESSAGE_BROADCAST, data);
-                    responseJson = GsonConfiguration.gson.toJson(responseBroadcast);
-                }
-                ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(buffer, buffer, new ServerWriterCompletionHandler());
-            });
+            ResultSet result =
+                    repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
+            Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
+            Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST, data);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
+            AsynchronousSocketChannel broadcastClient;
+            String broadcastUsername;
+            while (result.next()) {
+                broadcastUsername = result.getString(SQLTablesInformation.clientChannelUsernameColumn);
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
         } catch (AddMessageException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.MESSAGE_CONSUMPTION_ERROR, "Message consumption error");
-            AsynchronousSocketChannel client = listOfClients.get(messageReceived.getUser().getUsername());
             requestFailure(response, client);
+        } catch (ListOfUserInChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.MESSAGE_BROADCAST_FAILED, "Message broadcast failed");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

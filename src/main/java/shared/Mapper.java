@@ -22,7 +22,7 @@ public class Mapper {
     public List<Channel> resultSetToChannel(ResultSet resultSet) throws SQLException {
         List<Channel> channels = new ArrayList<>();
         while (resultSet.next()) {
-            channels.add(new Channel(new User(resultSet.getString("username")),
+            channels.add(new Channel(new User(resultSet.getString("adminUsername")),
                     resultSet.getString("name"),
                     resultSet.getString("description"),
                     resultSet.getBoolean("isPublic")));
