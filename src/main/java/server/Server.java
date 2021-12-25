@@ -17,7 +17,7 @@ public class Server {
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) throws IOException {
-        ServerImpl.initListOfFunctionsAndParsers();
+        ServerImpl.initListOfFunctions();
         logger.info("Creating a server on port 9999");
         try (AsynchronousServerSocketChannel serverSocket = AsynchronousServerSocketChannel.open()) {
             serverSocket.bind(new InetSocketAddress(Properties.PORT));

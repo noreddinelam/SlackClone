@@ -35,8 +35,10 @@ public class ServerImpl {
     private static final Repository repository = Repository.getRepository();
     private static final Mapper mapper = Mapper.getMapper();
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
-    private static final Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerImpl.class);
     private static int cpt = 0;
+    private ServerImpl() {
+    }
 
     public static void connect(String data) {
         logger.info("Function : Connection to server");
@@ -77,7 +79,7 @@ public class ServerImpl {
                 repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
                 ResultSet resultSet =
                         repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, username + " has joined " +
                         "the channel");
                 response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
                 String broadcastUsername;
@@ -161,21 +163,19 @@ public class ServerImpl {
 
     }
 
-    //TODO : It's not implemented yet
     public static void deleteChannel(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
-        try{
+        try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, "Channel deletion succeeded");
             repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
-            client.write(buffer,buffer,new ServerWriterCompletionHandler());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        }catch(DeleteChannelException e)
-        {
+        } catch (DeleteChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
@@ -276,7 +276,6 @@ public class ServerImpl {
         }
     }
 
-    //TODO : change the broadcast methodology which is static here.
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
         String channelName = messageReceived.getChannel().getChannelName();
@@ -287,7 +286,7 @@ public class ServerImpl {
             ResultSet result =
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
             Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
-            Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST, data);
+            Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, data);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             AsynchronousSocketChannel broadcastClient;
@@ -311,7 +310,7 @@ public class ServerImpl {
         }
     }
 
-    public static void initListOfFunctionsAndParsers() {
+    public static void initListOfFunctions() {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
