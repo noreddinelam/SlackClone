@@ -11,7 +11,7 @@ public class SQLStatements {
     public static String listChannelsInServer =
             "SELECT * "
                     + "FROM " + channelTable
-                    + "INNER JOIN " + clientTable + "ON " + channelTable +
+                    + " INNER JOIN " + clientTable + "ON " + channelTable +
                     "." + channelAdminUsernameColumn + "=" + clientTable +
                     "." + clientUsernameColumn + ";";
     */
@@ -29,31 +29,31 @@ public class SQLStatements {
     public static String joinChannel =
             "INSERT INTO " + clientChannelTable
                     + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ")"
-                    + "VALUES (?,?) ;";
+                    + " VALUES (?,?) ;";
     public static String verifyJoinChannel =
             "SELECT *"+" FROM "+
                     clientChannelTable +" WHERE "+
                     clientChannelChannelNameColumn+"=?"+
                     " AND "+clientChannelUsernameColumn+ "=? ;";
-
+  
     public static String createChannel =
             "INSERT INTO " + channelTable
                     + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","
                     + channelDescriptionColumn
                     + "," + channelIsPublicChannelColumn + ")" +
-                    "VALUES (?,?,?,?) ;";
+                    " VALUES (?,?,?,?) ;";
 
     public static String createUser =
             "INSERT INTO " + clientTable
                     + "(" + clientUsernameColumn + "," + clientPasswordColumn + ") "
-                    + "VALUES (?,?) ;";
+                    + " VALUES (?,?) ;";
 
     public static String addMessage =
             "INSERT INTO " + messageTable
                     + "(" + messageContentColumn + "," + messageChannelNameColumn + ","
                     + messageUsernameColumn
                     + "," + messageDate + ")" +
-                    "VALUES (?,?,?,?) ;";
+                    " VALUES (?,?,?,?) ;";
 
     public static String modifyMessage =
             "UPDATE " + messageTable
@@ -68,8 +68,9 @@ public class SQLStatements {
             + " where " + clientChannelChannelNameColumn + "= ? ;";
 
     public static String deleteMessage = "DELETE FROM " + messageTable
-            + "WHERE " + messageIdMessageColumn + " =? ;";
-
+            + " WHERE " + messageIdMessageColumn + " =? ;";
+    public static String deleteChannel = "DELETE FROM " + channelTable
+            + " WHERE " + channelNameColumn + " =? ;";
     private SQLStatements() {
     }
 }

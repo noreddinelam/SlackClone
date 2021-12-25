@@ -46,7 +46,6 @@ public class Client {
 
 //                    requestData.put(FieldsRequestName.channelName, "test");
 //                    requestData.put(FieldsRequestName.userName, "nouredine");
-
                     Request request = new Request(line,GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
