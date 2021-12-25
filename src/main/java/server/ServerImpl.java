@@ -331,7 +331,7 @@ public class ServerImpl {
     }
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put("yeca", client);
+        listOfClients.put(usernames[cpt++], client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
