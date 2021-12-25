@@ -2,6 +2,7 @@ package server;
 
 import Exceptions.*;
 import database.Repository;
+import database.SQLTablesInformation;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -225,7 +226,7 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             ResultSet resultSet =
-                    repository.listOfMessageInChanneleDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
+                    repository.listOfMessageInChannelDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
             List<Message> messages = mapper.resultSetToMessage(resultSet);
             Map<String, List<Message>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.channelName, messages);
@@ -251,28 +252,34 @@ public class ServerImpl {
     //TODO : change the broadcast methodology which is static here.
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
+        String channelName = messageReceived.getChannel().getChannelName();
+        String username = messageReceived.getUser().getUsername();
+        AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
-            listOfClients.entrySet().forEach((entry) -> {
-                AsynchronousSocketChannel client = entry.getValue();
-                String responseJson;
-                if (entry.getKey().equalsIgnoreCase(messageReceived.getUser().getUsername())) {
-                    Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
-                    responseJson = GsonConfiguration.gson.toJson(responseSucceed);
-                    ByteBuffer bufferReader = ByteBuffer.allocate(1024);
-                    client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
-                } else {
-                    Response responseBroadcast = new Response(NetCodes.MESSAGE_BROADCAST, data);
-                    responseJson = GsonConfiguration.gson.toJson(responseBroadcast);
-                }
-                ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(buffer, buffer, new ServerWriterCompletionHandler());
-            });
+            ResultSet result =  repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
+            Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
+            Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST, data);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
+            AsynchronousSocketChannel broadcastClient;
+            String broadcastUsername;
+            while(result.next()){
+                broadcastUsername = result.getString(SQLTablesInformation.clientChannelUsernameColumn);
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
         } catch (AddMessageException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.MESSAGE_CONSUMPTION_ERROR, "Message consumption error");
-            AsynchronousSocketChannel client = listOfClients.get(messageReceived.getUser().getUsername());
             requestFailure(response, client);
+        } catch (ListOfUserInChannelException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.MESSAGE_BROADCAST_FAILED,"Message broadcast failed");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
