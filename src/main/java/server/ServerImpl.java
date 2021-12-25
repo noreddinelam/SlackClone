@@ -64,34 +64,23 @@ public class ServerImpl {
     }
 
     public static void joinChannel(String data) {
-        Map<String, String> verifyRequestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        String username = verifyRequestData.get(FieldsRequestName.userName);
-        String channelName = verifyRequestData.get(FieldsRequestName.channelName);
-        Boolean verify = false;
-        logger.info("joining channel {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName = requestData.get(FieldsRequestName.channelName);
+        logger.info("joining channel {} ", data);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+            Response response;
             ResultSet verifyResultSet =
-                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-            if(verifyResultSet.next()){
-                        System.out.println(verifyResultSet.getString("username"));
-                verify=true;
-            }
-            if (!verify) {
+                    repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+            if (!verifyResultSet.next()) {
                 repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
                 ResultSet resultSet =
                         repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined the " +
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                        "the " +
                         "channel");
-                String responseJson = GsonConfiguration.gson.toJson(response);
-                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-                logger.info("username {}", username);
-                AsynchronousSocketChannel client = listOfClients.get(username);
-                client.write(attachment, attachment, new ServerWriterCompletionHandler());
-                attachment.clear();
+                response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
                 String broadcastUsername;
                 AsynchronousSocketChannel broadcastClient;
                 while (resultSet.next()) {
@@ -100,27 +89,17 @@ public class ServerImpl {
                     if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
                         broadcastResponseClient(broadcastClient, broadcastResponse);
                 }
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
-                client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-            }
-            else {
+            } else {
                 logger.info("user already joined the channel");
-            Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
-            Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined the " +
-                    "channel");
+                response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "Channel joining failed");
+            }
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("username {}", username);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            String broadcastUsername;
-            AsynchronousSocketChannel broadcastClient;
-            while (resultSet.next()) {
-                broadcastUsername = resultSet.getString("username");
-                broadcastClient = listOfClients.get(broadcastUsername);
-                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
-                    broadcastResponseClient(broadcastClient, broadcastResponse);
-            }
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (JoinChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
@@ -129,10 +108,12 @@ public class ServerImpl {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
             requestFailure(response, client);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         } catch (VerifyJoinChannelException e) {
             e.printStackTrace();
+            Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "you are already in the channel");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -146,7 +127,7 @@ public class ServerImpl {
             Response response = new Response(NetCodes.DELETE_MESSAGE_SUCCEED, "Message deletion succeeded");
             repository.deleteMessageDB(idMessage).orElseThrow(DeleteMessageException::new);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
-            client.write(buffer,buffer,new ServerWriterCompletionHandler());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -290,14 +271,15 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
-            ResultSet result =  repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
+            ResultSet result =
+                    repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
             Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
             Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST, data);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             AsynchronousSocketChannel broadcastClient;
             String broadcastUsername;
-            while(result.next()){
+            while (result.next()) {
                 broadcastUsername = result.getString(SQLTablesInformation.clientChannelUsernameColumn);
                 broadcastClient = listOfClients.get(broadcastUsername);
                 if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
@@ -309,7 +291,7 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (ListOfUserInChannelException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.MESSAGE_BROADCAST_FAILED,"Message broadcast failed");
+            Response response = new Response(NetCodes.MESSAGE_BROADCAST_FAILED, "Message broadcast failed");
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
