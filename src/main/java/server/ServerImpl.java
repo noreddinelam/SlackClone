@@ -244,7 +244,7 @@ public class ServerImpl {
             e.printStackTrace();
         } catch (ListOfMessageInChannelException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, "list of message in channel " +
+            Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_FAILED, "list of message in channel " +
                     "failed");
             requestFailure(response, client);
         }
