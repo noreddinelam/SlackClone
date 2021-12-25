@@ -213,7 +213,7 @@ public class ServerImpl {
     }
 
     public static void listOfMessageInChannel(String data) {
-        logger.info("list of user in channel {} ", data);
+        logger.info("list of message in channel {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName =  requestData.get(FieldsRequestName.channelName);
