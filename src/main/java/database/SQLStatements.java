@@ -4,6 +4,13 @@ import static database.SQLTablesInformation.*;
 
 public class SQLStatements {
     //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
+
+    //todo correct listChannelsInServer
+    /*
+     public static String listChannelsInServer =
+            "SELECT * "
+                    + "FROM " + channelTable+" ;";
+     */
     public static String listChannelsInServer =
             "SELECT * "
                     + "FROM " + channelTable
@@ -19,7 +26,8 @@ public class SQLStatements {
     public static String listOfMessageInChannel =
             "SELECT " + messageContentColumn
                     + " FROM " + messageTable
-                    + " where " + messageContentColumn + " = ? ;";
+                    + " where " +messageChannelNameColumn + " = ? ;";
+
 
     public static String joinChannel =
             "INSERT INTO " + clientChannelTable
