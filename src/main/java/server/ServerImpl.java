@@ -29,6 +29,7 @@ public class ServerImpl {
 
     private static final String usernames[] = {"nouredine", "dola", "amine", "arthur"};
     private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String,AsynchronousSocketChannel> listOfGuests = new ConcurrentHashMap<>();
     private static final Repository repository = Repository.getRepository();
     private static final Mapper mapper = Mapper.getMapper();
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
@@ -347,7 +348,11 @@ public class ServerImpl {
         return listOfFunctions.get(request.getNetCode());
     }
 
-    public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
+    public static void addGuestClients(AsynchronousSocketChannel client) throws IOException {
+        listOfGuests.put(client.getRemoteAddress().toString().split(":")[1],client);
+    }
+
+    public static void addConnectedClients(AsynchronousSocketChannel client){
         listOfClients.put("yeca", client);
     }
 

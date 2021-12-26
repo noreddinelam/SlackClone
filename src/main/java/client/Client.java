@@ -24,13 +24,16 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 public class Client {
-    private static InetSocketAddress ipAddress = new InetSocketAddress("localhost", Properties.PORT);
+    private static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
     private static Scanner scanner = new Scanner(System.in);
     private static Logger logger = LoggerFactory.getLogger(Client.class);
+    private static String clientIpAddress = "";
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
-        socket.connect(ipAddress).get();
+        socket.connect(serverIpAddress).get();
+        String[] ipParts = socket.getLocalAddress().toString().split(":");
+        clientIpAddress = ipParts[ipParts.length-1];
         ClientImpl.initListOfFunctions();
         Thread writer = new Thread(() -> {
             String line = "SOMETHING WRONG";
