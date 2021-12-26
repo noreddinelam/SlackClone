@@ -39,8 +39,9 @@ public class Client {
                 try {
                     line = scanner.nextLine();
                     Map<String, String> requestData = new HashMap<>();
-                    requestData.put(FieldsRequestName.userName, "nouredine");
-                    requestData.put(FieldsRequestName.password, "123456");
+                    requestData.put(FieldsRequestName.userName, "test");
+                    requestData.put(FieldsRequestName.password, "admin");
+                    requestData.put(FieldsRequestName.guest,clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
