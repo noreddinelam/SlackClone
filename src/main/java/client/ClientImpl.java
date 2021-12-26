@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.NetCodes;
 import shared.communication.Request;
+import shared.communication.Response;
 
 import java.util.Hashtable;
 import java.util.function.Consumer;
@@ -75,8 +76,8 @@ public class ClientImpl {
 
     }
 
-    public static Consumer<String> getFunctionWithRequestCode(Request request) {
-        return listOfFunctions.get(request.getNetCode());
+    public static Consumer<String> getFunctionWithRequestCode(Response response) {
+        return listOfFunctions.get(response.getNetCode());
     }
 
 }

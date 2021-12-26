@@ -9,6 +9,7 @@ import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.Properties;
 import shared.communication.Request;
+import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
 
 import java.io.IOException;
@@ -64,9 +65,8 @@ public class Client {
                     int nb = socket.read(buffer).get();
                     String jsonRes = new String(buffer.array()).substring(0, nb);
                     logger.info("The received response \n{}", jsonRes);
-//                    Type fooType2 = new TypeToken< Response <List<Channel>>>() {}.getType();
-//                    Response<List<Channel>> res = GsonConfiguration.gson.fromJson(jsonRes,fooType2);
-//                    logger.info("The retrieved response {}",res.getResponse().get(0).getChannelName());
+                    Response response = GsonConfiguration.gson.fromJson(jsonRes,Response.class);
+                    ClientImpl.getFunctionWithRequestCode(response).accept(response.getResponse());
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
