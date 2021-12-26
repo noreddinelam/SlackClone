@@ -1,5 +1,6 @@
 package database;
 
+import Exceptions.RegisterException;
 import models.Channel;
 import models.Message;
 import models.User;
