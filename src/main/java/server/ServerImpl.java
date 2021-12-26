@@ -71,26 +71,41 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             Response response;
-            ResultSet verifyResultSet =
-                    repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
-            if (!verifyResultSet.next()) {
-                repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
-                ResultSet resultSet =
-                        repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
-                        "the channel");
-                response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
-                String broadcastUsername;
-                AsynchronousSocketChannel broadcastClient;
-                while (resultSet.next()) {
-                    broadcastUsername = resultSet.getString("username");
-                    broadcastClient = listOfClients.get(broadcastUsername);
-                    if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
-                        broadcastResponseClient(broadcastClient, broadcastResponse);
+            ResultSet verifyStatusChannelResultSet =
+                    repository.verifyChannelStatusDB(channelName).orElseThrow(VerifyStatusChannelException::new);
+            if (verifyStatusChannelResultSet.next()){
+                boolean isPublic = verifyStatusChannelResultSet.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn);
+                if (isPublic){
+                    ResultSet verifyResultSet =
+                            repository.verifyJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+                    if (!verifyResultSet.next()) {
+                        repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
+                        ResultSet resultSet =
+                                repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+                        Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                                "the channel");
+                        response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
+                        String broadcastUsername;
+                        AsynchronousSocketChannel broadcastClient;
+                        while (resultSet.next()) {
+                            broadcastUsername = resultSet.getString("username");
+                            broadcastClient = listOfClients.get(broadcastUsername);
+                            if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                                broadcastResponseClient(broadcastClient, broadcastResponse);
+                        }
+                    } else {
+                        logger.info("user already joined the channel");
+                        response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "Channel joining failed");
+                    }
                 }
-            } else {
-                logger.info("user already joined the channel");
-                response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "Channel joining failed");
+                else {
+                    //todo send a request to the request_table -- implementation of the fct to accept or refuse the user requests
+                    logger.info("Channel is private, request sent to the admin");
+                    response = new Response(NetCodes.JOIN_PRIVATE_CHANNEL,"Your request is sent to the admin to join the channel");
+                }
+            }
+            else {
+                response = new Response(NetCodes.JOIN_CHANNEL_FAILED,"joining channel failed");
             }
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
@@ -113,6 +128,8 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (VerifyStatusChannelException e) {
+            e.printStackTrace();
         }
     }
 

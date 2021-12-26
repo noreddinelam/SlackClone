@@ -51,7 +51,8 @@ public class Repository {
         }
     }
     public Optional<ResultSet> verifyJoinChannelDB(String channelName, String userId) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel)) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel);
             stmt.setString(1, channelName);
             stmt.setString(2, userId);
             return Optional.of(stmt.executeQuery());
@@ -147,6 +148,16 @@ public class Repository {
         try (PreparedStatement deleteChannel = connectionDB.prepareStatement(SQLStatements.deleteChannel)) {
             deleteChannel.setString(1,channelName);
             return Optional.of(deleteChannel.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> verifyChannelStatusDB(String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyChannelStatus);
+            stmt.setString(1,channelName);
+            return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();

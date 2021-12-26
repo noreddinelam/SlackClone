@@ -35,6 +35,10 @@ public class SQLStatements {
                     clientChannelTable +" WHERE "+
                     clientChannelChannelNameColumn+"=?"+
                     " AND "+clientChannelUsernameColumn+ "=? ;";
+    public static String verifyChannelStatus =
+            "SELECT isPublic"+" FROM "+
+                    channelTable +" WHERE "+
+                    channelNameColumn+"=?;";
   
     public static String createChannel =
             "INSERT INTO " + channelTable

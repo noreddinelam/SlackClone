@@ -16,6 +16,7 @@ public class NetCodes {
     public static String JOIN_CHANNEL_FAILED = "302";
     public static String JOIN_CHANNEL_BROADCAST = "303";
     public static String JOIN_CHANNEL_BROADCAST_FAILED = "304";
+    public static String JOIN_PRIVATE_CHANNEL= "305";
 
     public static String DELETE_MESSAGE = "400";
     public static String DELETE_MESSAGE_SUCCEED = "401";

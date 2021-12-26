@@ -54,6 +54,19 @@ KEY `FK_37` (`username`),
 CONSTRAINT `FK_38` FOREIGN KEY `FK_37` (`username`) REFERENCES `Client` (`username`)
 );
 
+# -- ************************************** `request_table`
+CREATE TABLE `request_table`
+(
+
+    `channelName`  varchar(45) NOT NULL ,
+    `username`  varchar(45) NOT NULL ,
+
+    KEY `FK_40` (`channelName`),
+    CONSTRAINT `FK_41` FOREIGN KEY `FK_40` (`channelName`) REFERENCES `Channel` (`channelName`),
+    KEY `FK_50` (`username`),
+    CONSTRAINT `FK_51` FOREIGN KEY `FK_50` (`username`) REFERENCES `Client` (`username`)
+
+);
 
 
 
