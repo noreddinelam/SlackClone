@@ -40,10 +40,13 @@ public class ServerImpl {
     }
     // TODO : Add client socket to list of clients and remove it from guests socket
     public static void connect(String data) {
-        User user = GsonConfiguration.gson.fromJson(data, User.class);
-        String username = user.getUsername();
-        String password = user.getPassword();
-        AsynchronousSocketChannel client = listOfClients.get(username);
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String guest = requestData.get(FieldsRequestName.guest);
+        String username = requestData.get(FieldsRequestName.userName);
+        String password = requestData.get(FieldsRequestName.password);
+        AsynchronousSocketChannel client = listOfGuests.get(guest);
+        listOfClients.put(username,client);
+        listOfGuests.remove(guest);
         try {
             ResultSet rs = repository.connectionDB(username, password).orElseThrow(ConnectionException::new);
             if (rs.next()) {
@@ -64,9 +67,12 @@ public class ServerImpl {
     // TODO : Add client socket to list ofclients and remove it from guests socket
     public static void register(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String guest = requestData.get(FieldsRequestName.guest);
         String username = requestData.get(FieldsRequestName.userName);
         String password = requestData.get(FieldsRequestName.password);
-        AsynchronousSocketChannel client = listOfClients.get(username);
+        AsynchronousSocketChannel client = listOfGuests.get(guest);
+        listOfClients.put(username,client);
+        listOfGuests.remove(guest);
         try {
             Boolean status = repository.registerDB(username, password).orElseThrow(RegisterException::new);
             if (status) {
