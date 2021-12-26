@@ -2,6 +2,8 @@ package shared;
 
 public class NetCodes {
     public static String CONNECTION = "100";
+    public static String CONNECT_SUCCEED = "101";
+    public static String CONNECT_FAILED = "102";
 
     // Channel :
     public static String CREATE_CHANNEL = "200";

@@ -6,6 +6,7 @@ public class FieldsRequestName {
 
     //User Fields
     public static String userName = "UserNAME";
+    public static String password= "password";
 
     //Server Fields
     public static String serverId = "ServerID";
