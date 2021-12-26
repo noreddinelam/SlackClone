@@ -50,6 +50,7 @@ public class Repository {
             return Optional.empty();
         }
     }
+
     public Optional<ResultSet> verifyJoinChannelDB(String channelName, String userId) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel)) {
             stmt.setString(1, channelName);
@@ -145,7 +146,7 @@ public class Repository {
 
     public Optional<Boolean> deleteChannelDB(String channelName) {
         try (PreparedStatement deleteChannel = connectionDB.prepareStatement(SQLStatements.deleteChannel)) {
-            deleteChannel.setString(1,channelName);
+            deleteChannel.setString(1, channelName);
             return Optional.of(deleteChannel.execute());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -163,11 +164,10 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> listOfUserInChannelDB(String channelName)
-    {
-        try  {
+    public Optional<ResultSet> listOfUserInChannelDB(String channelName) {
+        try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel);
-            stmt.setString(1,channelName);
+            stmt.setString(1, channelName);
             return Optional.of(stmt.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,12 +175,23 @@ public class Repository {
         }
     }
 
-    public Optional<ResultSet> listOfMessageInChannelDB(String name)
-    {
-        try  {
-        PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel);
-            stmt.setString(1,name);
+    public Optional<ResultSet> listOfMessageInChannelDB(String name) {
+        try {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfMessageInChannel);
+            stmt.setString(1, name);
             return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<ResultSet> connectionDB(String username, String password) {
+        try {
+            PreparedStatement connect = connectionDB.prepareStatement(SQLStatements.verifyConnection);
+            connect.setString(1, username);
+            connect.setString(2, password);
+            return Optional.of(connect.executeQuery());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();

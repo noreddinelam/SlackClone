@@ -21,10 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -37,11 +34,32 @@ public class ServerImpl {
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static final Logger logger = LoggerFactory.getLogger(ServerImpl.class);
     private static int cpt = 0;
+
     private ServerImpl() {
     }
 
     public static void connect(String data) {
-        logger.info("Function : Connection to server");
+        User user = GsonConfiguration.gson.fromJson(data, User.class);
+        String username = user.getUsername();
+        String password = user.getPassword();
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            ResultSet rs = repository.connectionDB(username, password).orElseThrow(ConnectionException::new);
+            if (rs.next()) {
+                int isUserInDB = Integer.parseInt(rs.getString("isUserInDB"));
+                Response response = new Response(NetCodes.CONNECT_SUCCEED, "You are connected !");
+                String responseJson = GsonConfiguration.gson.toJson(response);
+                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            } else {
+                throw new ConnectionException();
+            }
+        } catch (ConnectionException | SQLException e) {
+            Response response = new Response(NetCodes.CONNECT_FAILED, "Connection FAILED " +
+                    "! Please create an account before signing in ");
+            requestFailure(response, client);
+            e.printStackTrace();
+        }
     }
 
     public static void createChannel(String data) {
@@ -118,7 +136,7 @@ public class ServerImpl {
         }
     }
 
-    //TODO : there is enhancements in future
+    //TODO : there is enhancements in future (didn't handle the return of deleteMessageDB )
     public static void deleteMessage(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         int idMessage = Integer.parseInt(requestData.get(FieldsRequestName.messageID));
@@ -330,7 +348,7 @@ public class ServerImpl {
     }
 
     public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put(usernames[cpt++], client);
+        listOfClients.put("yeca", client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
