@@ -31,6 +31,7 @@ public class Client {
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
         socket.connect(ipAddress).get();
+        ClientImpl.initListOfFunctions();
         Thread writer = new Thread(() -> {
             String line = "SOMETHING WRONG";
             ByteBuffer buffer;
