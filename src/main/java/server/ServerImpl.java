@@ -52,9 +52,9 @@ public class ServerImpl {
                 Response response = new Response(NetCodes.CONNECT_SUCCEED, "You are connected !");
                 String responseJson = GsonConfiguration.gson.toJson(response);
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(attachment, attachment, new ServerWriterCompletionHandler());
                 listOfClients.put(username, client);
                 listOfGuests.remove(guest);
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
             } else {
                 throw new ConnectionException();
             }
@@ -78,9 +78,9 @@ public class ServerImpl {
             Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are registered & connected !");
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler());
             listOfClients.put(username, client);
             listOfGuests.remove(guest);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
         } catch (RegisterException e) {
             Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED !");
             requestFailure(response, client);
@@ -375,10 +375,6 @@ public class ServerImpl {
 
     public static void addGuestClients(AsynchronousSocketChannel client) throws IOException {
         listOfGuests.put(client.getRemoteAddress().toString().split(":")[1], client);
-    }
-
-    public static void addConnectedClients(AsynchronousSocketChannel client) {
-        listOfClients.put("yeca", client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
