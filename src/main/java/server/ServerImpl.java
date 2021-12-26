@@ -29,7 +29,7 @@ public class ServerImpl {
 
     private static final String usernames[] = {"nouredine", "dola", "amine", "arthur"};
     private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String,AsynchronousSocketChannel> listOfGuests = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfGuests = new ConcurrentHashMap<>();
     private static final Repository repository = Repository.getRepository();
     private static final Mapper mapper = Mapper.getMapper();
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
@@ -38,6 +38,7 @@ public class ServerImpl {
 
     private ServerImpl() {
     }
+
     // TODO : Add client socket to list of clients and remove it from guests socket
     public static void connect(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
@@ -45,8 +46,6 @@ public class ServerImpl {
         String username = requestData.get(FieldsRequestName.userName);
         String password = requestData.get(FieldsRequestName.password);
         AsynchronousSocketChannel client = listOfGuests.get(guest);
-        listOfClients.put(username,client);
-        listOfGuests.remove(guest);
         try {
             ResultSet rs = repository.connectionDB(username, password).orElseThrow(ConnectionException::new);
             if (rs.next()) {
@@ -54,6 +53,8 @@ public class ServerImpl {
                 String responseJson = GsonConfiguration.gson.toJson(response);
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
                 client.write(attachment, attachment, new ServerWriterCompletionHandler());
+                listOfClients.put(username, client);
+                listOfGuests.remove(guest);
             } else {
                 throw new ConnectionException();
             }
@@ -64,6 +65,7 @@ public class ServerImpl {
             e.printStackTrace();
         }
     }
+
     // TODO : Add client socket to list ofclients and remove it from guests socket
     public static void register(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
@@ -71,16 +73,14 @@ public class ServerImpl {
         String username = requestData.get(FieldsRequestName.userName);
         String password = requestData.get(FieldsRequestName.password);
         AsynchronousSocketChannel client = listOfGuests.get(guest);
-        listOfClients.put(username,client);
-        listOfGuests.remove(guest);
         try {
-            Boolean status = repository.registerDB(username, password).orElseThrow(RegisterException::new);
-            if (status) {
-                Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are connected !");
-                String responseJson = GsonConfiguration.gson.toJson(response);
-                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(attachment, attachment, new ServerWriterCompletionHandler());
-            } else throw new RegisterException();
+            repository.registerDB(username, password).orElseThrow(RegisterException::new);
+            Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are registered & connected !");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            listOfClients.put(username, client);
+            listOfGuests.remove(guest);
         } catch (RegisterException e) {
             Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED !");
             requestFailure(response, client);
@@ -375,10 +375,10 @@ public class ServerImpl {
     }
 
     public static void addGuestClients(AsynchronousSocketChannel client) throws IOException {
-        listOfGuests.put(client.getRemoteAddress().toString().split(":")[1],client);
+        listOfGuests.put(client.getRemoteAddress().toString().split(":")[1], client);
     }
 
-    public static void addConnectedClients(AsynchronousSocketChannel client){
+    public static void addConnectedClients(AsynchronousSocketChannel client) {
         listOfClients.put("yeca", client);
     }
 
