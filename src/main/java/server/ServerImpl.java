@@ -38,7 +38,7 @@ public class ServerImpl {
 
     private ServerImpl() {
     }
-
+    // TODO : Add client socket to list ofclients and remove it from guests socket
     public static void connect(String data) {
         User user = GsonConfiguration.gson.fromJson(data, User.class);
         String username = user.getUsername();
@@ -58,6 +58,26 @@ public class ServerImpl {
         } catch (ConnectionException | SQLException e) {
             Response response = new Response(NetCodes.CONNECT_FAILED, "Connection FAILED " +
                     "! Please create an account before signing in ");
+            requestFailure(response, client);
+            e.printStackTrace();
+        }
+    }
+    // TODO : Add client socket to list ofclients and remove it from guests socket
+    public static void register(String data) {
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String password = requestData.get(FieldsRequestName.password);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            Boolean status = repository.registerDB(username, password).orElseThrow(RegisterException::new);
+            if (status) {
+                Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are connected !");
+                String responseJson = GsonConfiguration.gson.toJson(response);
+                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            } else throw new RegisterException();
+        } catch (RegisterException e) {
+            Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED !");
             requestFailure(response, client);
             e.printStackTrace();
         }
@@ -332,6 +352,7 @@ public class ServerImpl {
     public static void initListOfFunctions() {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
+        listOfFunctions.put(NetCodes.REGISTER, ServerImpl::register);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl::joinChannel);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE, ServerImpl::deleteMessage);

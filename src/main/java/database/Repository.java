@@ -197,4 +197,15 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<Boolean> registerDB(String username, String password) {
+        try {
+            PreparedStatement register = connectionDB.prepareStatement(SQLStatements.register);
+            register.setString(1, username);
+            register.setString(2, password);
+            return Optional.of(register.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 }

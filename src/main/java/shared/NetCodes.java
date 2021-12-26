@@ -5,6 +5,10 @@ public class NetCodes {
     public static String CONNECT_SUCCEED = "101";
     public static String CONNECT_FAILED = "102";
 
+    public static String REGISTER="0";
+    public static String REGISTER_SUCCEED="1";
+    public static String REGISTER_FAILED="2";
+
     // Channel :
     public static String CREATE_CHANNEL = "200";
     public static String CREATE_CHANNEL_SUCCEED = "201";

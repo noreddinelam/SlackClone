@@ -76,6 +76,11 @@ public class SQLStatements {
     public static  String verifyConnection="SELECT COUNT(1) as isUserInDB " +
             " FROM "+ clientTable +
             " WHERE "+ clientUsernameColumn + " = ? and " + clientPasswordColumn +" = ? ;";
+
+    public static String register =
+            "INSERT INTO " + clientTable
+                    + "(" + clientUsernameColumn + "," + clientPasswordColumn + ")"
+                    + " VALUES (?,?) ;";
     private SQLStatements() {
     }
 }
