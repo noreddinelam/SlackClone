@@ -19,11 +19,11 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 public class Client {
-    private static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
-    private static Scanner scanner = new Scanner(System.in);
-    private static Logger logger = LoggerFactory.getLogger(Client.class);
+    private final static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
+    private final static Scanner scanner = new Scanner(System.in);
+    private final static Logger logger = LoggerFactory.getLogger(Client.class);
     private static String clientIpAddress = "";
-    private static ClientImpl[] clientImplementations = {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
+    private final static ClientImpl[] clientImplementations = {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
             GraphicalClientImpl.getUniqueInstanceOfTerminalClientImpl()};
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
