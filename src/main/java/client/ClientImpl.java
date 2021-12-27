@@ -1,83 +1,88 @@
 package client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import shared.NetCodes;
-import shared.communication.Request;
 import shared.communication.Response;
 
 import java.util.Hashtable;
 import java.util.function.Consumer;
 
-public class ClientImpl {
-    private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
-    private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
-
-    private ClientImpl() {
-    }
-
-    public static void createChannelSucceeded(String responseData){}
-    public static void createChannelFailed(String responseData){}
-
-    public static void joinChannelSucceed(String responseData){}
-    public static void joinChannelFailed(String responseData){}
-    public static void joinChannelBroadcastSucceeded(String responseData){}
-    public static void joinChannelBroadcastFailed(String responseData){}
-
-    public static void deleteMessageSucceeded(String responseData){}
-    public static void deleteMessageFailed(String responseData){}
-
-    public static void modifyMessageSucceeded(String responseData){}
-    public static void modifyMessageFailed(String responseData){}
-
-    public static void deleteChannelSucceeded(String responseData){}
-    public static void deleteChannelFailed(String responseData){}
-
-    public static void listChannelsInServerSucceeded(String responseData){}
-    public static void listChannelsInServerFailed(String responseData){}
-
-    public static void listOfUserInChannelSucceeded(String responseData){}
-    public static void listOfUserInChannelFailed(String responseData){}
-
-    public static void messageConsumed(String responseData){}
-    public static void messageConsumptionError(String responseData){}
-    public static void messageBroadcastSucceed(String responseData){}
-    public static void messageBroadcastFailed(String responseData){}
-
-    public static void initListOfFunctions(){
-
-        listOfFunctions.put(NetCodes.CREATE_CHANNEL_SUCCEED,ClientImpl::createChannelSucceeded);
-        listOfFunctions.put(NetCodes.CREATE_CHANNEL_FAILED,ClientImpl::createChannelFailed);
-
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL_SUCCEED,ClientImpl::joinChannelSucceed);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL_FAILED,ClientImpl::joinChannelFailed);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,ClientImpl::joinChannelBroadcastSucceeded);
-        listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED,ClientImpl::joinChannelBroadcastFailed);
-
-        listOfFunctions.put(NetCodes.DELETE_MESSAGE_SUCCEED,ClientImpl::deleteMessageSucceeded);
-        listOfFunctions.put(NetCodes.DELETE_MESSAGE_FAILED,ClientImpl::deleteMessageFailed);
-
-        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED,ClientImpl::modifyMessageSucceeded);
-        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED,ClientImpl::modifyMessageFailed);
-
-        listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED,ClientImpl::deleteChannelSucceeded);
-        listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED,ClientImpl::deleteChannelFailed);
-
-        listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED,ClientImpl::listChannelsInServerSucceeded);
-        listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED,ClientImpl::listChannelsInServerFailed);
-
-        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED,ClientImpl::listOfUserInChannelSucceeded);
-        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED,ClientImpl::listOfUserInChannelFailed);
-
-        listOfFunctions.put(NetCodes.MESSAGE_CONSUMED,ClientImpl::messageConsumed);
-        listOfFunctions.put(NetCodes.MESSAGE_CONSUMPTION_ERROR,ClientImpl::messageConsumptionError);
-        listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_SUCCEED,ClientImpl::messageBroadcastSucceed);
-        listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_FAILED,ClientImpl::messageBroadcastFailed);
-
-    }
+public abstract class ClientImpl {
+    protected static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
 
     public static Consumer<String> getFunctionWithRequestCode(Response response) {
         return listOfFunctions.get(response.getNetCode());
+    }
+
+    public abstract void createChannelSucceeded(String responseData);
+
+    public abstract void createChannelFailed(String responseData);
+
+    public abstract void joinChannelSucceed(String responseData);
+
+    public abstract void joinChannelFailed(String responseData);
+
+    public abstract void joinChannelBroadcastSucceeded(String responseData);
+
+    public abstract void joinChannelBroadcastFailed(String responseData);
+
+    public abstract void deleteMessageSucceeded(String responseData);
+
+    public abstract void deleteMessageFailed(String responseData);
+
+    public abstract void modifyMessageSucceeded(String responseData);
+
+    public abstract void modifyMessageFailed(String responseData);
+
+    public abstract void deleteChannelSucceeded(String responseData);
+
+    public abstract void deleteChannelFailed(String responseData);
+
+    public abstract void listChannelsInServerSucceeded(String responseData);
+
+    public abstract void listChannelsInServerFailed(String responseData);
+
+    public abstract void listOfUserInChannelSucceeded(String responseData);
+
+    public abstract void listOfUserInChannelFailed(String responseData);
+
+    public abstract void messageConsumed(String responseData);
+
+    public abstract void messageConsumptionError(String responseData);
+
+    public abstract void messageBroadcastSucceed(String responseData);
+
+    public abstract void messageBroadcastFailed(String responseData);
+
+    public void initListOfFunctions() {
+
+        listOfFunctions.put(NetCodes.CREATE_CHANNEL_SUCCEED, this::createChannelSucceeded);
+        listOfFunctions.put(NetCodes.CREATE_CHANNEL_FAILED, this::createChannelFailed);
+
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL_SUCCEED, this::joinChannelSucceed);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL_FAILED, this::joinChannelFailed);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, this::joinChannelBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, this::joinChannelBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.DELETE_MESSAGE_SUCCEED, this::deleteMessageSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_MESSAGE_FAILED, this::deleteMessageFailed);
+
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
+
+        listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
+
+        listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, this::listChannelsInServerSucceeded);
+        listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED, this::listChannelsInServerFailed);
+
+        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED, this::listOfUserInChannelSucceeded);
+        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, this::listOfUserInChannelFailed);
+
+        listOfFunctions.put(NetCodes.MESSAGE_CONSUMED, this::messageConsumed);
+        listOfFunctions.put(NetCodes.MESSAGE_CONSUMPTION_ERROR, this::messageConsumptionError);
+        listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_SUCCEED, this::messageBroadcastSucceed);
+        listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_FAILED, this::messageBroadcastFailed);
+
     }
 
 }

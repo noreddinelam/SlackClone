@@ -69,8 +69,18 @@ public class SQLStatements {
 
     public static String deleteMessage = "DELETE FROM " + messageTable
             + " WHERE " + messageIdMessageColumn + " =? ;";
+
     public static String deleteChannel = "DELETE FROM " + channelTable
             + " WHERE " + channelNameColumn + " =? ;";
+
+    public static  String verifyConnection="SELECT COUNT(1) as isUserInDB " +
+            " FROM "+ clientTable +
+            " WHERE "+ clientUsernameColumn + " = ? and " + clientPasswordColumn +" = ? ;";
+
+    public static String register =
+            "INSERT INTO " + clientTable
+                    + "(" + clientUsernameColumn + "," + clientPasswordColumn + ")"
+                    + " VALUES (?,?) ;";
     private SQLStatements() {
     }
 }

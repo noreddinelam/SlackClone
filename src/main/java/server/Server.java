@@ -31,9 +31,10 @@ public class Server {
                                 serverSocket.accept(null, this);
                             }
                             SocketAddress socketAddress = result.getRemoteAddress();
-                            ServerImpl.addConnectedClients(result);
+                            ServerImpl.addGuestClients(result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
+                            logger.info("{} {}",result.getRemoteAddress(),result.getLocalAddress());
                             result.read(buffer, buffer, new ServerReaderCompletionHandler());
                         } catch (IOException e) {
                             e.printStackTrace();

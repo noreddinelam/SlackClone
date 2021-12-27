@@ -21,10 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -32,16 +29,63 @@ public class ServerImpl {
 
     private static final String usernames[] = {"nouredine", "dola", "amine", "arthur"};
     private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfGuests = new ConcurrentHashMap<>();
     private static final Repository repository = Repository.getRepository();
     private static final Mapper mapper = Mapper.getMapper();
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static final Logger logger = LoggerFactory.getLogger(ServerImpl.class);
     private static int cpt = 0;
+
     private ServerImpl() {
     }
 
+    // TODO : Add client socket to list of clients and remove it from guests socket
     public static void connect(String data) {
-        logger.info("Function : Connection to server");
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String guest = requestData.get(FieldsRequestName.guest);
+        String username = requestData.get(FieldsRequestName.userName);
+        String password = requestData.get(FieldsRequestName.password);
+        AsynchronousSocketChannel client = listOfGuests.get(guest);
+        try {
+            ResultSet rs = repository.connectionDB(username, password).orElseThrow(ConnectionException::new);
+            if (rs.next()) {
+                Response response = new Response(NetCodes.CONNECT_SUCCEED, "You are connected !");
+                String responseJson = GsonConfiguration.gson.toJson(response);
+                ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+                listOfClients.put(username, client);
+                listOfGuests.remove(guest);
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            } else {
+                throw new ConnectionException();
+            }
+        } catch (ConnectionException | SQLException e) {
+            Response response = new Response(NetCodes.CONNECT_FAILED, "Connection FAILED " +
+                    "! Please create an account before signing in ");
+            requestFailure(response, client);
+            e.printStackTrace();
+        }
+    }
+
+    // TODO : Add client socket to list ofclients and remove it from guests socket
+    public static void register(String data) {
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String guest = requestData.get(FieldsRequestName.guest);
+        String username = requestData.get(FieldsRequestName.userName);
+        String password = requestData.get(FieldsRequestName.password);
+        AsynchronousSocketChannel client = listOfGuests.get(guest);
+        try {
+            repository.registerDB(username, password).orElseThrow(RegisterException::new);
+            Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are registered & connected !");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            listOfClients.put(username, client);
+            listOfGuests.remove(guest);
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+        } catch (RegisterException e) {
+            Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED !");
+            requestFailure(response, client);
+            e.printStackTrace();
+        }
     }
 
     public static void createChannel(String data) {
@@ -118,7 +162,7 @@ public class ServerImpl {
         }
     }
 
-    //TODO : there is enhancements in future
+    //TODO : there is enhancements in future (didn't handle the return of deleteMessageDB )
     public static void deleteMessage(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         int idMessage = Integer.parseInt(requestData.get(FieldsRequestName.messageID));
@@ -221,7 +265,6 @@ public class ServerImpl {
         try {
             ResultSet resultSet =
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
-            //List<Channel> channels = mapper.resultSetToChannel(resultSet);
             List<User> users = mapper.resultSetToUser(resultSet);
             Map<String, List<User>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.userName, users);
@@ -313,6 +356,7 @@ public class ServerImpl {
     public static void initListOfFunctions() {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
+        listOfFunctions.put(NetCodes.REGISTER, ServerImpl::register);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL, ServerImpl::joinChannel);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE, ServerImpl::deleteMessage);
@@ -329,8 +373,8 @@ public class ServerImpl {
         return listOfFunctions.get(request.getNetCode());
     }
 
-    public static void addConnectedClients(AsynchronousSocketChannel client) throws IOException {
-        listOfClients.put(usernames[cpt++], client);
+    public static void addGuestClients(AsynchronousSocketChannel client) throws IOException {
+        listOfGuests.put(client.getRemoteAddress().toString().split(":")[1], client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {
