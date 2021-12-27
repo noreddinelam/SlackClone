@@ -100,7 +100,10 @@
             <AnchorPane prefHeight="648.0" prefWidth="828.0" style="-fx-border-color: #8280ff; -fx-border-width: 0px 2px 2px 2px;" styleClass="background_color_2" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
                <children>
                   <TextField layoutX="14.0" layoutY="581.0" prefHeight="43.0" prefWidth="499.0" promptText="Send a message..." style="-fx-background-color: #d3d0ff; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
-                  <DialogPane layoutX="14.0" layoutY="14.0" prefHeight="545.0" prefWidth="498.0" style="-fx-background-color: #d3d0ff;" />
+                  <DialogPane layoutX="14.0" layoutY="14.0" prefHeight="545.0" prefWidth="498.0" style="-fx-background-color: #d3d0ff;">
+                     <header>
+                        <ListView prefHeight="526.0" prefWidth="292.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px 0px 0px;" styleClass="background_color_2" stylesheets="@Stylesheet.css" />
+                     </header></DialogPane>
                </children></AnchorPane>
          </center>
          <right>
