@@ -4,9 +4,13 @@ public class FieldsRequestName {
     //NetCode
     public static String netCode = "NetCode";
 
+    //Guest Fields
+    public static String guest="guest";
+
     //User Fields
     public static String userName = "UserNAME";
     public static String adminName = "AdminNAME";
+    public static String password= "password";
 
     //Server Fields
     public static String serverId = "ServerID";

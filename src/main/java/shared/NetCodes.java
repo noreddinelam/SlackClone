@@ -2,19 +2,22 @@ package shared;
 
 public class NetCodes {
     public static String CONNECTION = "100";
+    public static String CONNECT_SUCCEED = "101";
+    public static String CONNECT_FAILED = "102";
+
+    public static String REGISTER="0";
+    public static String REGISTER_SUCCEED="1";
+    public static String REGISTER_FAILED="2";
 
     // Channel :
     public static String CREATE_CHANNEL = "200";
     public static String CREATE_CHANNEL_SUCCEED = "201";
     public static String CREATE_CHANNEL_FAILED = "202";
-    public static String DELETE_CHANNEL_FAILED = "203";
-    public static String DELETE_CHANNEL_SUCCEED = "204";
-
 
     public static String JOIN_CHANNEL = "300";
     public static String JOIN_CHANNEL_SUCCEED = "301";
     public static String JOIN_CHANNEL_FAILED = "302";
-    public static String JOIN_CHANNEL_BROADCAST = "303";
+    public static String JOIN_CHANNEL_BROADCAST_SUCCEED = "303";
     public static String JOIN_CHANNEL_BROADCAST_FAILED = "304";
     public static String JOIN_PRIVATE_CHANNEL= "305";
 
@@ -27,6 +30,8 @@ public class NetCodes {
     public static String MODIFY_MESSAGE_FAILED = "502";
 
     public static String DELETE_CHANNEL = "600";
+    public static String DELETE_CHANNEL_SUCCEED = "601";
+    public static String DELETE_CHANNEL_FAILED = "602";
 
     public static String LIST_CHANNELS_IN_SERVER = "700";
     public static String LIST_CHANNELS_IN_SERVER_SUCCEED  = "701";
@@ -43,7 +48,7 @@ public class NetCodes {
     public static String CONSUME_MESSAGE = "1000";
     public static String MESSAGE_CONSUMED = "1001";
     public static String MESSAGE_CONSUMPTION_ERROR = "1002";
-    public static String MESSAGE_BROADCAST = "1003";
+    public static String MESSAGE_BROADCAST_SUCCEED = "1003";
     public static String MESSAGE_BROADCAST_FAILED = "1004";
 
     public static String LIST_REQUEST_JOIN_CHANNEL = "1100";

@@ -17,7 +17,7 @@ public class Server {
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) throws IOException {
-        ServerImpl.initListOfFunctionsAndParsers();
+        ServerImpl.initListOfFunctions();
         logger.info("Creating a server on port 9999");
         try (AsynchronousServerSocketChannel serverSocket = AsynchronousServerSocketChannel.open()) {
             serverSocket.bind(new InetSocketAddress(Properties.PORT));
@@ -31,9 +31,10 @@ public class Server {
                                 serverSocket.accept(null, this);
                             }
                             SocketAddress socketAddress = result.getRemoteAddress();
-                            ServerImpl.addConnectedClients(result);
+                            ServerImpl.addGuestClients(result);
                             logger.info("A client is connected from {}", socketAddress);
                             ByteBuffer buffer = ByteBuffer.allocate(1024);
+                            logger.info("{} {}",result.getRemoteAddress(),result.getLocalAddress());
                             result.read(buffer, buffer, new ServerReaderCompletionHandler());
                         } catch (IOException e) {
                             e.printStackTrace();
