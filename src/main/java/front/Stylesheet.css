@@ -2,10 +2,15 @@
     -fx-background-color: #ACA6C9;
 }
 
-.background{
-    -fx-background-color: #D0CCE0;
+.background_color_1{
+    -fx-background-color: #8280ff;
+}
+
+.background_color_2{
+    -fx-background-color: #b7b2ff;
 }
 
 .slack_clone{
     -fx-background-color: #130601;
 }
+
