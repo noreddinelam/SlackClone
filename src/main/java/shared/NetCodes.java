@@ -46,5 +46,14 @@ public class NetCodes {
     public static String MESSAGE_BROADCAST = "1003";
     public static String MESSAGE_BROADCAST_FAILED = "1004";
 
+    public static String LIST_REQUEST_JOIN_CHANNEL = "1100";
+    public static String LIST_REQUEST_JOIN_CHANNEL_SUCCEED  = "1101";
+    public static String LIST_REQUEST_JOIN_CHANNEL_FAILED = "1102";
+
+    public static String RESPONSE_JOIN_CHANNEL = "1200";
+    public static String RESPONSE_JOIN_SUCCEED  = "1201";
+    public static String RESPONSE_JOIN_FAILED = "1202";
+
+
     private NetCodes(){}
 }

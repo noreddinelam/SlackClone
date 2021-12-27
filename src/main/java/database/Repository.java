@@ -163,6 +163,40 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<Boolean> joinChannelStatusRequestDB(String admin,String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.addRequestJoinChannel);
+            stmt.setString(1,admin);
+            stmt.setString(2,channelName);
+            stmt.setString(3, username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> responseJoinChannelRequestDB(String admin) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinListChannelRequest);
+            stmt.setString(1,admin);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<Boolean> deleteRequestJoinChannelDB(String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteRequestJoinChannel);
+            stmt.setString(1,channelName);
+            stmt.setString(2,username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
 
     public Optional<ResultSet> listChannelsInServerDB() {
         try {

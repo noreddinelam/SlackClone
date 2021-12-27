@@ -23,5 +23,13 @@ public class SQLTablesInformation {
     public static String messageUsernameColumn = "username";
     public static String messageDate = "date";
 
+    public static String requestTable = "REQUEST_TABLE";
+    public static String requestUsername = "username";
+    public static String requestChannelName = "channelName";
+    public static String requestAdminName = "admin";
+
+
+
+
     private SQLTablesInformation(){}
 }

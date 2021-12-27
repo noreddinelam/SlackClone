@@ -35,11 +35,27 @@ public class SQLStatements {
                     clientChannelTable +" WHERE "+
                     clientChannelChannelNameColumn+"=?"+
                     " AND "+clientChannelUsernameColumn+ "=? ;";
+
     public static String verifyChannelStatus =
             "SELECT isPublic"+" FROM "+
                     channelTable +" WHERE "+
                     channelNameColumn+"=?;";
-  
+
+    public static String addRequestJoinChannel =
+            "INSERT INTO " + requestTable
+                    + "(" + requestAdminName + ","+ requestChannelName + "," + requestUsername
+                    +   ")" +
+                    " VALUES (?,?,?) ;";
+
+    public static String joinListChannelRequest =
+            "SELECT "+ requestChannelName +","+ requestUsername +" FROM " +  requestTable
+                    + " WHERE " + requestAdminName+"=? ;";
+
+    public static String deleteRequestJoinChannel =
+            "DELETE FROM " +  requestTable
+                    + " WHERE " + requestChannelName+"=? AND "+ requestUsername +"=? ;";
+
+
     public static String createChannel =
             "INSERT INTO " + channelTable
                     + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","
