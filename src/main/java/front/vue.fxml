@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="background" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutY="128.0" prefHeight="592.0" prefWidth="367.0" style="-fx-background-color: #145555;" />
+      <ToolBar prefHeight="53.0" prefWidth="1080.0">
+        <items>
+          <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" text="Search" />
+            <TextField prefHeight="31.0" prefWidth="349.0" text="Search..." />
+        </items>
+      </ToolBar>
+   </children>
+</AnchorPane>
