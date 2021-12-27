@@ -129,7 +129,7 @@ public class ServerImpl {
                         repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
                         ResultSet resultSet =
                                 repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                        Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                        Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, username + " has joined " +
                                 "the channel");
                         response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
                         String broadcastUsername;
@@ -300,7 +300,7 @@ public class ServerImpl {
                 repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
                 ResultSet resultSet =
                         repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST, username + " has joined " +
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, username + " has joined " +
                         "the channel");
                 Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
                 String responseJson = GsonConfiguration.gson.toJson(response);
@@ -326,11 +326,9 @@ public class ServerImpl {
                 attachment.clear();
             }
             repository.deleteRequestJoinChannelDB(channelName, username).orElseThrow(DeleteRequestJoinChannelException::new);
-
-            repository.deleteRequestJoinChannelDB(channelName,username);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (JoinChannelException  e) {
+        } catch (JoinChannelException | DeleteRequestJoinChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
             requestFailure(response, client);
