@@ -81,6 +81,17 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<ResultSet> verifyRequestJoinChannelDB(String channelName, String userId) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyRequestJoinChannel);
+            stmt.setString(1, channelName);
+            stmt.setString(2, userId);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     // Fonction qui retourne de la DB le champs content de la table message
     // du channel passé en argument
