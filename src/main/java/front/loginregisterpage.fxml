@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
@@ -14,67 +13,68 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <BorderPane prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <left>
-            <AnchorPane prefHeight="720.0" prefWidth="391.0" styleClass="background_color_2" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
-               <children>
-                  <ImageView fitHeight="96.0" fitWidth="333.0" layoutX="55.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/slock.png" />
-                     </image>
-                  </ImageView>
-               </children></AnchorPane>
-         </left>
-         <right>
-            <AnchorPane prefHeight="720.0" prefWidth="692.0" styleClass="background_color_1" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
-               <children>
-                  <TextField fx:id="username" layoutX="256.0" layoutY="293.0" prefHeight="29.0" prefWidth="180.0" promptText="User Name" style="-fx-background-color: transparent; -fx-border-color: #b7b2ff; -fx-border-width: 2px 2px 2px 2px;" />
-                  <PasswordField fx:id="password" layoutX="256.0" layoutY="347.0" prefHeight="29.0" prefWidth="180.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-width: 2px 2px 2px 2px; -fx-border-color: #b7b2ff;" />
-                  <FontAwesomeIconView fill="#b7b2ff" glyphName="USER" layoutX="227.0" layoutY="314.0" size="20" />
-                  <FontAwesomeIconView fill="#b7b2ff" glyphName="KEY" layoutX="224.0" layoutY="368.0" size="20" />
-                  <Button layoutX="206.0" layoutY="430.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Login" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                     <cursor>
-                        <Cursor fx:constant="CLOSED_HAND" />
-                     </cursor>
-                  </Button>
-                  <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="219.0" layoutY="482.0" prefHeight="29.0" prefWidth="260.0" text="Forgot your password ?" textAlignment="CENTER" textFill="#b7b2ff" underline="true">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Hyperlink>
-                  <FontAwesomeIconView fill="#b7b2ff" glyphName="USERS" layoutX="319.0" layoutY="140.0" size="50" wrappingWidth="54.428571701049805" />
-                  <Text fill="#b7b2ff" layoutX="270.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register Page" textAlignment="CENTER" wrappingWidth="153.13671875">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Text>
-                  <Button layoutX="653.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="44.0" style="-fx-background-color: transparent;">
-                     <graphic>
-                        <FontAwesomeIconView fill="#b7b2ff" glyphName="CLOSE" size="25" />
-                     </graphic>
-                  </Button>
-                  <Button layoutX="359.0" layoutY="430.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Register" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                     <cursor>
-                        <Cursor fx:constant="CLOSED_HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-            </AnchorPane>
-         </right>
-      </BorderPane>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.controllers.AuthController">
+    <children>
+        <BorderPane prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <left>
+                <AnchorPane prefHeight="720.0" prefWidth="391.0" styleClass="background_color_2" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
+                    <children>
+                        <ImageView fitHeight="96.0" fitWidth="333.0" layoutX="55.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/slock.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </AnchorPane>
+            </left>
+            <right>
+                <AnchorPane prefHeight="720.0" prefWidth="692.0" styleClass="background_color_1" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
+                    <children>
+                        <TextField fx:id="username" layoutX="256.0" layoutY="293.0" prefHeight="29.0" prefWidth="180.0" promptText="User Name" style="-fx-background-color: transparent; -fx-border-color: #b7b2ff; -fx-border-width: 2px 2px 2px 2px;" />
+                        <PasswordField fx:id="password" layoutX="256.0" layoutY="347.0" prefHeight="29.0" prefWidth="180.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-width: 2px 2px 2px 2px; -fx-border-color: #b7b2ff;" />
+                        <FontAwesomeIconView fill="#b7b2ff" glyphName="USER" layoutX="227.0" layoutY="314.0" size="20" />
+                        <FontAwesomeIconView fill="#b7b2ff" glyphName="KEY" layoutX="224.0" layoutY="368.0" size="20" />
+                        <Button layoutX="206.0" layoutY="430.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Login" textAlignment="CENTER" textFill="WHITE">
+                            <font>
+                                <Font name="Arial" size="15.0" />
+                            </font>
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                            <cursor>
+                                <Cursor fx:constant="CLOSED_HAND" />
+                            </cursor>
+                        </Button>
+                        <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="219.0" layoutY="482.0" prefHeight="29.0" prefWidth="260.0" text="Forgot your password ?" textAlignment="CENTER" textFill="#b7b2ff" underline="true">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Hyperlink>
+                        <FontAwesomeIconView fill="#b7b2ff" glyphName="USERS" layoutX="319.0" layoutY="140.0" size="50" wrappingWidth="54.428571701049805" />
+                        <Text fill="#b7b2ff" layoutX="270.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register Page" textAlignment="CENTER" wrappingWidth="153.13671875">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Text>
+                        <Button layoutX="653.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="44.0" style="-fx-background-color: transparent;">
+                            <graphic>
+                                <FontAwesomeIconView fill="#b7b2ff" glyphName="CLOSE" size="25" />
+                            </graphic>
+                        </Button>
+                        <Button layoutX="359.0" layoutY="430.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Register" textAlignment="CENTER" textFill="WHITE">
+                            <font>
+                                <Font name="Arial" size="15.0" />
+                            </font>
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                            <cursor>
+                                <Cursor fx:constant="CLOSED_HAND" />
+                            </cursor>
+                        </Button>
+                    </children>
+                </AnchorPane>
+            </right>
+        </BorderPane>
+    </children>
 </AnchorPane>
