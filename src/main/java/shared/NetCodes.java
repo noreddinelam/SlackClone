@@ -54,6 +54,8 @@ public class NetCodes {
     public static String RESPONSE_JOIN_SUCCEED  = "1201";
     public static String RESPONSE_JOIN_FAILED = "1202";
 
+    public static String REQUEST_JOIN_FAILED = "1302";
+
 
     private NetCodes(){}
 }

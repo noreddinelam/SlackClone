@@ -30,11 +30,18 @@ public class SQLStatements {
             "INSERT INTO " + clientChannelTable
                     + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ")"
                     + " VALUES (?,?) ;";
+
     public static String verifyJoinChannel =
             "SELECT *"+" FROM "+
                     clientChannelTable +" WHERE "+
                     clientChannelChannelNameColumn+"=?"+
                     " AND "+clientChannelUsernameColumn+ "=? ;";
+
+    public static String verifyRequestJoinChannel =
+            "SELECT *"+" FROM "+
+                    requestTable +" WHERE "+
+                    requestChannelName+"=?"+
+                    " AND "+requestUsername+ "=? ;";
 
     public static String verifyChannelStatus =
             "SELECT isPublic"+" FROM "+

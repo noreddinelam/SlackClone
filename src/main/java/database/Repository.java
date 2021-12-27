@@ -50,6 +50,26 @@ public class Repository {
             return Optional.empty();
         }
     }
+//todo : we will tranasaction
+    public Optional<Boolean> joinChannelAndDeleteRequestDB(String userID, String channelName) {
+        try  {
+            PreparedStatement stmt2 = connectionDB.prepareStatement(SQLStatements.deleteRequestJoinChannel);
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel);
+            stmt.setString(1, channelName);
+            stmt.setString(2, userID);
+            stmt2.setString(1,channelName);
+            stmt2.setString(2,userID);
+            stmt.execute();
+            stmt2.execute();
+            stmt.close();
+            stmt2.close();
+            return Optional.of(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<ResultSet> verifyJoinChannelDB(String channelName, String userId) {
         try  {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel);

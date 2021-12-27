@@ -99,10 +99,21 @@ public class ServerImpl {
                 else {
                     //todo send a request to the request_table -- implementation of the fct to accept or refuse the user requests
                     logger.info("Channel is private, request sent to the admin");
+                    ResultSet verifyResultSetRequest =
+                            repository.verifyRequestJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
+                    //System.out.println(verifyResultSetRequest.next());
+                    if (!verifyResultSetRequest.next()) {
+                        System.out.println("request sent");
                     Boolean requestJoinChannelResultSet =
-                            repository.joinChannelStatusRequestDB(admin,channelName,username).orElseThrow(JoinChannelStatusRequestException::new);
+                            repository.joinChannelStatusRequestDB(admin,channelName,username).orElseThrow(ResponseJoinChannelException::new);
                     response = new Response(NetCodes.JOIN_PRIVATE_CHANNEL,"Your request is sent to the admin to join the channel");
-                }
+                    }
+                    else {
+                        System.out.println("request not sent");
+                        logger.info("Request already set ");
+                        response = new Response(NetCodes.REQUEST_JOIN_FAILED, "request is already set");
+                    }
+                    }
             }
             else {
                 response = new Response(NetCodes.JOIN_CHANNEL_FAILED,"joining channel failed");
@@ -114,7 +125,7 @@ public class ServerImpl {
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        } catch (JoinChannelException | VerifyStatusChannelException |JoinChannelStatusRequestException e) {
+        } catch (JoinChannelException | VerifyStatusChannelException e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
             requestFailure(response, client);
@@ -128,6 +139,8 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (ResponseJoinChannelException e) {
+            e.printStackTrace();
         }
     }
 
@@ -266,9 +279,10 @@ public class ServerImpl {
             }
             repository.deleteRequestJoinChannelDB(channelName, username).orElseThrow(DeleteRequestJoinChannelException::new);
 
+            repository.deleteRequestJoinChannelDB(channelName,username);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (JoinChannelException | DeleteRequestJoinChannelException e) {
+        } catch (JoinChannelException  e) {
             e.printStackTrace();
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
             requestFailure(response, client);
