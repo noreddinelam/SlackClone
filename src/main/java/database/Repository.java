@@ -51,9 +51,40 @@ public class Repository {
             return Optional.empty();
         }
     }
+//todo : we will tranasaction
+    public Optional<Boolean> joinChannelAndDeleteRequestDB(String userID, String channelName) {
+        try  {
+            PreparedStatement stmt2 = connectionDB.prepareStatement(SQLStatements.deleteRequestJoinChannel);
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinChannel);
+            stmt.setString(1, channelName);
+            stmt.setString(2, userID);
+            stmt2.setString(1,channelName);
+            stmt2.setString(2,userID);
+            stmt.execute();
+            stmt2.execute();
+            stmt.close();
+            stmt2.close();
+            return Optional.of(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public Optional<ResultSet> verifyJoinChannelDB(String channelName, String userId) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel)) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyJoinChannel);
+            stmt.setString(1, channelName);
+            stmt.setString(2, userId);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> verifyRequestJoinChannelDB(String channelName, String userId) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyRequestJoinChannel);
             stmt.setString(1, channelName);
             stmt.setString(2, userId);
             return Optional.of(stmt.executeQuery());
@@ -154,6 +185,50 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<ResultSet> verifyChannelStatusDB(String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyChannelStatus);
+            stmt.setString(1,channelName);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<Boolean> joinChannelStatusRequestDB(String admin,String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.addRequestJoinChannel);
+            stmt.setString(1,admin);
+            stmt.setString(2,channelName);
+            stmt.setString(3, username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<ResultSet> responseJoinChannelRequestDB(String admin) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinListChannelRequest);
+            stmt.setString(1,admin);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<Boolean> deleteRequestJoinChannelDB(String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteRequestJoinChannel);
+            stmt.setString(1,channelName);
+            stmt.setString(2,username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
 
     public Optional<ResultSet> listChannelsInServerDB() {
         try {

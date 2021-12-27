@@ -9,6 +9,7 @@ public class FieldsRequestName {
 
     //User Fields
     public static String userName = "UserNAME";
+    public static String adminName = "AdminNAME";
     public static String password= "password";
 
     //Server Fields
@@ -23,6 +24,8 @@ public class FieldsRequestName {
     //Messages Fields
     public static String messageID = "MessageID";
     public static String messageContent = "MessageCONTENT";
+
+    public static String accept = "Accept";
 
     private FieldsRequestName(){}
 }

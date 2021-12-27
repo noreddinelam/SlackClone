@@ -19,6 +19,7 @@ public class NetCodes {
     public static String JOIN_CHANNEL_FAILED = "302";
     public static String JOIN_CHANNEL_BROADCAST_SUCCEED = "303";
     public static String JOIN_CHANNEL_BROADCAST_FAILED = "304";
+    public static String JOIN_PRIVATE_CHANNEL= "305";
 
     public static String DELETE_MESSAGE = "400";
     public static String DELETE_MESSAGE_SUCCEED = "401";
@@ -49,6 +50,17 @@ public class NetCodes {
     public static String MESSAGE_CONSUMPTION_ERROR = "1002";
     public static String MESSAGE_BROADCAST_SUCCEED = "1003";
     public static String MESSAGE_BROADCAST_FAILED = "1004";
+
+    public static String LIST_REQUEST_JOIN_CHANNEL = "1100";
+    public static String LIST_REQUEST_JOIN_CHANNEL_SUCCEED  = "1101";
+    public static String LIST_REQUEST_JOIN_CHANNEL_FAILED = "1102";
+
+    public static String RESPONSE_JOIN_CHANNEL = "1200";
+    public static String RESPONSE_JOIN_SUCCEED  = "1201";
+    public static String RESPONSE_JOIN_FAILED = "1202";
+
+    public static String REQUEST_JOIN_FAILED = "1302";
+
 
     private NetCodes(){}
 }
