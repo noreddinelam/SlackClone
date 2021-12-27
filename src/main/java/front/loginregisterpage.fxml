@@ -30,8 +30,8 @@
          <right>
             <AnchorPane prefHeight="720.0" prefWidth="692.0" styleClass="background_color_1" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
                <children>
-                  <TextField layoutX="256.0" layoutY="293.0" prefHeight="29.0" prefWidth="180.0" promptText="User Name" style="-fx-background-color: transparent; -fx-border-color: #b7b2ff; -fx-border-width: 2px 2px 2px 2px;" />
-                  <PasswordField layoutX="256.0" layoutY="347.0" prefHeight="29.0" prefWidth="180.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-width: 2px 2px 2px 2px; -fx-border-color: #b7b2ff;" />
+                  <TextField fx:id="username" layoutX="256.0" layoutY="293.0" prefHeight="29.0" prefWidth="180.0" promptText="User Name" style="-fx-background-color: transparent; -fx-border-color: #b7b2ff; -fx-border-width: 2px 2px 2px 2px;" />
+                  <PasswordField fx:id="password" layoutX="256.0" layoutY="347.0" prefHeight="29.0" prefWidth="180.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-width: 2px 2px 2px 2px; -fx-border-color: #b7b2ff;" />
                   <FontAwesomeIconView fill="#b7b2ff" glyphName="USER" layoutX="227.0" layoutY="314.0" size="20" />
                   <FontAwesomeIconView fill="#b7b2ff" glyphName="KEY" layoutX="224.0" layoutY="368.0" size="20" />
                   <Button layoutX="206.0" layoutY="430.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Login" textAlignment="CENTER" textFill="WHITE">

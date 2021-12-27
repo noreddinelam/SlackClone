@@ -1,7 +1,3 @@
-.side-bar{
-    -fx-background-color: #ACA6C9;
-}
-
 .background_color_1{
     -fx-background-color: #8280ff;
 }
@@ -10,7 +6,16 @@
     -fx-background-color: #b7b2ff;
 }
 
-.slack_clone{
-    -fx-background-color: #130601;
+.background_color_3{
+    -fx-background-color: #d3d0ff;
 }
 
+.text_color{
+    -fx-background-color: #f9f9fa;
+}
+
+.channel_list{
+    -fx-background-color: #b7b2ff;
+    -fx-border-color: #d3d0ff;
+    -fx-border-width: 2px;
+}
