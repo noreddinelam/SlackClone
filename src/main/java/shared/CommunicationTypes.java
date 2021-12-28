@@ -18,5 +18,7 @@ public class CommunicationTypes {
     }.getType();
     public static Type mapListMessageJsonTypeData = new TypeToken<Map<String, List<Message>>>() {
     }.getType();
+    public static Type listMapChannelUsernameTypeData = new TypeToken<List<Map<String,String>>>() {
+    }.getType();
 
 }

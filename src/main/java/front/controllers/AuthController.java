@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class AuthController {
+public class AuthController extends Controller {
 
     @FXML
     private PasswordField password;
@@ -15,7 +15,12 @@ public class AuthController {
 
     @FXML
     void onLogin(ActionEvent event) {
+        this.clientImpl.login(username.getText(),password.getText());
+    }
 
+    @FXML
+    void onRegister(ActionEvent event) {
+        this.clientImpl.register(username.getText(),password.getText());
     }
 
 }

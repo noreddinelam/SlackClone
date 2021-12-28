@@ -1,3 +1,2 @@
 //TODO : verification if the message or the channel is mine or not before sending the request.
-//TODO : send the message with id to the client when creating message "ConsumeMessage".
-//TODO : add management of showing messages in front side.
+//TODO : TRANSACTION
