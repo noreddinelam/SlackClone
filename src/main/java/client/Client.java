@@ -1,5 +1,7 @@
 package client;
 
+import front.models.SlockUI;
+import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.FieldsRequestName;
@@ -27,6 +29,7 @@ public class Client {
             GraphicalClientImpl.getUniqueInstanceOfTerminalClientImpl()};
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        new Thread(() ->{Application.launch(SlockUI.class);}).start();
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
         socket.connect(serverIpAddress).get();
         String[] ipParts = socket.getLocalAddress().toString().split(":");

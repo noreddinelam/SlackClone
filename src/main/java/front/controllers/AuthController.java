@@ -15,7 +15,7 @@ public class AuthController {
 
     @FXML
     void onLogin(ActionEvent event) {
-
+        System.out.println("helllllllllllo");
     }
 
 }
