@@ -1,4 +1,3 @@
 //TODO : verification if the message or the channel is mine or not before sending the request.
 //TODO : TRANSACTION
-//TODO : delete the clients from client_channel when channel is deleted.
 //TODO : leave currentChannel
