@@ -4,32 +4,27 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="64.0" prefWidth="241.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="84.0" prefWidth="241.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox layoutX="4.0" layoutY="4.0" prefHeight="100.0" prefWidth="237.0" spacing="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="4.0" layoutY="4.0" prefHeight="100.0" prefWidth="251.0" spacing="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0">
          <children>
             <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="233.0" styleClass="message_commands" stylesheets="@Stylesheet.css" text="modify message" textFill="WHITE">
                <graphic>
                   <FontAwesomeIconView fill="WHITE" glyphName="PENCIL" size="15" wrappingWidth="19.857142448425293" />
                </graphic>
-               <effect>
-                  <DropShadow height="67.9" radius="52.38" spread="0.11" width="143.62" />
-               </effect>
                <cursor>
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
+            <TextField prefHeight="25.0" prefWidth="201.0" promptText="Enter the modified message..." style="-fx-border-color: #b7b2ff; -fx-border-width: 0px 0px 2px;" styleClass="background_color_3" stylesheets="@Stylesheet.css" />
             <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="233.0" styleClass="message_commands" stylesheets="@Stylesheet.css" text="delete message" textAlignment="CENTER" textFill="WHITE">
                <graphic>
                   <FontAwesomeIconView fill="WHITE" glyphName="TRASH" size="15" wrappingWidth="22.785714149475098" />
                </graphic>
-               <effect>
-                  <DropShadow height="106.0" radius="50.302499999999995" spread="0.21" width="97.21" />
-               </effect>
                <cursor>
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
@@ -38,6 +33,9 @@
          <padding>
             <Insets bottom="2.0" top="2.0" />
          </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </VBox>
    </children>
 </AnchorPane>
