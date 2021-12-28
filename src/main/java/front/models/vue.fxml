@@ -53,9 +53,8 @@
             <AnchorPane prefHeight="648.0" prefWidth="255.0" style="-fx-border-color: #8280ff; -fx-border-width: 0px 2px 2px 3px;" styleClass="background_color_2" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
                <children>
                   <Button layoutX="189.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: transparent;" />
-                  <TextField layoutX="51.0" layoutY="8.0" prefHeight="27.0" prefWidth="130.0" promptText="Create new channel..." style="-fx-background-color: transparent; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
-                  <TextField layoutX="23.0" layoutY="46.0" prefHeight="27.0" prefWidth="158.0" promptText="Join a channel..." style="-fx-background-color: transparent; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
-                  <Button layoutX="190.0" layoutY="9.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="57.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Create" textAlignment="CENTER" textFill="WHITE">
+                  <TextField layoutX="51.0" layoutY="15.0" prefHeight="27.0" prefWidth="130.0" promptText="Create new channel..." style="-fx-background-color: transparent; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
+                  <Button layoutX="190.0" layoutY="16.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="57.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Create" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="10.0" />
                      </font>
@@ -63,21 +62,13 @@
                         <Cursor fx:constant="CLOSED_HAND" />
                      </cursor>
                   </Button>
-                  <Button layoutX="190.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="57.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Join" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="10.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="CLOSED_HAND" />
-                     </cursor>
-                  </Button>
-                  <CheckBox alignment="CENTER" layoutX="15.0" layoutY="9.0" mnemonicParsing="false" opacity="0.44" style="-fx-background-color: #b7b2ff;" styleClass="background_color_2" stylesheets="@Stylesheet.css" textFill="#fffbfb" />
-                  <Text fill="WHITE" layoutX="7.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Private">
+                  <CheckBox alignment="CENTER" layoutX="15.0" layoutY="16.0" mnemonicParsing="false" opacity="0.44" style="-fx-background-color: #b7b2ff;" styleClass="background_color_2" stylesheets="@Stylesheet.css" textFill="#fffbfb" />
+                  <Text fill="WHITE" layoutX="7.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Private">
                      <font>
                         <Font size="11.0" />
                      </font>
                   </Text>
-                  <VBox layoutX="9.0" layoutY="124.0" prefHeight="526.0" prefWidth="245.0" spacing="3.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px 0px 0px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                  <VBox layoutX="12.0" layoutY="124.0" prefHeight="451.0" prefWidth="240.0" spacing="3.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px 0px 0px;" AnchorPane.bottomAnchor="108.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
                         <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="249.0" styleClass="channel_list" stylesheets="@Stylesheet.css" text="Channel Name" textAlignment="CENTER" textFill="WHITE" />
                         <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="249.0" styleClass="channel_list" stylesheets="@Stylesheet.css" text="Channel Name" textAlignment="CENTER" textFill="WHITE" />
@@ -91,7 +82,15 @@
                      <padding>
                         <Insets top="2.0" />
                      </padding></VBox>
-                  <Text fill="WHITE" layoutX="8.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel List :" wrappingWidth="191.13671875" />
+                  <Text fill="WHITE" layoutX="14.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel List :" wrappingWidth="191.13671875" />
+                  <Button layoutX="11.0" layoutY="592.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="display the channel list" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="16.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="CLOSED_HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </AnchorPane>
          </left>
