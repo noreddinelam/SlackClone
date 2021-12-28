@@ -9,8 +9,18 @@ public class GraphicalClientImpl extends ClientImpl{
 
     private GraphicalClientImpl(){}
 
-    public static GraphicalClientImpl getUniqueInstanceOfTerminalClientImpl(){
+    public static GraphicalClientImpl getUniqueInstanceOfGraphicalClientImpl(){
         return instance;
+    }
+
+    @Override
+    public void connectSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void connectFailed(String responseData) {
+
     }
 
     @Override

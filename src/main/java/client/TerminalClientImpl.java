@@ -14,6 +14,17 @@ public class TerminalClientImpl extends ClientImpl {
         return instance;
     }
 
+
+    @Override
+    public void connectSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void connectFailed(String responseData) {
+
+    }
+
     @Override
     public void createChannelSucceeded(String responseData) {
 

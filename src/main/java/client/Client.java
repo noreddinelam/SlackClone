@@ -24,12 +24,12 @@ public class Client {
     private final static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
     private final static Scanner scanner = new Scanner(System.in);
     private final static Logger logger = LoggerFactory.getLogger(Client.class);
+    private final static ClientImpl[] clientImplementations =
+            {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
+                    GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl()};
     private static String clientIpAddress = "";
-    private final static ClientImpl[] clientImplementations = {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
-            GraphicalClientImpl.getUniqueInstanceOfTerminalClientImpl()};
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        new Thread(() ->{Application.launch(SlockUI.class);}).start();
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
         socket.connect(serverIpAddress).get();
         String[] ipParts = socket.getLocalAddress().toString().split(":");
@@ -44,7 +44,7 @@ public class Client {
                     Map<String, String> requestData = new HashMap<>();
                     requestData.put(FieldsRequestName.userName, "test");
                     requestData.put(FieldsRequestName.password, "admin");
-                    requestData.put(FieldsRequestName.guest,clientIpAddress);
+                    requestData.put(FieldsRequestName.guest, clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);

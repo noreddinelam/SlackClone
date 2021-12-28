@@ -14,7 +14,6 @@ public class ClientWriterCompletionHandler implements CompletionHandler<Integer,
         logger.info("{} chars have been sent to the server", result);
         String dataSent = new String(attachment.array());
         logger.info("Data sent to the server \n{}",dataSent);
-        //attachment.clear();
     }
 
     @Override

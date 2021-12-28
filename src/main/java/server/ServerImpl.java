@@ -27,14 +27,12 @@ import java.util.function.Consumer;
 
 public class ServerImpl {
 
-    private static final String usernames[] = {"nouredine", "dola", "amine", "arthur"};
     private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfClients = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, AsynchronousSocketChannel> listOfGuests = new ConcurrentHashMap<>();
     private static final Repository repository = Repository.getRepository();
     private static final Mapper mapper = Mapper.getMapper();
     private static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
     private static final Logger logger = LoggerFactory.getLogger(ServerImpl.class);
-    private static int cpt = 0;
 
     private ServerImpl() {
     }

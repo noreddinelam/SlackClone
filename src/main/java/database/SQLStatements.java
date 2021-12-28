@@ -100,7 +100,7 @@ public class SQLStatements {
     public static String deleteChannel = "DELETE FROM " + channelTable
             + " WHERE " + channelNameColumn + " =? ;";
 
-    public static  String verifyConnection="SELECT COUNT(1) as isUserInDB " +
+    public static  String verifyConnection="SELECT * " +
             " FROM "+ clientTable +
             " WHERE "+ clientUsernameColumn + " = ? and " + clientPasswordColumn +" = ? ;";
 

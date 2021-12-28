@@ -1,17 +1,57 @@
 package client;
 
+import models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import shared.CommunicationTypes;
+import shared.FieldsRequestName;
 import shared.NetCodes;
+import shared.communication.Request;
 import shared.communication.Response;
+import shared.gson_configuration.GsonConfiguration;
 
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 public abstract class ClientImpl {
     protected static final Hashtable<String, Consumer<String>> listOfFunctions = new Hashtable<>();
+    protected User user;
+    protected String ipAddress;
+    protected AsynchronousSocketChannel client;
+    private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
 
     public static Consumer<String> getFunctionWithRequestCode(Response response) {
         return listOfFunctions.get(response.getNetCode());
     }
+
+    public void initThreadReader(){
+        Thread reader = new Thread(() -> {
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            try {
+                while (client.isOpen()) {
+                    int nb = client.read(buffer).get();
+                    String jsonRes = new String(buffer.array()).substring(0, nb);
+                    logger.info("The received response \n{}", jsonRes);
+                    Response response = GsonConfiguration.gson.fromJson(jsonRes, Response.class);
+                    ClientImpl.getFunctionWithRequestCode(response).accept(response.getResponse());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        reader.start();
+    }
+
+    public abstract void connectSucceeded(String responseData);
+
+    public abstract void connectFailed(String responseData);
 
     public abstract void createChannelSucceeded(String responseData);
 
@@ -55,6 +95,9 @@ public abstract class ClientImpl {
 
     public void initListOfFunctions() {
 
+        listOfFunctions.put(NetCodes.CONNECT_SUCCEED,this::connectSucceeded);
+        listOfFunctions.put(NetCodes.CONNECT_FAILED,this::connectFailed);
+
         listOfFunctions.put(NetCodes.CREATE_CHANNEL_SUCCEED, this::createChannelSucceeded);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL_FAILED, this::createChannelFailed);
 
@@ -82,7 +125,47 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.MESSAGE_CONSUMPTION_ERROR, this::messageConsumptionError);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_SUCCEED, this::messageBroadcastSucceed);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_FAILED, this::messageBroadcastFailed);
-
     }
 
+    public void login(String username,String password){
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName,username);
+        data.put(FieldsRequestName.password,password);
+        data.put(FieldsRequestName.guest,this.ipAddress);
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.CONNECTION,requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer,buffer,new ClientWriterCompletionHandler());
+    }
+
+    public void register(String username,String password){
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName,username);
+        data.put(FieldsRequestName.password,password);
+        data.put(FieldsRequestName.guest,this.ipAddress);
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.REGISTER,requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer,buffer,new ClientWriterCompletionHandler());
+    }
+
+    public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {
+        this.client = client;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public AsynchronousSocketChannel getClient() {
+        return client;
+    }
 }
