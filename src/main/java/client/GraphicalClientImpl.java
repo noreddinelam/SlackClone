@@ -1,7 +1,11 @@
 package client;
 
+import front.controllers.AuthController;
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.communication.Response;
+import shared.gson_configuration.GsonConfiguration;
 
 public class GraphicalClientImpl extends ClientImpl{
     private static GraphicalClientImpl instance = new GraphicalClientImpl();
@@ -15,11 +19,27 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void connectSucceeded(String responseData) {
-
+        try {
+            this.user = GsonConfiguration.gson.fromJson(responseData, User.class);
+            logger.info("[Graphic] Login succeeded {}",user);
+            ((AuthController) this.controller).authSucceeded();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void connectFailed(String responseData) {
+
+    }
+
+    @Override
+    public void registerSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void registerFailed(String responseData) {
 
     }
 

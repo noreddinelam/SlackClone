@@ -36,9 +36,10 @@ public class GUIClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/loginregisterpage.fxml"));
         Parent root = (Parent) loader.load();
         AuthController authController = loader.getController();
-        authController.setModelData(client, clientIpAddress);
         primaryStage.setTitle("Slock");
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        authController.setData(client, clientIpAddress,scene);
         //primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.show();
     }

@@ -1,5 +1,6 @@
 package client;
 
+import front.controllers.Controller;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public abstract class ClientImpl {
     protected User user;
     protected String ipAddress;
     protected AsynchronousSocketChannel client;
+    protected Controller controller;
     private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
 
     public static Consumer<String> getFunctionWithRequestCode(Response response) {
@@ -52,6 +54,10 @@ public abstract class ClientImpl {
     public abstract void connectSucceeded(String responseData);
 
     public abstract void connectFailed(String responseData);
+
+    public abstract void registerSucceeded(String responseData);
+
+    public abstract void registerFailed(String responseData);
 
     public abstract void createChannelSucceeded(String responseData);
 
@@ -97,6 +103,9 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.CONNECT_SUCCEED,this::connectSucceeded);
         listOfFunctions.put(NetCodes.CONNECT_FAILED,this::connectFailed);
+
+        listOfFunctions.put(NetCodes.REGISTER_SUCCEED,this::registerSucceeded);
+        listOfFunctions.put(NetCodes.REGISTER_FAILED,this::registerFailed);
 
         listOfFunctions.put(NetCodes.CREATE_CHANNEL_SUCCEED, this::createChannelSucceeded);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL_FAILED, this::createChannelFailed);
@@ -159,6 +168,10 @@ public abstract class ClientImpl {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
     public String getIpAddress() {

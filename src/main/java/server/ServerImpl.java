@@ -37,7 +37,6 @@ public class ServerImpl {
     private ServerImpl() {
     }
 
-    // TODO : Add client socket to list of clients and remove it from guests socket
     public static void connect(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String guest = requestData.get(FieldsRequestName.guest);
@@ -47,7 +46,7 @@ public class ServerImpl {
         try {
             ResultSet rs = repository.connectionDB(username, password).orElseThrow(ConnectionException::new);
             if (rs.next()) {
-                Response response = new Response(NetCodes.CONNECT_SUCCEED, "You are connected !");
+                Response response = new Response(NetCodes.CONNECT_SUCCEED, GsonConfiguration.gson.toJson(new User(username,password)));
                 String responseJson = GsonConfiguration.gson.toJson(response);
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
                 listOfClients.put(username, client);
@@ -64,7 +63,6 @@ public class ServerImpl {
         }
     }
 
-    // TODO : Add client socket to list ofclients and remove it from guests socket
     public static void register(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String guest = requestData.get(FieldsRequestName.guest);

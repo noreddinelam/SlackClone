@@ -26,6 +26,16 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void registerSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void registerFailed(String responseData) {
+
+    }
+
+    @Override
     public void createChannelSucceeded(String responseData) {
 
     }
