@@ -13,6 +13,10 @@ public class Channel {
     public Channel() {
     }
 
+    public Channel(String channelName){
+        this.channelName = channelName;
+    }
+
 
     public Channel(User admin, String channelName, String channelDescription, boolean isPublic) {
         this.admin = admin;

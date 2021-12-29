@@ -13,11 +13,6 @@ public abstract class Controller implements Initializable {
     protected ClientImpl clientImpl;
     protected Scene scene;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
-    }
-
     public void setData(AsynchronousSocketChannel client, String ipAddress, Scene scene){
         this.clientImpl.setAsynchronousSocketChannel(client);
         this.clientImpl.setIpAddress(ipAddress);

@@ -1,5 +1,6 @@
 package front.controllers;
 
+import client.GraphicalClientImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -7,7 +8,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
-public class SlockController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class SlockController extends Controller {
 
     @FXML
     private Text clientUsername;
@@ -44,6 +48,7 @@ public class SlockController {
 
     @FXML
     void onLeaveCurrentChannel(ActionEvent event) {
+        System.out.println("jdghjkfhqsdkjfhqksjdfhklqjsdfh");
 
     }
 
@@ -62,4 +67,9 @@ public class SlockController {
 
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
+        this.clientUsername.setText(this.clientImpl.getUser().getUsername());
+    }
 }

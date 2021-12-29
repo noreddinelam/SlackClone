@@ -158,6 +158,15 @@ public abstract class ClientImpl {
         this.client.write(buffer,buffer,new ClientWriterCompletionHandler());
     }
 
+    public void listOfJoinedChannels(){
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName,this.user.getUsername());
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.REGISTER,requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer,buffer,new ClientWriterCompletionHandler());
+    }
+
     public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {
         this.client = client;
     }
@@ -180,5 +189,9 @@ public abstract class ClientImpl {
 
     public AsynchronousSocketChannel getClient() {
         return client;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

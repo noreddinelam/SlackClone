@@ -61,6 +61,14 @@ public class NetCodes {
 
     public static String REQUEST_JOIN_FAILED = "1302";
 
+    public static String LIST_OF_JOINED_CHANNELS = "1500";
+    public static String LIST_OF_JOINED_CHANNELS_SUCCEEDED = "1501";
+    public static String LIST_OF_JOINED_CHANNELS_FAILED = "1502";
+
+    public static String LIST_OF_UN_JOINED_CHANNELS = "1600";
+    public static String LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED = "1601";
+    public static String LIST_OF_UN_JOINED_CHANNELS_FAILED = "1602";
+
 
     private NetCodes(){}
 }

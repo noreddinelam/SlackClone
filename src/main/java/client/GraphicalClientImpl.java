@@ -35,7 +35,13 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void registerSucceeded(String responseData) {
-
+        try {
+            this.user = GsonConfiguration.gson.fromJson(responseData, User.class);
+            logger.info("[Graphic] Register succeeded {}",user);
+            ((AuthController) this.controller).authSucceeded();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

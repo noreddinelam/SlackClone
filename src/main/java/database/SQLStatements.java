@@ -6,15 +6,15 @@ public class SQLStatements {
     //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
     public static String listChannelsInServer =
             "SELECT * "
-                    + "FROM " + channelTable+" ;";
-     /*
-    public static String listChannelsInServer =
-            "SELECT * "
-                    + "FROM " + channelTable
-                    + " INNER JOIN " + clientTable + "ON " + channelTable +
-                    "." + channelAdminUsernameColumn + "=" + clientTable +
-                    "." + clientUsernameColumn + ";";
-    */
+                    + "FROM " + channelTable + " ;";
+    /*
+   public static String listChannelsInServer =
+           "SELECT * "
+                   + "FROM " + channelTable
+                   + " INNER JOIN " + clientTable + "ON " + channelTable +
+                   "." + channelAdminUsernameColumn + "=" + clientTable +
+                   "." + clientUsernameColumn + ";";
+   */
     public static String listOfUserInChannel =
             "SELECT " + clientChannelUsernameColumn
                     + " FROM " + clientChannelTable
@@ -23,7 +23,7 @@ public class SQLStatements {
     public static String listOfMessageInChannel =
             "SELECT " + messageContentColumn
                     + " FROM " + messageTable
-                    + " where " +messageChannelNameColumn + " = ? ;";
+                    + " where " + messageChannelNameColumn + " = ? ;";
 
 
     public static String joinChannel =
@@ -32,35 +32,35 @@ public class SQLStatements {
                     + " VALUES (?,?) ;";
 
     public static String verifyJoinChannel =
-            "SELECT *"+" FROM "+
-                    clientChannelTable +" WHERE "+
-                    clientChannelChannelNameColumn+"=?"+
-                    " AND "+clientChannelUsernameColumn+ "=? ;";
+            "SELECT *" + " FROM " +
+                    clientChannelTable + " WHERE " +
+                    clientChannelChannelNameColumn + "=?" +
+                    " AND " + clientChannelUsernameColumn + "=? ;";
 
     public static String verifyRequestJoinChannel =
-            "SELECT *"+" FROM "+
-                    requestTable +" WHERE "+
-                    requestChannelName+"=?"+
-                    " AND "+requestUsername+ "=? ;";
+            "SELECT *" + " FROM " +
+                    requestTable + " WHERE " +
+                    requestChannelName + "=?" +
+                    " AND " + requestUsername + "=? ;";
 
     public static String verifyChannelStatus =
-            "SELECT isPublic"+" FROM "+
-                    channelTable +" WHERE "+
-                    channelNameColumn+"=?;";
+            "SELECT isPublic" + " FROM " +
+                    channelTable + " WHERE " +
+                    channelNameColumn + "=?;";
 
     public static String addRequestJoinChannel =
             "INSERT INTO " + requestTable
-                    + "(" + requestAdminName + ","+ requestChannelName + "," + requestUsername
-                    +   ")" +
+                    + "(" + requestAdminName + "," + requestChannelName + "," + requestUsername
+                    + ")" +
                     " VALUES (?,?,?) ;";
 
     public static String joinListChannelRequest =
-            "SELECT "+ requestChannelName +","+ requestUsername +" FROM " +  requestTable
-                    + " WHERE " + requestAdminName+"=? ;";
+            "SELECT " + requestChannelName + "," + requestUsername + " FROM " + requestTable
+                    + " WHERE " + requestAdminName + "=? ;";
 
     public static String deleteRequestJoinChannel =
-            "DELETE FROM " +  requestTable
-                    + " WHERE " + requestChannelName+"=? AND "+ requestUsername +"=? ;";
+            "DELETE FROM " + requestTable
+                    + " WHERE " + requestChannelName + "=? AND " + requestUsername + "=? ;";
 
 
     public static String createChannel =
@@ -100,14 +100,24 @@ public class SQLStatements {
     public static String deleteChannel = "DELETE FROM " + channelTable
             + " WHERE " + channelNameColumn + " =? ;";
 
-    public static  String verifyConnection="SELECT * " +
-            " FROM "+ clientTable +
-            " WHERE "+ clientUsernameColumn + " = ? and " + clientPasswordColumn +" = ? ;";
+    public static String verifyConnection = "SELECT * " +
+            " FROM " + clientTable +
+            " WHERE " + clientUsernameColumn + " = ? and " + clientPasswordColumn + " = ? ;";
 
     public static String register =
             "INSERT INTO " + clientTable
                     + "(" + clientUsernameColumn + "," + clientPasswordColumn + ")"
                     + " VALUES (?,?) ;";
+
+    public static String listOfJoinedChannels =
+            "SELECT * FROM " + clientChannelTable + " WHERE " + clientChannelUsernameColumn + " = ?";
+
+    public static String listOfUnJoinedChannels =
+            "SELECT  * FROM "+channelTable+
+                    "WHERE " + channelNameColumn +" NOT IN (SELECT "+ clientChannelTable
+                    + "FROM " + channelTable+" WHERE "+
+                    clientChannelUsernameColumn+"=?);";
+
     private SQLStatements() {
     }
 }

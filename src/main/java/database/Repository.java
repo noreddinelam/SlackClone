@@ -240,6 +240,29 @@ public class Repository {
         }
     }
 
+    public Optional<ResultSet> listOfJoinedChannels(String username){
+        try {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfJoinedChannels);
+            stmt.setString(1,username);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    //TODO : add correspondant in server impl
+    public Optional<ResultSet> listOfUnJoinedChannels(String username){
+        try {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUnJoinedChannels);
+            stmt.setString(1,username);
+            return Optional.of(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<ResultSet> listOfUserInChannelDB(String channelName) {
         try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUserInChannel);

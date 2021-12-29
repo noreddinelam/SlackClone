@@ -440,6 +440,9 @@ public class ServerImpl {
             Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, data);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
+            buffer.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
             AsynchronousSocketChannel broadcastClient;
             String broadcastUsername;
             while (result.next()) {
@@ -461,6 +464,33 @@ public class ServerImpl {
         }
     }
 
+    public static void listOfJoinedChannels(String data){
+        Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            ResultSet channels = repository.listOfJoinedChannels(username).orElseThrow(ListOfJoinedChannels::new);
+            Map<String,List<Channel>> listOfChannels = new HashMap<>();
+            List<Channel> joinedChannels = new ArrayList<>();
+            while(channels.next()){
+                joinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn)));
+            }
+            listOfChannels.put(FieldsRequestName.listChannels,joinedChannels);
+            String dataJson = GsonConfiguration.gson.toJson(listOfChannels,CommunicationTypes.mapListChannelJsonTypeData);
+            Response response = new Response(NetCodes.LIST_OF_JOINED_CHANNELS_SUCCEEDED,dataJson);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
+            buffer.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        } catch (ListOfJoinedChannels e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public static void initListOfFunctions() {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
@@ -477,6 +507,7 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL, ServerImpl::listOfMessageInChannel);
         listOfFunctions.put(NetCodes.LIST_REQUEST_JOIN_CHANNEL, ServerImpl::listOfRequests);
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_CHANNEL, ServerImpl::responseRequests);
+        listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS,ServerImpl::listOfJoinedChannels);
     }
 
     public static Consumer<String> getFunctionWithRequestCode(Request request) {
