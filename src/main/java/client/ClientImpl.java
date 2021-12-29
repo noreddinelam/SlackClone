@@ -38,13 +38,12 @@ public abstract class ClientImpl {
                 while (client.isOpen()) {
                     int nb = client.read(buffer).get();
                     String jsonRes = new String(buffer.array()).substring(0, nb);
+                    buffer.clear();
                     logger.info("The received response \n{}", jsonRes);
                     Response response = GsonConfiguration.gson.fromJson(jsonRes, Response.class);
                     ClientImpl.getFunctionWithRequestCode(response).accept(response.getResponse());
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         });

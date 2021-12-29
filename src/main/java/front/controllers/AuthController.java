@@ -1,10 +1,12 @@
 package front.controllers;
 
 import client.GraphicalClientImpl;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -32,9 +34,16 @@ public class AuthController extends Controller {
     public void authSucceeded() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/vue.fxml"));
         Parent root = loader.load();
-        //SlockController controller = loader.getController();
-        //controller.setData(this.clientImpl.getClient(),this.clientImpl.getIpAddress(), this.scene);
         this.scene.setRoot(root);
+    }
+
+    public void authFailed(String failureMessage) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Authentication Failed");
+            alert.setContentText(failureMessage);
+            alert.showAndWait();
+        });
     }
 
     @Override

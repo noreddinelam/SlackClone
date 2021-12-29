@@ -30,7 +30,7 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void connectFailed(String responseData) {
-
+        ((AuthController) this.controller).authFailed(responseData);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void registerFailed(String responseData) {
-
+        ((AuthController) this.controller).authFailed(responseData);
     }
 
     @Override
