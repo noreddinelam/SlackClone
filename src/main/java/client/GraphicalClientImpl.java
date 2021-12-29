@@ -131,7 +131,6 @@ public class GraphicalClientImpl extends ClientImpl{
         Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapListChannelJsonTypeData);
         List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
         this.user.setChannels(channels);
-        System.out.println("lksdhfklqdshfqljsdhfqjldmshfqlmksdfh");
         ((SlockController) this.controller).initListJoinedChannels(channels);
     }
 

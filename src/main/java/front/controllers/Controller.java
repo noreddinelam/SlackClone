@@ -21,4 +21,5 @@ public abstract class Controller implements Initializable {
         this.clientImpl.setController(this);
         this.scene = scene;
     }
+
 }
