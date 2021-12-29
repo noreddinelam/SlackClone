@@ -270,9 +270,7 @@ public class Repository {
             return Optional.empty();
         }
     }
-
-    //TODO : add correspondant in server impl
-    public Optional<ResultSet> listOfUnJoinedChannels(String username){
+    public Optional<ResultSet> listOfUnJoinedChannelsDB(String username){
         try {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.listOfUnJoinedChannels);
             stmt.setString(1,username);

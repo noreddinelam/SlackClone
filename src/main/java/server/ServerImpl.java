@@ -513,6 +513,35 @@ public class ServerImpl {
         }
     }
 
+    public static void listOfUnJoinedChannels(String data){
+        Map<String,String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            ResultSet channels = repository.listOfUnJoinedChannelsDB(username).orElseThrow(listOfUnJoinedChannelsException ::new);
+            Map<String,List<Channel>> listOfChannels = new HashMap<>();
+            List<Channel> unJoinedChannels = new ArrayList<>();
+            while(channels.next()){
+
+                unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn),channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
+            }
+            listOfChannels.put(FieldsRequestName.listChannels,unJoinedChannels);
+            String dataJson = GsonConfiguration.gson.toJson(listOfChannels,CommunicationTypes.mapListChannelJsonTypeData);
+            System.out.println(dataJson);
+            Response response = new Response(NetCodes.LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED,dataJson);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(buffer, buffer, new ServerWriterCompletionHandler());
+            buffer.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        }  catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (listOfUnJoinedChannelsException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void initListOfFunctions() {
         // initialisation of methods;
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
@@ -531,6 +560,7 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_CHANNEL, ServerImpl::responseRequests);
         listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS, ServerImpl::listOfJoinedChannels);
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL, ServerImpl::leaveChannel);
+        listOfFunctions.put(NetCodes.LIST_OF_UN_JOINED_CHANNELS, ServerImpl::listOfUnJoinedChannels);
     }
 
     public static Consumer<String> getFunctionWithRequestCode(Request request) {
