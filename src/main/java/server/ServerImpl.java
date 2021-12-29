@@ -53,6 +53,9 @@ public class ServerImpl {
                 listOfClients.put(username, client);
                 listOfGuests.remove(guest);
                 client.write(attachment, attachment, new ServerWriterCompletionHandler());
+                attachment.clear();
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
             } else {
                 throw new ConnectionException();
             }
@@ -79,6 +82,9 @@ public class ServerImpl {
             listOfClients.put(username, client);
             listOfGuests.remove(guest);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (RegisterException e) {
             Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED ! username already exists" +
                     " !");

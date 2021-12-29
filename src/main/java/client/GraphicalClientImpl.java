@@ -1,11 +1,18 @@
 package client;
 
 import front.controllers.AuthController;
+import front.controllers.SlockController;
+import models.Channel;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.CommunicationTypes;
+import shared.FieldsRequestName;
 import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
+
+import java.util.List;
+import java.util.Map;
 
 public class GraphicalClientImpl extends ClientImpl{
     private static GraphicalClientImpl instance = new GraphicalClientImpl();
@@ -51,7 +58,7 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void createChannelSucceeded(String responseData) {
-
+        //TODO : createChannelSucceeded
     }
 
     @Override
@@ -116,6 +123,30 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void listChannelsInServerFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfJoinedChannelsSucceeded(String responseData) {
+        Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapListChannelJsonTypeData);
+        List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
+        this.user.setChannels(channels);
+        System.out.println("lksdhfklqdshfqljsdhfqjldmshfqlmksdfh");
+        ((SlockController) this.controller).initListJoinedChannels(channels);
+    }
+
+    @Override
+    public void listOfJoinedChannelsFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsFailed(String responseData) {
 
     }
 

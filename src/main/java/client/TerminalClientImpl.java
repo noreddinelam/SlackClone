@@ -106,6 +106,26 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void listOfJoinedChannelsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfJoinedChannelsFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsFailed(String responseData) {
+
+    }
+
+    @Override
     public void listOfUserInChannelSucceeded(String responseData) {
 
     }

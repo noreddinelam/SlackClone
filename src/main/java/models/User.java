@@ -22,6 +22,14 @@ public class User {
 
     public String getPassword() {return password;}
 
+    public void setChannels(List<Channel> channels) {
+        this.channels = channels;
+    }
+
+    public void addChannel(Channel channel){
+        this.channels.add(channel);
+    }
+
     @Override
     public String toString() {
         return "User{" +
