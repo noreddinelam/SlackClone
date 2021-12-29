@@ -13,8 +13,9 @@ public class Channel {
     public Channel() {
     }
 
-    public Channel(String channelName){
+    public Channel(String channelName, boolean isPublic){
         this.channelName = channelName;
+        this.isPublic=isPublic;
     }
 
 
@@ -23,6 +24,10 @@ public class Channel {
         this.channelName = channelName;
         this.channelDescription = channelDescription;
         this.isPublic = isPublic;
+    }
+
+    public Channel(String channelName) {
+        this.channelName = channelName;
     }
 
 

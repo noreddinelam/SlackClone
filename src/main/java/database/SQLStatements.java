@@ -114,8 +114,8 @@ public class SQLStatements {
 
     public static String listOfUnJoinedChannels =
             "SELECT  * FROM "+channelTable+
-                    "WHERE " + channelNameColumn +" NOT IN (SELECT "+ clientChannelTable
-                    + "FROM " + channelTable+" WHERE "+
+                    " WHERE " + channelNameColumn +" NOT IN (SELECT "+ clientChannelChannelNameColumn
+                    + " FROM " + clientChannelTable+" WHERE "+
                     clientChannelUsernameColumn+"=?);";
 
     public static String deleteUserWhenChannelDeleted =
