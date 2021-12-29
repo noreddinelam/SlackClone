@@ -69,6 +69,9 @@ public class NetCodes {
     public static String LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED = "1601";
     public static String LIST_OF_UN_JOINED_CHANNELS_FAILED = "1602";
 
+    public static String LEAVE_CHANNEL = "1400";
+    public static String LEAVE_CHANNEL_SUCCEED  = "1401";
+    public static String LEAVE_CHANNEL_FAILED = "1402";
 
     private NetCodes(){}
 }

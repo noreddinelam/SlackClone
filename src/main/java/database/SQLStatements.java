@@ -118,6 +118,15 @@ public class SQLStatements {
                     + "FROM " + channelTable+" WHERE "+
                     clientChannelUsernameColumn+"=?);";
 
+    public static String deleteUserWhenChannelDeleted =
+            "DELETE FROM " +  clientChannelTable
+                    + " WHERE " + requestChannelName+"=? ;";
+
+    public static String leaveChannel =
+            "DELETE FROM " +  clientChannelTable
+                    + " WHERE " + requestChannelName+"=?  AND "+ requestUsername +"=? ;";
+
+
     private SQLStatements() {
     }
 }

@@ -129,6 +129,17 @@ public class Repository {
             return Optional.empty();
         }
     }
+    public Optional<Boolean> leaveChannelDB(String channelName,String username) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.leaveChannel)) {
+            stmt.setString(1, channelName);
+            stmt.setString(2, username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
 
     public Optional<Boolean> createUserDB(User user) {
         try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.createUser)) {
@@ -170,6 +181,15 @@ public class Repository {
         try (PreparedStatement deleteMessage = connectionDB.prepareStatement(SQLStatements.deleteMessage)) {
             deleteMessage.setInt(1, idMessage);
             return Optional.of(deleteMessage.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<Boolean> deleteUserWhenChannelDeletedDB(String channelName) {
+        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteUserWhenChannelDeleted)) {
+            stmt.setString(1, channelName);
+            return Optional.of(stmt.execute());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();

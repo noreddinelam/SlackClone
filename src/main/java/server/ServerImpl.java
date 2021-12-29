@@ -189,6 +189,25 @@ public class ServerImpl {
             e.printStackTrace();
         }
     }
+    public static void leaveChannel(String data){
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName = requestData.get(FieldsRequestName.channelName);
+        logger.info("leaving channel {} ", data);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            repository.leaveChannelDB(channelName,username).orElseThrow(LeaveChannelException::new);
+            Response response = new Response(NetCodes.CREATE_CHANNEL_SUCCEED, "Channel leaved");
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        } catch (LeaveChannelException e) {
+            e.printStackTrace();
+        }
+    }
 
     //TODO : there is enhancements in future (didn't handle the return of deleteMessageDB )
     public static void deleteMessage(String data) {
@@ -241,6 +260,7 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
         try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, "Channel deletion succeeded");
+            repository.deleteUserWhenChannelDeletedDB(channelName).orElseThrow(DeleteUserWhenChannelDeletedException::new);
             repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
@@ -251,6 +271,8 @@ public class ServerImpl {
             e.printStackTrace();
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
+        } catch (DeleteUserWhenChannelDeletedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -508,6 +530,7 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.LIST_REQUEST_JOIN_CHANNEL, ServerImpl::listOfRequests);
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_CHANNEL, ServerImpl::responseRequests);
         listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS,ServerImpl::listOfJoinedChannels);
+        listOfFunctions.put(NetCodes.LEAVE_CHANNEL, ServerImpl::leaveChannel);
     }
 
     public static Consumer<String> getFunctionWithRequestCode(Request request) {
