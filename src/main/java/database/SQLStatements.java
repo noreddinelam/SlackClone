@@ -108,6 +108,17 @@ public class SQLStatements {
             "INSERT INTO " + clientTable
                     + "(" + clientUsernameColumn + "," + clientPasswordColumn + ")"
                     + " VALUES (?,?) ;";
+    //TODO : delete the clients from client_channel when channel is deleted.
+
+    public static String deleteUserWhenChannelDeleted =
+            "DELETE FROM " +  clientChannelTable
+                    + " WHERE " + requestChannelName+"=? ;";
+
+    public static String leaveChannel =
+            "DELETE FROM " +  clientChannelTable
+                    + " WHERE " + requestChannelName+"=?  AND "+ requestUsername +"=? ;";
+
+
     private SQLStatements() {
     }
 }

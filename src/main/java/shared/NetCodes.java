@@ -61,6 +61,11 @@ public class NetCodes {
 
     public static String REQUEST_JOIN_FAILED = "1302";
 
+    public static String LEAVE_CHANNEL = "1400";
+    public static String LEAVE_CHANNEL_SUCCEED  = "1401";
+    public static String LEAVE_CHANNEL_FAILED = "1402";
+
+
 
     private NetCodes(){}
 }
