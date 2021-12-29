@@ -538,7 +538,8 @@ public class ServerImpl {
     }
 
     public static void addGuestClients(AsynchronousSocketChannel client) throws IOException {
-        listOfGuests.put(client.getRemoteAddress().toString().split(":")[1], client);
+        //listOfGuests.put(client.getRemoteAddress().toString().split(":")[1], client);
+        listOfClients.put("dola",client);
     }
 
     private static void requestFailure(Response response, AsynchronousSocketChannel client) {

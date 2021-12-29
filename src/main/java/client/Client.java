@@ -1,7 +1,5 @@
 package client;
 
-import front.models.SlockUI;
-import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.FieldsRequestName;
@@ -42,9 +40,8 @@ public class Client {
                 try {
                     line = scanner.nextLine();
                     Map<String, String> requestData = new HashMap<>();
-                    requestData.put(FieldsRequestName.userName, "test");
-                    requestData.put(FieldsRequestName.password, "admin");
-                    requestData.put(FieldsRequestName.guest, clientIpAddress);
+                    requestData.put(FieldsRequestName.userName, "dola");
+                    //requestData.put(FieldsRequestName.guest, clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
