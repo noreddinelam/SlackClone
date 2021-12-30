@@ -93,12 +93,13 @@ public class ServerImpl {
     }
 
     public static void createChannel(String data) {
+        //todo add to clientchannel table
         Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
         AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
         logger.info("Create channel data received {}", requestData);
         try {
             repository.createChannelDB(requestData).orElseThrow(CreateChannelException::new);
-            Response response = new Response(NetCodes.CREATE_CHANNEL_SUCCEED, "Channel created");
+            Response response = new Response(NetCodes.CREATE_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(requestData));
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             logger.info("username {}", requestData.getAdmin().getUsername());
@@ -256,18 +257,22 @@ public class ServerImpl {
     }
 
     public static void deleteChannel(String data) {
+        //todo broadcast channel deletion -- verification si le channel existe
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
         try {
-            Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, "Channel deletion succeeded");
+            Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, data);
             repository.deleteUserWhenChannelDeletedDB(channelName).orElseThrow(DeleteUserWhenChannelDeletedException::new);
-            repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
-            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
-            client.write(buffer, buffer, new ServerWriterCompletionHandler());
-            buffer.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            int result = repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
+            if (result != 0) {
+                ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
+                client.write(buffer, buffer, new ServerWriterCompletionHandler());
+                buffer.clear();
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            }
+            else throw new DeleteChannelException();
         } catch (DeleteChannelException e) {
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
@@ -518,24 +523,24 @@ public class ServerImpl {
         String username = requestData.get(FieldsRequestName.userName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            ResultSet channels = repository.listOfUnJoinedChannelsDB(username).orElseThrow(listOfUnJoinedChannelsException ::new);
-            Map<String,List<Channel>> listOfChannels = new HashMap<>();
+            ResultSet channels = repository.listOfUnJoinedChannelsDB(username).orElseThrow(listOfUnJoinedChannelsException::new);
+            Map<String, List<Channel>> listOfChannels = new HashMap<>();
             List<Channel> unJoinedChannels = new ArrayList<>();
-            while(channels.next()){
+            while (channels.next()) {
 
-                unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn),channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
+                unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn), channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
             }
-            listOfChannels.put(FieldsRequestName.listChannels,unJoinedChannels);
-            String dataJson = GsonConfiguration.gson.toJson(listOfChannels,CommunicationTypes.mapListChannelJsonTypeData);
+            listOfChannels.put(FieldsRequestName.listChannels, unJoinedChannels);
+            String dataJson = GsonConfiguration.gson.toJson(listOfChannels, CommunicationTypes.mapListChannelJsonTypeData);
             System.out.println(dataJson);
-            Response response = new Response(NetCodes.LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED,dataJson);
+            Response response = new Response(NetCodes.LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED, dataJson);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        }  catch (SQLException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (listOfUnJoinedChannelsException e) {
             e.printStackTrace();
