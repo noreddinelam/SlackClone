@@ -20,6 +20,7 @@ public class FieldsRequestName {
     public static String channelPublic = "ChannelPUBLIC";
     public static String channelDescription = "ChannelDESCRIPTION";
     public static String listChannels = "listCHANNELS";
+    public static String newChannelName = "NewChannelNAME";
 
     //Messages Fields
     public static String messageID = "MessageID";

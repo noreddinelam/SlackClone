@@ -205,6 +205,7 @@ public class Repository {
             return Optional.empty();
         }
     }
+
     public Optional<ResultSet> verifyChannelStatusDB(String channelName) {
         try  {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.verifyChannelStatus);
@@ -215,6 +216,7 @@ public class Repository {
             return Optional.empty();
         }
     }
+
     public Optional<Boolean> joinChannelStatusRequestDB(String admin,String channelName,String username) {
         try  {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.addRequestJoinChannel);
@@ -227,6 +229,77 @@ public class Repository {
             return Optional.empty();
         }
     }
+
+    public Optional<Boolean> deleteUserFromMyChannelDB(String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteUserFromMyChannel);
+            stmt.setString(1,channelName);
+            stmt.setString(2, username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Boolean> insertAdminClientChannelTableDB(String channelName,String username) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.insertAdminClientChannelTable);
+            stmt.setString(1,channelName);
+            stmt.setString(2, username);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Boolean> modifyChannelNameDB(String NewChannelName,String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelName);
+            stmt.setString(1,NewChannelName);
+            stmt.setString(2, channelName);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Boolean> modifyChannelStatusDB(boolean NewChannelStatus,String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelStatus);
+            stmt.setBoolean(1,NewChannelStatus);
+            stmt.setString(2, channelName);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+
+    public Optional<Boolean> deleteMessagesWhenDeletingChannelDB(String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteMessagesWhenDeletingChannel);
+            stmt.setString(1,channelName);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public Optional<Boolean> deleteRequestWhenDeletingChannelDB(String channelName) {
+        try  {
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteRequestsWhenDeletingChannel);
+            stmt.setString(1,channelName);
+            return Optional.of(stmt.execute());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<ResultSet> responseJoinChannelRequestDB(String admin) {
         try  {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.joinListChannelRequest);
