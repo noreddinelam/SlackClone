@@ -93,12 +93,13 @@ public class ServerImpl {
     }
 
     public static void createChannel(String data) {
-        //todo add to clientchannel table
+
         Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
         AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
         logger.info("Create channel data received {}", requestData);
         try {
             repository.createChannelDB(requestData).orElseThrow(CreateChannelException::new);
+            repository.insertAdminClientChannelTableDB(requestData.getChannelName(),requestData.getAdmin().getUsername()).orElseThrow(InsertAdminClientChannelTableException::new);
             Response response = new Response(NetCodes.CREATE_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(requestData));
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
@@ -110,6 +111,8 @@ public class ServerImpl {
         } catch (CreateChannelException e) {
             Response response = new Response(NetCodes.CREATE_CHANNEL_FAILED, "Channel creation failed");
             requestFailure(response, client);
+        } catch (InsertAdminClientChannelTableException e) {
+            e.printStackTrace();
         }
     }
 
@@ -156,12 +159,10 @@ public class ServerImpl {
                     ResultSet verifyResultSetRequest =
                             repository.verifyRequestJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
                     if (!verifyResultSetRequest.next()) {
-                        System.out.println("request sent");
                         repository.joinChannelStatusRequestDB(admin, channelName, username).orElseThrow(ResponseJoinChannelException::new);
                         response = new Response(NetCodes.JOIN_PRIVATE_CHANNEL, "Your request is sent to the admin to " +
                                 "join the channel");
                     } else {
-                        System.out.println("request not sent");
                         logger.info("Request already set ");
                         response = new Response(NetCodes.REQUEST_JOIN_FAILED, "request is already set");
                     }
@@ -263,6 +264,8 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
         try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, data);
+            repository.deleteRequestWhenDeletingChannelDB(channelName).orElseThrow(DeleteRequestWhenDeletingChannelException::new);
+            repository.deleteMessagesWhenDeletingChannelDB(channelName).orElseThrow(DeleteMessagesWhenDeletingChannelException::new);
             repository.deleteUserWhenChannelDeletedDB(channelName).orElseThrow(DeleteUserWhenChannelDeletedException::new);
             int result = repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             if (result != 0) {
@@ -278,6 +281,73 @@ public class ServerImpl {
             requestFailure(response, client);
         } catch (DeleteUserWhenChannelDeletedException e) {
             e.printStackTrace();
+        } catch (DeleteMessagesWhenDeletingChannelException e) {
+            e.printStackTrace();
+        } catch (DeleteRequestWhenDeletingChannelException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteUserFromMyChannel(String data){
+        //todo : gestion de l'admin coté front
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName = requestData.get(FieldsRequestName.channelName);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_SUCCEED, data);
+            repository.deleteUserFromMyChannelDB(channelName,username).orElseThrow(DeleteUserWhenChannelDeletedException::new);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        } catch (DeleteUserWhenChannelDeletedException e) {
+            Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_FAILED, "DELETE USER failed");
+            requestFailure(response, client);
+        }
+    }
+
+    public static void modifyChannelName(String data){
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username = requestData.get(FieldsRequestName.userName);
+        String channelName = requestData.get(FieldsRequestName.channelName);
+        String newChannelName = requestData.get(FieldsRequestName.newChannelName);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        try {
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
+            repository.modifyChannelNameDB(newChannelName, channelName).orElseThrow(ModifyChannelNameException::new);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        } catch (ModifyChannelNameException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_FAILED, "Modify Channel NAME failed");
+            requestFailure(response, client);
+        }
+
+    }
+
+    public static void modifyChannelStatus(String data){
+        Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
+        AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
+        try {
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
+            repository.modifyChannelStatusDB(requestData.isPublic(),requestData.getChannelName()).orElseThrow(ModifyChannelStatusException::new);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+        }  catch (ModifyChannelStatusException e) {
+            e.printStackTrace();
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_STATUS_FAILED, "Modify Channel Status failed");
+            requestFailure(response, client);
         }
     }
 
@@ -568,6 +638,10 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS, ServerImpl::listOfJoinedChannels);
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL, ServerImpl::leaveChannel);
         listOfFunctions.put(NetCodes.LIST_OF_UN_JOINED_CHANNELS, ServerImpl::listOfUnJoinedChannels);
+        listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL, ServerImpl::deleteUserFromMyChannel);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_NAME, ServerImpl::modifyChannelName);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_STATUS, ServerImpl::modifyChannelStatus);
+
     }
 
     public static Consumer<String> getFunctionWithRequestCode(Request request) {
