@@ -257,7 +257,7 @@ public class ServerImpl {
     }
 
     public static void deleteChannel(String data) {
-        //todo broadcast channel deletion -- verification si le channel existe
+        //todo broadcast channel deletion
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));

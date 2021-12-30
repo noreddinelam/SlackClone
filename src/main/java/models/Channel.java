@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ public class Channel {
     private List<User> allowedUsers;
     private String channelName;
     private String channelDescription;
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
     private boolean isPublic;//true = a public channel.
 
     public Channel() {
@@ -42,6 +43,14 @@ public class Channel {
 
     public String getChannelDescription() {
         return channelDescription;
+    }
+
+    public void addMessages(List<Message> listOfMessages){
+        this.messages.addAll(listOfMessages);
+    }
+
+    public List<Message> getMessages() {
+        return messages;
     }
 
     public boolean isPublic() {

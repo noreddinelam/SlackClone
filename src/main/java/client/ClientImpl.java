@@ -2,6 +2,7 @@ package client;
 
 import front.controllers.Controller;
 import models.Channel;
+import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -187,7 +189,7 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void getAllMessages(){
+    public void getAllMessages() {
         this.user.getChannels().forEach(channel -> {
             Map<String, String> data = new HashMap<>();
             data.put(FieldsRequestName.userName, this.user.getUsername());
@@ -200,7 +202,7 @@ public abstract class ClientImpl {
     }
 
     public void createChannel(String channelName, boolean isPublic) {
-        Channel data = new Channel(this.user,channelName,"",isPublic);
+        Channel data = new Channel(this.user, channelName, "", isPublic);
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.CREATE_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
@@ -208,13 +210,19 @@ public abstract class ClientImpl {
     }
 
     public void deleteChannel(String channelName) {
-        Map<String,String> data = new HashMap<>();
-        data.put(FieldsRequestName.channelName,channelName);
-        data.put(FieldsRequestName.userName,this.user.getUsername());
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.userName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
         Request request = new Request(NetCodes.DELETE_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    // Functions that don't do sql requests :
+
+    public List<Message> listOfMessagesInChannel(String channelName){
+        return this.user.getListOfMessagesFromChannel(channelName);
     }
 
     public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {

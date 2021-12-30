@@ -5,6 +5,7 @@ import front.controllers.SlockController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import models.Channel;
+import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,14 @@ import shared.gson_configuration.GsonConfiguration;
 import java.util.List;
 import java.util.Map;
 
-public class GraphicalClientImpl extends ClientImpl{
-    private static GraphicalClientImpl instance = new GraphicalClientImpl();
+public class GraphicalClientImpl extends ClientImpl {
     private static final Logger logger = LoggerFactory.getLogger(GraphicalClientImpl.class);
+    private static GraphicalClientImpl instance = new GraphicalClientImpl();
 
-    private GraphicalClientImpl(){}
+    private GraphicalClientImpl() {
+    }
 
-    public static GraphicalClientImpl getUniqueInstanceOfGraphicalClientImpl(){
+    public static GraphicalClientImpl getUniqueInstanceOfGraphicalClientImpl() {
         return instance;
     }
 
@@ -116,7 +118,8 @@ public class GraphicalClientImpl extends ClientImpl{
     @Override
     public void deleteChannelSucceeded(String responseData) {
         try {
-            Map<String,String> response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+            Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
+                    CommunicationTypes.mapJsonTypeData);
             this.user.removeChannel(new Channel(response.get(FieldsRequestName.channelName)));
             ((SlockController) this.controller).deleteChannelToListJoinedChannels(response.get(FieldsRequestName.channelName));
 
@@ -128,12 +131,12 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void deleteChannelFailed(String responseData) {
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Authentication Failed");
-                alert.setContentText("Deleting channel failed");
-                alert.showAndWait();
-            });
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Authentication Failed");
+            alert.setContentText("Deleting channel failed");
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -148,7 +151,11 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void listOfMessageInChannelSucceeded(String responseData) {
-        //TODO :
+        Map<String,List<Message>> responseMap = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapListMessageJsonTypeData);
+        List<Message> listOfMessages = responseMap.get(FieldsRequestName.listMessages);
+        if (!listOfMessages.isEmpty())
+            this.user.addListOfMessagesToChannel(listOfMessages.get(0).getChannel().getChannelName(), listOfMessages);
     }
 
     @Override
@@ -158,7 +165,8 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void listOfJoinedChannelsSucceeded(String responseData) {
-        Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapListChannelJsonTypeData);
+        Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapListChannelJsonTypeData);
         List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
         this.user.setChannels(channels);
         ((SlockController) this.controller).initListJoinedChannels(channels);

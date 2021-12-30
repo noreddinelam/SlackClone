@@ -1,6 +1,7 @@
 package front.controllers;
 
 import client.GraphicalClientImpl;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -95,6 +96,13 @@ public class SlockController extends Controller {
         this.listOfJoinedChannels.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
                                                                                           newValue) -> {
             this.selectedChannelName = newValue;
+            if (this.selectedChannelName != null) {
+                Platform.runLater(() -> {
+                    List<Message> messages = this.clientImpl.listOfMessagesInChannel(this.selectedChannelName);
+                    messages.forEach(System.out::println);
+                    this.listOfMessages.getItems().setAll(messages);
+                });
+            }
         });
     }
 
