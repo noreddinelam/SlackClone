@@ -172,7 +172,6 @@ public abstract class ClientImpl {
     }
 
     public void listOfJoinedChannels() {
-        System.out.println("ldhfkjqdhfkljqdshfl");
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.userName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);

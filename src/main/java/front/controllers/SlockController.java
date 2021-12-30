@@ -82,13 +82,15 @@ public class SlockController extends Controller {
         this.clientImpl.listOfJoinedChannels();
     }
 
-    public void initListJoinedChannels(List<Channel> list){
-        List<String> channelsName = list.stream().map((c)->c.getChannelName()).collect(Collectors.toList());
+    public void initListJoinedChannels(List<Channel> list) {
+        List<String> channelsName = list.stream().map((c) -> c.getChannelName()).collect(Collectors.toList());
         this.listOfJoinedChannels.getItems().addAll(channelsName);
     }
 
-    public void addChannelToListJoinedChannels(Channel channel){
-        this.listOfJoinedChannels.getItems().add(channel.getChannelName());
+    public void addChannelToListJoinedChannels(Channel channel) {
+        Platform.runLater(() -> {
+            this.listOfJoinedChannels.getItems().add(channel.getChannelName());
+        });
     }
 
     public void deleteChannelToListJoinedChannels(String channelName) {

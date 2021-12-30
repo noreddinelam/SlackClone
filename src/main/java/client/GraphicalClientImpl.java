@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
-import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class GraphicalClientImpl extends ClientImpl{
     public void connectSucceeded(String responseData) {
         try {
             this.user = GsonConfiguration.gson.fromJson(responseData, User.class);
-            logger.info("[Graphic] Login succeeded {}",user);
+            logger.info("[Graphic] Login succeeded {}", user);
             ((AuthController) this.controller).authSucceeded();
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +45,7 @@ public class GraphicalClientImpl extends ClientImpl{
     public void registerSucceeded(String responseData) {
         try {
             this.user = GsonConfiguration.gson.fromJson(responseData, User.class);
-            logger.info("[Graphic] Register succeeded {}",user);
+            logger.info("[Graphic] Register succeeded {}", user);
             ((AuthController) this.controller).authSucceeded();
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,7 +151,6 @@ public class GraphicalClientImpl extends ClientImpl{
         Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapListChannelJsonTypeData);
         List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
         this.user.setChannels(channels);
-        System.out.println("lksdhfklqdshfqljsdhfqjldmshfqlmksdfh");
         ((SlockController) this.controller).initListJoinedChannels(channels);
     }
 

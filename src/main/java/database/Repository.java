@@ -196,10 +196,10 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> deleteChannelDB(String channelName) {
+    public Optional<Integer> deleteChannelDB(String channelName) {
         try (PreparedStatement deleteChannel = connectionDB.prepareStatement(SQLStatements.deleteChannel)) {
             deleteChannel.setString(1, channelName);
-            return Optional.of(deleteChannel.execute());
+            return Optional.of(deleteChannel.executeUpdate());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
