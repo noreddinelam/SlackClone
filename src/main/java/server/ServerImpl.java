@@ -464,7 +464,7 @@ public class ServerImpl {
             if(generatedKeys.next()){
                 messageReceived.setId(generatedKeys.getInt(1));
                 Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, GsonConfiguration.gson.toJson(messageReceived));
-                Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, data);
+                Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, GsonConfiguration.gson.toJson(messageReceived));
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
                 client.write(buffer, buffer, new ServerWriterCompletionHandler());
                 buffer.clear();
