@@ -21,7 +21,7 @@ public class SQLStatements {
                     + " where " + clientChannelChannelNameColumn + "= ? ;";
 
     public static String listOfMessageInChannel =
-            "SELECT " + messageContentColumn
+            "SELECT * "
                     + " FROM " + messageTable
                     + " where " + messageChannelNameColumn + " = ? ;";
 
@@ -113,18 +113,18 @@ public class SQLStatements {
             "SELECT * FROM " + clientChannelTable + " WHERE " + clientChannelUsernameColumn + " = ?";
 
     public static String listOfUnJoinedChannels =
-            "SELECT  * FROM "+channelTable+
-                    " WHERE " + channelNameColumn +" NOT IN (SELECT "+ clientChannelChannelNameColumn
-                    + " FROM " + clientChannelTable+" WHERE "+
-                    clientChannelUsernameColumn+"=?);";
+            "SELECT  * FROM " + channelTable +
+                    " WHERE " + channelNameColumn + " NOT IN (SELECT " + clientChannelChannelNameColumn
+                    + " FROM " + clientChannelTable + " WHERE " +
+                    clientChannelUsernameColumn + "=?);";
 
     public static String deleteUserWhenChannelDeleted =
-            "DELETE FROM " +  clientChannelTable
-                    + " WHERE " + requestChannelName+"=? ;";
+            "DELETE FROM " + clientChannelTable
+                    + " WHERE " + requestChannelName + "=? ;";
 
     public static String leaveChannel =
-            "DELETE FROM " +  clientChannelTable
-                    + " WHERE " + requestChannelName+"=?  AND "+ requestUsername +"=? ;";
+            "DELETE FROM " + clientChannelTable
+                    + " WHERE " + requestChannelName + "=?  AND " + requestUsername + "=? ;";
 
 
     private SQLStatements() {

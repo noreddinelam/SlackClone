@@ -1,11 +1,12 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     private String username;
     private String password;
-    private List<Channel> channels;
+    private List<Channel> channels = new ArrayList<>();
 
     public User(){}
     public User(String username){
@@ -24,6 +25,11 @@ public class User {
 
     public void setChannels(List<Channel> channels) {
         this.channels = channels;
+        this.channels.forEach(System.out::println);
+    }
+
+    public List<Channel> getChannels() {
+        return channels;
     }
 
     public void addChannel(Channel channel){

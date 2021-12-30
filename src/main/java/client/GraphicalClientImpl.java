@@ -127,6 +127,16 @@ public class GraphicalClientImpl extends ClientImpl{
     }
 
     @Override
+    public void listOfMessageInChannelSucceeded(String responseData) {
+        //TODO :
+    }
+
+    @Override
+    public void listOfMessageInChannelFailed(String responseData) {
+
+    }
+
+    @Override
     public void listOfJoinedChannelsSucceeded(String responseData) {
         Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapListChannelJsonTypeData);
         List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);

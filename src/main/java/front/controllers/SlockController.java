@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import models.Channel;
+import models.Message;
 
 import java.net.URL;
 import java.util.List;
@@ -33,7 +34,7 @@ public class SlockController extends Controller {
     private ListView<String> listOfJoinedChannels;
 
     @FXML
-    private ListView<?> listOfMessages;
+    private ListView<Message> listOfMessages;
 
     @FXML
     private TextField messageTextField;
@@ -87,7 +88,6 @@ public class SlockController extends Controller {
         this.clientImpl.setController(this);
         this.clientUsername.setText(this.clientImpl.getUser().getUsername());
         this.clientImpl.listOfJoinedChannels();
-
         this.initListViewListeners();
     }
 
@@ -101,6 +101,7 @@ public class SlockController extends Controller {
     public void initListJoinedChannels(List<Channel> list) {
         List<String> channelsName = list.stream().map((c) -> c.getChannelName()).collect(Collectors.toList());
         this.listOfJoinedChannels.getItems().addAll(channelsName);
+        this.clientImpl.getAllMessages();
     }
 
     public void addChannelToListJoinedChannels(Channel channel) {

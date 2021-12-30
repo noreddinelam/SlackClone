@@ -86,6 +86,10 @@ public abstract class ClientImpl {
 
     public abstract void listChannelsInServerFailed(String responseData);
 
+    public abstract void listOfMessageInChannelSucceeded(String responseData);
+
+    public abstract void listOfMessageInChannelFailed(String responseData);
+
     public abstract void listOfJoinedChannelsSucceeded(String responseData);
 
     public abstract void listOfJoinedChannelsFailed(String responseData);
@@ -134,6 +138,9 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, this::listChannelsInServerSucceeded);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED, this::listChannelsInServerFailed);
 
+        listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL_SUCCEED, this::listOfMessageInChannelSucceeded);
+        listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL_FAILED, this::listOfMessageInChannelFailed);
+
         listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS_SUCCEEDED, this::listOfJoinedChannelsSucceeded);
         listOfFunctions.put(NetCodes.LIST_OF_JOINED_CHANNELS_FAILED, this::listOfJoinedChannelsFailed);
         listOfFunctions.put(NetCodes.LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED, this::listOfUnJoinedChannelsSucceeded);
@@ -171,13 +178,24 @@ public abstract class ClientImpl {
     }
 
     public void listOfJoinedChannels() {
-        System.out.println("ldhfkjqdhfkljqdshfl");
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.userName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
         Request request = new Request(NetCodes.LIST_OF_JOINED_CHANNELS, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void getAllMessages(){
+        this.user.getChannels().forEach(channel -> {
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            data.put(FieldsRequestName.channelName, channel.getChannelName());
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        });
     }
 
     public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {
@@ -207,4 +225,6 @@ public abstract class ClientImpl {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }

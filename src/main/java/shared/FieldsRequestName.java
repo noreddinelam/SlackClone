@@ -24,6 +24,7 @@ public class FieldsRequestName {
     //Messages Fields
     public static String messageID = "MessageID";
     public static String messageContent = "MessageCONTENT";
+    public static String listMessages = "listMESSAGES";
 
     public static String accept = "Accept";
 

@@ -429,7 +429,7 @@ public class ServerImpl {
                     repository.listOfMessageInChannelDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
             List<Message> messages = mapper.resultSetToMessage(resultSet);
             Map<String, List<Message>> responseData = new HashMap<>();
-            responseData.put(FieldsRequestName.channelName, messages);
+            responseData.put(FieldsRequestName.listMessages, messages);
             Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_SUCCEED,
                     GsonConfiguration.gson.toJson(responseData, CommunicationTypes.mapListMessageJsonTypeData));
             String responseJson = GsonConfiguration.gson.toJson(response);
@@ -438,7 +438,6 @@ public class ServerImpl {
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ListOfMessageInChannelException e) {

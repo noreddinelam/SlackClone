@@ -9,6 +9,14 @@ public class Message {
     private Channel channel;
     private LocalDateTime date;
 
+    public Message(int id,String content,User user,Channel channel, LocalDateTime date){
+        this.id = id;
+        this.content = content;
+        this.user = user;
+        this.channel = channel;
+        this.date = date;
+    }
+
     public Message(String content,User user,Channel channel, LocalDateTime date){
         this.content = content;
         this.user = user;
@@ -38,5 +46,10 @@ public class Message {
 
     public LocalDateTime getDate() {
         return date;
+    }
+
+    @Override
+    public String toString() {
+        return "[ " + user + " | "+ date + " ]" + content ;
     }
 }
