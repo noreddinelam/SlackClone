@@ -1,6 +1,7 @@
 package front.controllers;
 
 import client.GraphicalClientImpl;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;

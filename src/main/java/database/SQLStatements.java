@@ -3,7 +3,6 @@ package database;
 import static database.SQLTablesInformation.*;
 
 public class SQLStatements {
-    //todo synchronize table client_channel so it will not allow les doublons (idchannel,username)
     public static String listChannelsInServer =
             "SELECT * "
                     + "FROM " + channelTable + " ;";
@@ -53,6 +52,11 @@ public class SQLStatements {
                     + "(" + requestAdminName + "," + requestChannelName + "," + requestUsername
                     + ")" +
                     " VALUES (?,?,?) ;";
+    public static String deleteUserFromMyChannel =
+            "DELETE FROM " + clientChannelTable
+                    + " WHERE "+  clientChannelChannelNameColumn+" =? AND " +
+                    clientChannelUsernameColumn+"=? ;";
+
 
     public static String joinListChannelRequest =
             "SELECT " + requestChannelName + "," + requestUsername + " FROM " + requestTable
@@ -61,6 +65,14 @@ public class SQLStatements {
     public static String deleteRequestJoinChannel =
             "DELETE FROM " + requestTable
                     + " WHERE " + requestChannelName + "=? AND " + requestUsername + "=? ;";
+
+    public static String deleteMessagesWhenDeletingChannel =
+            "DELETE  FROM " + messageTable
+                    + " WHERE " + messageChannelNameColumn + "=? ;";
+    public static String deleteRequestsWhenDeletingChannel =
+            "DELETE  FROM " + requestTable
+                    + " WHERE " + requestChannelName + "=? ;";
+
 
 
     public static String createChannel =
@@ -73,6 +85,11 @@ public class SQLStatements {
     public static String createUser =
             "INSERT INTO " + clientTable
                     + "(" + clientUsernameColumn + "," + clientPasswordColumn + ") "
+                    + " VALUES (?,?) ;";
+
+    public static String insertAdminClientChannelTable =
+            "INSERT INTO " + clientChannelTable
+                    + "(" + clientChannelChannelNameColumn+ "," + clientChannelUsernameColumn + ") "
                     + " VALUES (?,?) ;";
 
     public static String addMessage =
@@ -126,7 +143,13 @@ public class SQLStatements {
             "DELETE FROM " + clientChannelTable
                     + " WHERE " + requestChannelName + "=?  AND " + requestUsername + "=? ;";
 
+    public static String modifyChannelName =
+            "UPDATE " + channelTable
+                    + " SET " + channelNameColumn + "=?  WHERE " + channelNameColumn + "=? ;";
 
+    public static String modifyChannelStatus =
+            "UPDATE " + channelTable
+                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn  + "=? ;";
     private SQLStatements() {
     }
 }
