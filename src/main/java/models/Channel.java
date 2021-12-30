@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Channel {
     private User admin;
@@ -55,5 +56,18 @@ public class Channel {
                 ", channelDescription='" + channelDescription + '\'' +
                 ", isPublic=" + isPublic +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Channel channel = (Channel) o;
+        return channelName.equals(channel.channelName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(channelName);
     }
 }

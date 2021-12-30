@@ -1,6 +1,7 @@
 package client;
 
 import front.controllers.Controller;
+import models.Channel;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,6 +180,25 @@ public abstract class ClientImpl {
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
+
+    public void createChannel(String channelName, boolean isPublic) {
+        Channel data = new Channel(this.user,channelName,"",isPublic);
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.CREATE_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void deleteChannel(String channelName) {
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.channelName,channelName);
+        data.put(FieldsRequestName.userName,this.user.getUsername());
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.DELETE_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
 
     public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {
         this.client = client;

@@ -41,12 +41,12 @@ public class SlockController extends Controller {
 
     @FXML
     void onCreateChannel(ActionEvent event) {
-
+        this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
     }
 
     @FXML
     void onDeleteCurrentChannel(ActionEvent event) {
-
+        this.clientImpl.deleteChannel("test4");
     }
 
     @FXML
@@ -90,4 +90,11 @@ public class SlockController extends Controller {
     public void addChannelToListJoinedChannels(Channel channel){
         this.listOfJoinedChannels.getItems().add(channel.getChannelName());
     }
+
+    public void deleteChannelToListJoinedChannels(String channelName) {
+        Platform.runLater(() -> {
+            this.listOfJoinedChannels.getItems().remove(channelName);
+        });
+    }
+
 }

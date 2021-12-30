@@ -2,6 +2,8 @@ package client;
 
 import front.controllers.AuthController;
 import front.controllers.SlockController;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import models.Channel;
 import models.User;
 import org.slf4j.Logger;
@@ -58,7 +60,13 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void createChannelSucceeded(String responseData) {
-        //TODO : createChannelSucceeded
+        try {
+            Channel channel = GsonConfiguration.gson.fromJson(responseData, Channel.class);
+            this.user.addChannel(channel);
+            ((SlockController) this.controller).addChannelToListJoinedChannels(channel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -108,12 +116,25 @@ public class GraphicalClientImpl extends ClientImpl{
 
     @Override
     public void deleteChannelSucceeded(String responseData) {
+        try {
+            Map<String,String> response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+            this.user.removeChannel(new Channel(response.get(FieldsRequestName.channelName)));
+            ((SlockController) this.controller).deleteChannelToListJoinedChannels(response.get(FieldsRequestName.channelName));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void deleteChannelFailed(String responseData) {
-
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Authentication Failed");
+                alert.setContentText("Deleting channel failed");
+                alert.showAndWait();
+            });
     }
 
     @Override
