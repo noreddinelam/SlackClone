@@ -35,6 +35,9 @@ public class User {
     public void addChannel(Channel channel){
         this.channels.add(channel);
     }
+    public void removeChannel(Channel channel){
+        this.channels.remove(channel);
+    }
 
     @Override
     public String toString() {
