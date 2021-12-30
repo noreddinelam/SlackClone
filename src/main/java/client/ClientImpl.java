@@ -1,6 +1,7 @@
 package client;
 
 import front.controllers.Controller;
+import front.controllers.SlockController;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -15,6 +16,7 @@ import shared.gson_configuration.GsonConfiguration;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -189,18 +191,6 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void getAllMessages() {
-        this.user.getChannels().forEach(channel -> {
-            Map<String, String> data = new HashMap<>();
-            data.put(FieldsRequestName.userName, this.user.getUsername());
-            data.put(FieldsRequestName.channelName, channel.getChannelName());
-            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
-            Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
-            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
-            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
-        });
-    }
-
     public void createChannel(String channelName, boolean isPublic) {
         Channel data = new Channel(this.user, channelName, "", isPublic);
         String requestData = GsonConfiguration.gson.toJson(data);
@@ -219,9 +209,45 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
+    public void getAllMessages() {
+        this.user.getChannels().forEach(channel -> {
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            data.put(FieldsRequestName.channelName, channel.getChannelName());
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        });
+    }
+
+    public void getUsersForChannel(String channelName) {
+        List<User> users = this.user.getListOfUsersFromChannel(channelName);
+        if(users.isEmpty()){
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            data.put(FieldsRequestName.channelName, channelName);
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.LIST_OF_USER_IN_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        }
+        else{
+            ((SlockController) this.controller).setJoinedUsersToChannel(users);
+        }
+    }
+
+    public void sendMessage(String messageContent,String channelName){
+        Message data = new Message(messageContent,new User(this.user.getUsername()),new Channel(channelName), LocalDateTime.now());
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.CONSUME_MESSAGE, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
     // Functions that don't do sql requests :
 
-    public List<Message> listOfMessagesInChannel(String channelName){
+    public List<Message> listOfMessagesInChannel(String channelName) {
         return this.user.getListOfMessagesFromChannel(channelName);
     }
 

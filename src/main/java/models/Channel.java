@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Channel {
     private User admin;
-    private List<User> allowedUsers;
+    private List<User> users = new ArrayList<>();
     private String channelName;
     private String channelDescription;
     private List<Message> messages = new ArrayList<>();
@@ -51,6 +51,14 @@ public class Channel {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public void addMessage(Message message){
+        this.messages.add(message);
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 
     public boolean isPublic() {

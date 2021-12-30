@@ -11,6 +11,7 @@ public class FieldsRequestName {
     public static String userName = "UserNAME";
     public static String adminName = "AdminNAME";
     public static String password= "password";
+    public static String listUsers= "ListUSERS";
 
     //Server Fields
     public static String serverId = "ServerID";

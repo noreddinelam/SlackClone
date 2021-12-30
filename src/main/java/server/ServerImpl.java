@@ -403,7 +403,7 @@ public class ServerImpl {
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
             List<User> users = mapper.resultSetToUser(resultSet);
             Map<String, List<User>> responseData = new HashMap<>();
-            responseData.put(FieldsRequestName.userName, users);
+            responseData.put(FieldsRequestName.listUsers, users);
             Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED,
                     GsonConfiguration.gson.toJson(responseData, CommunicationTypes.mapListUserJsonTypeData));
             String responseJson = GsonConfiguration.gson.toJson(response);
@@ -412,7 +412,6 @@ public class ServerImpl {
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ListOfUserInChannelException e) {
@@ -424,7 +423,6 @@ public class ServerImpl {
 
     public static void listOfMessageInChannel(String data) {
         logger.info("list of message in channel {} ", data);
-
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
@@ -453,30 +451,35 @@ public class ServerImpl {
         }
     }
 
+    //
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
         String channelName = messageReceived.getChannel().getChannelName();
         String username = messageReceived.getUser().getUsername();
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
+            ResultSet generatedKeys =  repository.addMessageDB(messageReceived).orElseThrow(AddMessageException::new);
             ResultSet result =
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
-            Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, "Message consumption succeed");
-            Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, data);
-            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
-            client.write(buffer, buffer, new ServerWriterCompletionHandler());
-            buffer.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-            AsynchronousSocketChannel broadcastClient;
-            String broadcastUsername;
-            while (result.next()) {
-                broadcastUsername = result.getString(SQLTablesInformation.clientChannelUsernameColumn);
-                broadcastClient = listOfClients.get(broadcastUsername);
-                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
-                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            if(generatedKeys.next()){
+                messageReceived.setId(generatedKeys.getInt(1));
+                Response responseSucceed = new Response(NetCodes.MESSAGE_CONSUMED, GsonConfiguration.gson.toJson(messageReceived));
+                Response broadcastResponse = new Response(NetCodes.MESSAGE_BROADCAST_SUCCEED, data);
+                ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
+                client.write(buffer, buffer, new ServerWriterCompletionHandler());
+                buffer.clear();
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+                AsynchronousSocketChannel broadcastClient;
+                String broadcastUsername;
+                while (result.next()) {
+                    broadcastUsername = result.getString(SQLTablesInformation.clientChannelUsernameColumn);
+                    broadcastClient = listOfClients.get(broadcastUsername);
+                    if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                        broadcastResponseClient(broadcastClient, broadcastResponse);
+                }
             }
+            else throw new AddMessageException();
         } catch (AddMessageException e) {
             Response response = new Response(NetCodes.MESSAGE_CONSUMPTION_ERROR, "Message consumption error");
             requestFailure(response, client);

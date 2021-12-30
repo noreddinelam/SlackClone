@@ -189,7 +189,8 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUserInChannelSucceeded(String responseData) {
-
+        Map<String,List<User>> listOfUsers = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapListUserJsonTypeData);
+        ((SlockController) this.controller).setJoinedUsersToChannel(listOfUsers.get(FieldsRequestName.listUsers));
     }
 
     @Override
@@ -199,7 +200,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageConsumed(String responseData) {
-
+        Message message = GsonConfiguration.gson.fromJson(responseData,Message.class);
+        this.user.addMessage(message);
+        ((SlockController) this.controller).addMessageToListOfMessages(message);
     }
 
     @Override

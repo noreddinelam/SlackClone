@@ -7,10 +7,7 @@ import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 //test
 
@@ -153,13 +150,15 @@ public class Repository {
     }
 
 
-    public Optional<Boolean> addMessageDB(Message message) {
-        try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage)) {
+    public Optional<ResultSet> addMessageDB(Message message) {
+        try {
+            PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.addMessage, Statement.RETURN_GENERATED_KEYS);
             addMessage.setString(1, message.getContent());
             addMessage.setString(2, message.getChannel().getChannelName());
             addMessage.setString(3, message.getUser().getUsername());
             addMessage.setObject(4, message.getDate());
-            return Optional.of(addMessage.execute());
+            addMessage.execute();
+            return Optional.of(addMessage.getGeneratedKeys());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();

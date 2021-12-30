@@ -60,10 +60,19 @@ public class User {
                 .flatMap((channel) -> channel.getMessages().stream()).collect(Collectors.toList());
     }
 
+    public List<User> getListOfUsersFromChannel(String channelName) {
+        return this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(channelName))
+                .flatMap((channel) -> channel.getUsers().stream()).collect(Collectors.toList());
+    }
+
+    public void addMessage(Message message) {
+        this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(message.getChannel().getChannelName())).forEach((channel) -> {
+            channel.addMessage(message);
+        });
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                '}';
+        return " " + username + " ";
     }
 }

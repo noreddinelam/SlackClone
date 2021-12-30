@@ -7,11 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import models.Channel;
 import models.Message;
+import models.User;
 
 import java.net.URL;
 import java.util.List;
@@ -41,7 +43,7 @@ public class SlockController extends Controller {
     private TextField messageTextField;
 
     @FXML
-    private ListView<?> usersListView;
+    private ListView<User> usersListView;
 
     @FXML
     void onCreateChannel(ActionEvent event) {
@@ -50,12 +52,14 @@ public class SlockController extends Controller {
 
     @FXML
     void onDeleteCurrentChannel(ActionEvent event) {
-        this.clientImpl.deleteChannel("test4");
+        this.clientImpl.deleteChannel(this.selectedChannelName);
     }
 
     @FXML
     void onKeyPressed(KeyEvent event) {
-        System.out.println(event.getCode());
+        if (event.getCode() == KeyCode.ENTER && !this.messageTextField.getText().isEmpty() && this.selectedChannelName != null) {
+            this.clientImpl.sendMessage(this.messageTextField.getText(),this.selectedChannelName);
+        }
     }
 
     @FXML
@@ -78,6 +82,7 @@ public class SlockController extends Controller {
 
     }
 
+    //TODO : delete from fxml and here
     @FXML
     void onItemSelected(MouseEvent event) {
 
@@ -97,9 +102,9 @@ public class SlockController extends Controller {
                                                                                           newValue) -> {
             this.selectedChannelName = newValue;
             if (this.selectedChannelName != null) {
+                this.clientImpl.getUsersForChannel(this.selectedChannelName);
                 Platform.runLater(() -> {
                     List<Message> messages = this.clientImpl.listOfMessagesInChannel(this.selectedChannelName);
-                    messages.forEach(System.out::println);
                     this.listOfMessages.getItems().setAll(messages);
                 });
             }
@@ -122,6 +127,21 @@ public class SlockController extends Controller {
         Platform.runLater(() -> {
             this.listOfJoinedChannels.getItems().remove(channelName);
         });
+    }
+
+    public void setJoinedUsersToChannel(List<User> users) {
+        Platform.runLater(() -> {
+            this.usersListView.getItems().setAll(users);
+        });
+    }
+
+    public void addMessageToListOfMessages(Message message){
+        if(this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())){
+            this.messageTextField.clear();
+            Platform.runLater(() -> {
+                this.listOfMessages.getItems().add(message);
+            });
+        }
     }
 
 }
