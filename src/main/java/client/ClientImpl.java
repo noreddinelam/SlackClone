@@ -1,5 +1,6 @@
 package client;
 
+import front.Others.FailureMessages;
 import front.controllers.Controller;
 import front.controllers.SlockController;
 import models.Channel;
@@ -201,13 +202,18 @@ public abstract class ClientImpl {
     }
 
     public void deleteChannel(String channelName) {
-        Map<String, String> data = new HashMap<>();
-        data.put(FieldsRequestName.channelName, channelName);
-        data.put(FieldsRequestName.userName, this.user.getUsername());
-        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
-        Request request = new Request(NetCodes.DELETE_CHANNEL, requestData);
-        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
-        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        if (this.user.getChannelByName(channelName).getAdmin().getUsername().equalsIgnoreCase(this.user.getUsername())) {
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.channelName, channelName);
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.DELETE_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        } else {
+             this.controller.commandFailed(FailureMessages.deleteChannelNotAdminTitle,
+                    FailureMessages.deleteChannelNotAdminMessage);
+        }
     }
 
     public void getAllMessages() {

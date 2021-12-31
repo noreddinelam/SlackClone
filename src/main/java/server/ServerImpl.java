@@ -77,7 +77,7 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfGuests.get(guest);
         try {
             repository.registerDB(username, password).orElseThrow(RegisterException::new);
-            Response response = new Response(NetCodes.REGISTER_SUCCEED, "You are registered & connected !");
+            Response response = new Response(NetCodes.REGISTER_SUCCEED, GsonConfiguration.gson.toJson(new User(username)));
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             listOfClients.put(username, client);

@@ -37,15 +37,6 @@ public class AuthController extends Controller {
         this.scene.setRoot(root);
     }
 
-    public void authFailed(String failureMessage) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Authentication Failed");
-            alert.setContentText(failureMessage);
-            alert.showAndWait();
-        });
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();

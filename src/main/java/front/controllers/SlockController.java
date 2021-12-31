@@ -130,6 +130,8 @@ public class SlockController extends Controller {
         });
 
         // TODO : add the listener on double click message.
+        // TODO : models in front to remove.
+        // TODO : admin can't leave channel.
     }
 
     public void initListJoinedChannels(List<Channel> list) {

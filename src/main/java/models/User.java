@@ -65,6 +65,13 @@ public class User {
                 .flatMap((channel) -> channel.getUsers().stream()).collect(Collectors.toList());
     }
 
+    public Channel getChannelByName(String channelName) {
+        List<Channel> list =
+                this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(channelName)).collect(Collectors.toList());
+        if (!list.isEmpty()) return list.get(0);
+        return null;
+    }
+
     public void addMessage(Message message) {
         this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(message.getChannel().getChannelName())).forEach((channel) -> {
             channel.addMessage(message);

@@ -1,10 +1,14 @@
 package front.controllers;
 
+import client.GraphicalClientImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
-public class RequestToJoinChannelController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class RequestToJoinChannelController extends Controller{
 
     @FXML
     private ListView<String> requestsToJoinChannel;
@@ -19,4 +23,8 @@ public class RequestToJoinChannelController {
 
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
+    }
 }
