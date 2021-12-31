@@ -185,15 +185,6 @@ public class Repository {
             return Optional.empty();
         }
     }
-    public Optional<Boolean> deleteUserWhenChannelDeletedDB(String channelName) {
-        try (PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteUserWhenChannelDeleted)) {
-            stmt.setString(1, channelName);
-            return Optional.of(stmt.execute());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
 
     public Optional<Integer> deleteChannelDB(String channelName) {
         try (PreparedStatement deleteChannel = connectionDB.prepareStatement(SQLStatements.deleteChannel)) {
@@ -270,28 +261,6 @@ public class Repository {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelStatus);
             stmt.setBoolean(1,NewChannelStatus);
             stmt.setString(2, channelName);
-            return Optional.of(stmt.execute());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-
-
-    public Optional<Boolean> deleteMessagesWhenDeletingChannelDB(String channelName) {
-        try  {
-            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteMessagesWhenDeletingChannel);
-            stmt.setString(1,channelName);
-            return Optional.of(stmt.execute());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-    public Optional<Boolean> deleteRequestWhenDeletingChannelDB(String channelName) {
-        try  {
-            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.deleteRequestsWhenDeletingChannel);
-            stmt.setString(1,channelName);
             return Optional.of(stmt.execute());
         } catch (SQLException e) {
             e.printStackTrace();
