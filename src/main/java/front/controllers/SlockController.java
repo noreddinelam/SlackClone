@@ -4,6 +4,9 @@ import client.GraphicalClientImpl;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -11,10 +14,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import models.Channel;
 import models.Message;
 import models.User;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -68,13 +73,27 @@ public class SlockController extends Controller {
     }
 
     @FXML
-    void onPrintAllChannels(ActionEvent event) {
-
+    void onPrintAllChannels(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/display_channel_list.fxml"));
+        Parent root = (Parent) loader.load();
+        stage.setTitle("List of channels");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     @FXML
-    void onPrintRequestsChannels(ActionEvent event) {
-
+    void onPrintRequestsChannels(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/list_of_requests.fxml"));
+        Parent root = (Parent) loader.load();
+        stage.setTitle("List of channels");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     @FXML

@@ -212,19 +212,23 @@ public abstract class ClientImpl {
 
     public void getAllMessages() {
         this.user.getChannels().forEach(channel -> {
-            Map<String, String> data = new HashMap<>();
-            data.put(FieldsRequestName.userName, this.user.getUsername());
-            data.put(FieldsRequestName.channelName, channel.getChannelName());
-            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
-            Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
-            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
-            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+            try {
+                Map<String, String> data = new HashMap<>();
+                data.put(FieldsRequestName.userName, this.user.getUsername());
+                data.put(FieldsRequestName.channelName, channel.getChannelName());
+                String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+                Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
+                ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+                this.client.write(buffer).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         });
     }
 
     public void getUsersForChannel(String channelName) {
         List<User> users = this.user.getListOfUsersFromChannel(channelName);
-        if(users.isEmpty()){
+        if (users.isEmpty()) {
             Map<String, String> data = new HashMap<>();
             data.put(FieldsRequestName.userName, this.user.getUsername());
             data.put(FieldsRequestName.channelName, channelName);
@@ -232,14 +236,14 @@ public abstract class ClientImpl {
             Request request = new Request(NetCodes.LIST_OF_USER_IN_CHANNEL, requestData);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
             this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
-        }
-        else{
+        } else {
             ((SlockController) this.controller).setJoinedUsersToChannel(users);
         }
     }
 
-    public void sendMessage(String messageContent,String channelName){
-        Message data = new Message(messageContent,new User(this.user.getUsername()),new Channel(channelName), LocalDateTime.now());
+    public void sendMessage(String messageContent, String channelName) {
+        Message data = new Message(messageContent, new User(this.user.getUsername()), new Channel(channelName),
+                LocalDateTime.now());
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.CONSUME_MESSAGE, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
