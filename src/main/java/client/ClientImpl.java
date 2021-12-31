@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;
+import shared.Properties;
 import shared.communication.Request;
 import shared.communication.Response;
 import shared.gson_configuration.GsonConfiguration;
@@ -38,7 +39,7 @@ public abstract class ClientImpl {
 
     public void initThreadReader() {
         Thread reader = new Thread(() -> {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             try {
                 while (client.isOpen()) {
                     int nb = client.read(buffer).get();
@@ -46,7 +47,7 @@ public abstract class ClientImpl {
                     logger.info("The received response \n{}", jsonRes);
                     Response response = GsonConfiguration.gson.fromJson(jsonRes, Response.class);
                     ClientImpl.getFunctionWithRequestCode(response).accept(response.getResponse());
-                    buffer = ByteBuffer.allocate(1024);
+                    buffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

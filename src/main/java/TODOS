@@ -3,4 +3,5 @@
 //TODO : forget password
 //TODO: logout (connected to guest)
 //TODO : remove description
-//TODO : delete a user from my channel if i am admin
+// TODO : add DELETE CASCADE CONSTRAINT
+// TODO : add page channel management

@@ -124,6 +124,7 @@ public class SlockController extends Controller {
     }
 
     public void deleteChannelToListJoinedChannels(String channelName) {
+        this.listOfMessages.getItems();
         Platform.runLater(() -> {
             this.listOfJoinedChannels.getItems().remove(channelName);
         });
@@ -136,7 +137,7 @@ public class SlockController extends Controller {
     }
 
     public void addMessageToListOfMessages(Message message){
-        if(this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())){
+        if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())){
             this.messageTextField.clear();
             Platform.runLater(() -> {
                 this.listOfMessages.getItems().add(message);

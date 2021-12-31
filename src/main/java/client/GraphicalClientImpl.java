@@ -151,7 +151,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfMessageInChannelSucceeded(String responseData) {
-        Map<String,List<Message>> responseMap = GsonConfiguration.gson.fromJson(responseData,
+        Map<String, List<Message>> responseMap = GsonConfiguration.gson.fromJson(responseData,
                 CommunicationTypes.mapListMessageJsonTypeData);
         List<Message> listOfMessages = responseMap.get(FieldsRequestName.listMessages);
         if (!listOfMessages.isEmpty())
@@ -189,7 +189,8 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUserInChannelSucceeded(String responseData) {
-        Map<String,List<User>> listOfUsers = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapListUserJsonTypeData);
+        Map<String, List<User>> listOfUsers = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapListUserJsonTypeData);
         ((SlockController) this.controller).setJoinedUsersToChannel(listOfUsers.get(FieldsRequestName.listUsers));
     }
 
@@ -200,7 +201,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageConsumed(String responseData) {
-        Message message = GsonConfiguration.gson.fromJson(responseData,Message.class);
+        Message message = GsonConfiguration.gson.fromJson(responseData, Message.class);
         this.user.addMessage(message);
         ((SlockController) this.controller).addMessageToListOfMessages(message);
     }
@@ -212,7 +213,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageBroadcastSucceed(String responseData) {
-
+        Message message = GsonConfiguration.gson.fromJson(responseData, Message.class);
+        this.user.addMessage(message);
+        ((SlockController) this.controller).addMessageToListOfMessages(message);
     }
 
     @Override

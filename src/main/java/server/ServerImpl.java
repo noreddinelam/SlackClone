@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
+import shared.Properties;
 import shared.Mapper;
 import shared.NetCodes;
 import shared.communication.Request;
@@ -54,7 +55,7 @@ public class ServerImpl {
                 listOfGuests.remove(guest);
                 client.write(attachment, attachment, new ServerWriterCompletionHandler());
                 attachment.clear();
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
             } else {
                 throw new ConnectionException();
@@ -83,7 +84,7 @@ public class ServerImpl {
             listOfGuests.remove(guest);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (RegisterException e) {
             Response response = new Response(NetCodes.REGISTER_FAILED, "Registration FAILED ! username already exists" +
@@ -106,7 +107,7 @@ public class ServerImpl {
             logger.info("username {}", requestData.getAdmin().getUsername());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (CreateChannelException e) {
             Response response = new Response(NetCodes.CREATE_CHANNEL_FAILED, "Channel creation failed");
@@ -175,7 +176,7 @@ public class ServerImpl {
             logger.info("username {}", username);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (JoinChannelException | VerifyStatusChannelException | ResponseJoinChannelException e) {
             Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "joining channel failed");
@@ -204,7 +205,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (LeaveChannelException e) {
             Response response = new Response(NetCodes.LEAVE_CHANNEL_FAILED, "Leaving channel failed");
@@ -224,7 +225,7 @@ public class ServerImpl {
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (DeleteMessageException e) {
             e.printStackTrace();
@@ -248,7 +249,7 @@ public class ServerImpl {
             logger.info("idMessage {}", idMessage);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (ModifyMessageException e) {
             Response response = new Response(NetCodes.MODIFY_MESSAGE_FAILED, "Message modification failed");
@@ -272,7 +273,7 @@ public class ServerImpl {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
                 client.write(buffer, buffer, new ServerWriterCompletionHandler());
                 buffer.clear();
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
             }
             else throw new DeleteChannelException();
@@ -301,7 +302,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (DeleteUserWhenChannelDeletedException e) {
             Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_FAILED, "DELETE USER failed");
@@ -322,7 +323,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (ModifyChannelNameException e) {
             e.printStackTrace();
@@ -342,7 +343,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         }  catch (ModifyChannelStatusException e) {
             e.printStackTrace();
@@ -374,7 +375,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
 
         } catch (SQLException e) {
@@ -405,7 +406,7 @@ public class ServerImpl {
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
                 client.write(attachment, attachment, new ServerWriterCompletionHandler());
                 attachment.clear();
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
                 String broadcastUsername;
                 AsynchronousSocketChannel broadcastClient;
@@ -450,7 +451,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -480,7 +481,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -509,7 +510,7 @@ public class ServerImpl {
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -521,7 +522,6 @@ public class ServerImpl {
         }
     }
 
-    //
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
         String channelName = messageReceived.getChannel().getChannelName();
@@ -538,7 +538,7 @@ public class ServerImpl {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(responseSucceed).getBytes());
                 client.write(buffer, buffer, new ServerWriterCompletionHandler());
                 buffer.clear();
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+                ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
                 AsynchronousSocketChannel broadcastClient;
                 String broadcastUsername;
@@ -580,7 +580,7 @@ public class ServerImpl {
             ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (ListOfJoinedChannels e) {
             Response response = new Response(NetCodes.LIST_OF_JOINED_CHANNELS_FAILED, "List of joined channels failed !");
@@ -610,7 +610,7 @@ public class ServerImpl {
             ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
             client.write(buffer, buffer, new ServerWriterCompletionHandler());
             buffer.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -656,7 +656,7 @@ public class ServerImpl {
         String responseJson = GsonConfiguration.gson.toJson(response);
         ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
         client.write(buffer, buffer, new ServerWriterCompletionHandler());
-        ByteBuffer bufferReader = ByteBuffer.allocate(1024);
+        ByteBuffer bufferReader = ByteBuffer.allocate(Properties.BUFFER_SIZE);
         client.read(bufferReader, bufferReader, new ServerReaderCompletionHandler());
     }
 

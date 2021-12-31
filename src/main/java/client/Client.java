@@ -54,7 +54,7 @@ public class Client {
         });
 
         Thread reader = new Thread(() -> {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             try {
                 while (socket.isOpen()) {
                     int nb = socket.read(buffer).get();
