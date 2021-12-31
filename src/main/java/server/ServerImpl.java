@@ -264,9 +264,6 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
         try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, data);
-            repository.deleteRequestWhenDeletingChannelDB(channelName).orElseThrow(DeleteRequestWhenDeletingChannelException::new);
-            repository.deleteMessagesWhenDeletingChannelDB(channelName).orElseThrow(DeleteMessagesWhenDeletingChannelException::new);
-            repository.deleteUserWhenChannelDeletedDB(channelName).orElseThrow(DeleteUserWhenChannelDeletedException::new);
             int result = repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             if (result != 0) {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
@@ -279,12 +276,6 @@ public class ServerImpl {
         } catch (DeleteChannelException e) {
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
-        } catch (DeleteUserWhenChannelDeletedException e) {
-            e.printStackTrace();
-        } catch (DeleteMessagesWhenDeletingChannelException e) {
-            e.printStackTrace();
-        } catch (DeleteRequestWhenDeletingChannelException e) {
-            e.printStackTrace();
         }
     }
 
@@ -296,14 +287,14 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_SUCCEED, data);
-            repository.deleteUserFromMyChannelDB(channelName,username).orElseThrow(DeleteUserWhenChannelDeletedException::new);
+            repository.deleteUserFromMyChannelDB(channelName,username).orElseThrow(DeleteUserFromMyChannelException::new);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(1024);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        } catch (DeleteUserWhenChannelDeletedException e) {
+        }  catch (DeleteUserFromMyChannelException e) {
             Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_FAILED, "DELETE USER failed");
             requestFailure(response, client);
         }
@@ -521,7 +512,6 @@ public class ServerImpl {
         }
     }
 
-    //
     public static void consumeMessage(String data) {
         Message messageReceived = GsonConfiguration.gson.fromJson(data, Message.class);
         String channelName = messageReceived.getChannel().getChannelName();

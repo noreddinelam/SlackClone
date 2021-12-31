@@ -66,15 +66,6 @@ public class SQLStatements {
             "DELETE FROM " + requestTable
                     + " WHERE " + requestChannelName + "=? AND " + requestUsername + "=? ;";
 
-    public static String deleteMessagesWhenDeletingChannel =
-            "DELETE  FROM " + messageTable
-                    + " WHERE " + messageChannelNameColumn + "=? ;";
-    public static String deleteRequestsWhenDeletingChannel =
-            "DELETE  FROM " + requestTable
-                    + " WHERE " + requestChannelName + "=? ;";
-
-
-
     public static String createChannel =
             "INSERT INTO " + channelTable
                     + "(" + channelNameColumn + "," + channelAdminUsernameColumn + ","
@@ -134,10 +125,6 @@ public class SQLStatements {
                     " WHERE " + channelNameColumn + " NOT IN (SELECT " + clientChannelChannelNameColumn
                     + " FROM " + clientChannelTable + " WHERE " +
                     clientChannelUsernameColumn + "=?);";
-
-    public static String deleteUserWhenChannelDeleted =
-            "DELETE FROM " + clientChannelTable
-                    + " WHERE " + requestChannelName + "=? ;";
 
     public static String leaveChannel =
             "DELETE FROM " + clientChannelTable
