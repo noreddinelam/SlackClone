@@ -27,7 +27,7 @@ public abstract class Controller implements Initializable {
     public void commandFailed(String title, String failureMessage) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Authentication Failed");
+            alert.setTitle(title);
             alert.setContentText(failureMessage);
             alert.showAndWait();
         });
