@@ -128,6 +128,8 @@ public class SlockController extends Controller {
                 });
             }
         });
+
+        // TODO : add the listener on double click message.
     }
 
     public void initListJoinedChannels(List<Channel> list) {
