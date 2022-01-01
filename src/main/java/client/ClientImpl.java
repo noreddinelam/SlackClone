@@ -128,6 +128,10 @@ public abstract class ClientImpl {
 
     public abstract void requestAlreadySent (String responseData);
 
+    public abstract void responseRequestJoinChannelSucceeded (String responseData);
+
+    public abstract void responseRequestJoinChannelFailed (String responseData);
+
     public void initListOfFunctions() {
 
         listOfFunctions.put(NetCodes.CONNECT_SUCCEED, this::connectSucceeded);
@@ -176,6 +180,9 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.MESSAGE_CONSUMPTION_ERROR, this::messageConsumptionError);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_SUCCEED, this::messageBroadcastSucceed);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_FAILED, this::messageBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.RESPONSE_JOIN_SUCCEED, this::responseRequestJoinChannelSucceeded);
+        listOfFunctions.put(NetCodes.RESPONSE_JOIN_FAILED, this::responseRequestJoinChannelFailed);
     }
 
     public void login(String username, String password) {
@@ -295,6 +302,19 @@ public abstract class ClientImpl {
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
+
+    public void responseRequestJoinChannel(String channelName , String username, String status){
+        Map<String ,String> data = new HashMap<>();
+        data.put(FieldsRequestName.adminName, this.user.getUsername());
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.userName,username);
+        data.put(FieldsRequestName.accept,status);
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.RESPONSE_JOIN_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
 
     // Functions that don't do sql requests :
 

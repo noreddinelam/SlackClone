@@ -157,6 +157,12 @@ public class SlockController extends Controller {
         });
     }
 
+    public void addUserToJoinedUsersChannel(User user){
+        Platform.runLater(() -> {
+            this.usersListView.getItems().add(user);
+        });
+    }
+
     public void addMessageToListOfMessages(Message message){
         if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())){
             this.messageTextField.clear();

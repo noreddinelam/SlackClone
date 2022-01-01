@@ -77,6 +77,11 @@ public class User {
         return null;
     }
 
+    public void addUserToChannel(String channelName,User user){
+        Channel channel = getChannelByName(channelName);
+        channel.addUser(user);
+    }
+
     @Override
     public String toString() {
         return " " + username + " ";

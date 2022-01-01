@@ -184,4 +184,14 @@ public class TerminalClientImpl extends ClientImpl {
     public void requestAlreadySent(String responseData) {
 
     }
+
+    @Override
+    public void responseRequestJoinChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void responseRequestJoinChannelFailed(String responseData) {
+
+    }
 }
