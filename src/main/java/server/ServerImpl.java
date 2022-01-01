@@ -157,13 +157,11 @@ public class ServerImpl {
 
                 } else {
                     logger.info("Channel is private, request sent to the admin");
-                    ResultSet verifyResultSetRequest =
-                            repository.verifyRequestJoinChannelDB(channelName, username).orElseThrow(VerifyJoinChannelException::new);
-                    if (!verifyResultSetRequest.next()) {
-                        repository.joinChannelStatusRequestDB(admin, channelName, username).orElseThrow(ResponseJoinChannelException::new);
+                    int res = repository.joinChannelStatusRequestDB(admin, channelName, username).orElseThrow(ResponseJoinChannelException::new);
+                    if (res != 0)
                         response = new Response(NetCodes.JOIN_PRIVATE_CHANNEL, "Your request is sent to the admin to " +
                                 "join the channel");
-                    } else {
+                    else {
                         logger.info("Request already set ");
                         response = new Response(NetCodes.REQUEST_JOIN_FAILED, "request is already set");
                     }
@@ -354,8 +352,8 @@ public class ServerImpl {
             Map<String, String> usernameChannelName;
             while (resultSet.next()) {
                 usernameChannelName = new HashMap<>();
-                usernameChannelName.put(resultSet.getString(FieldsRequestName.channelName),
-                        resultSet.getString(FieldsRequestName.userName));
+                usernameChannelName.put(FieldsRequestName.channelName, resultSet.getString(SQLTablesInformation.requestChannelName));
+                usernameChannelName.put(FieldsRequestName.userName, resultSet.getString(SQLTablesInformation.requestUsername));
                 requests.add(usernameChannelName);
             }
             String responseData = GsonConfiguration.gson.toJson(requests,
@@ -383,19 +381,24 @@ public class ServerImpl {
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
         String acceptString = requestData.get(FieldsRequestName.accept);
+        String adminChannel = requestData.get(FieldsRequestName.adminName);
+        AsynchronousSocketChannel adminClient = listOfClients.get(adminChannel);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             if (acceptString.equalsIgnoreCase("true")) {
                 repository.joinChannelDB(channelName, username).orElseThrow(JoinChannelException::new);
                 ResultSet resultSet =
                         repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, username + " has " +
-                        "joined " +
-                        "the channel");
-                Response response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
-                String responseJson = GsonConfiguration.gson.toJson(response);
+                Map<String,String > broadcast = new HashMap<>();
+                broadcast.put(FieldsRequestName.userName,username);
+                broadcast.put(FieldsRequestName.channelName,channelName);
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, GsonConfiguration.gson.toJson(broadcast,CommunicationTypes.mapJsonTypeData));
+                Channel joinedChannel = new Channel(new User(adminChannel), channelName, "", false);
+                Response responseClient = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(joinedChannel));
+                String responseJson = GsonConfiguration.gson.toJson(responseClient);
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-                client.write(attachment, attachment, new ServerWriterCompletionHandler());
+                if (client != null)
+                    client.write(attachment, attachment, new ServerWriterCompletionHandler());
                 attachment.clear();
                 ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
@@ -407,6 +410,7 @@ public class ServerImpl {
                     if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
                         broadcastResponseClient(broadcastClient, broadcastResponse);
                 }
+
             } else {
                 Response response = new Response(NetCodes.JOIN_CHANNEL_FAILED, "join channel refused");
                 String responseJson = GsonConfiguration.gson.toJson(response);
@@ -595,7 +599,6 @@ public class ServerImpl {
             Map<String, List<Channel>> listOfChannels = new HashMap<>();
             List<Channel> unJoinedChannels = new ArrayList<>();
             while (channels.next()) {
-
                 unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn),
                         channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
             }

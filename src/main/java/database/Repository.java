@@ -207,15 +207,14 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> joinChannelStatusRequestDB(String admin,String channelName,String username) {
+    public Optional<Integer> joinChannelStatusRequestDB(String admin,String channelName,String username) {
         try  {
             PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.addRequestJoinChannel);
             stmt.setString(1,admin);
             stmt.setString(2,channelName);
             stmt.setString(3, username);
-            return Optional.of(stmt.execute());
+            return Optional.of(stmt.executeUpdate());
         } catch (SQLException e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
