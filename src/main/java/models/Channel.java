@@ -65,6 +65,10 @@ public class Channel {
         return isPublic;
     }
 
+    public void addUser(User user){
+        this.users.add(user);
+    }
+
     @Override
     public String toString() {
         return "Channel{" +

@@ -2,7 +2,9 @@ package client;
 
 import front.Others.FailureMessages;
 import front.controllers.Controller;
+import front.controllers.RequestToJoinChannelController;
 import front.controllers.SlockController;
+import front.controllers.UnJoinedChannelsController;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -33,6 +35,8 @@ public abstract class ClientImpl {
     protected String ipAddress;
     protected AsynchronousSocketChannel client;
     protected Controller controller;
+    protected RequestToJoinChannelController rqController ;
+    protected UnJoinedChannelsController ucController ;
 
     public static Consumer<String> getFunctionWithRequestCode(Response response) {
         return listOfFunctions.get(response.getNetCode());
@@ -113,6 +117,10 @@ public abstract class ClientImpl {
 
     public abstract void listOfUserInChannelFailed(String responseData);
 
+    public abstract void listOfRequestsSucceeded(String responseData);
+
+    public abstract void listOfRequestsFailed(String responseData);
+
     public abstract void messageConsumed(String responseData);
 
     public abstract void messageConsumptionError(String responseData);
@@ -120,6 +128,14 @@ public abstract class ClientImpl {
     public abstract void messageBroadcastSucceed(String responseData);
 
     public abstract void messageBroadcastFailed(String responseData);
+
+    public abstract void  joinPrivateChannel (String responseData);
+
+    public abstract void requestAlreadySent (String responseData);
+
+    public abstract void responseRequestJoinChannelSucceeded (String responseData);
+
+    public abstract void responseRequestJoinChannelFailed (String responseData);
 
     public void initListOfFunctions() {
 
@@ -136,6 +152,8 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_FAILED, this::joinChannelFailed);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, this::joinChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, this::joinChannelBroadcastFailed);
+        listOfFunctions.put(NetCodes.JOIN_PRIVATE_CHANNEL, this::joinPrivateChannel);
+        listOfFunctions.put(NetCodes.REQUEST_JOIN_FAILED, this:: requestAlreadySent);
 
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_SUCCEED, this::leaveChannelSucceeded);
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_FAILED, this::leaveChannelFailed);
@@ -163,10 +181,16 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED, this::listOfUserInChannelSucceeded);
         listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL_FAILED, this::listOfUserInChannelFailed);
 
+        listOfFunctions.put(NetCodes.LIST_REQUEST_JOIN_CHANNEL_SUCCEED, this::listOfRequestsSucceeded);
+        listOfFunctions.put(NetCodes.LIST_REQUEST_JOIN_CHANNEL_FAILED, this::listOfRequestsFailed);
+
         listOfFunctions.put(NetCodes.MESSAGE_CONSUMED, this::messageConsumed);
         listOfFunctions.put(NetCodes.MESSAGE_CONSUMPTION_ERROR, this::messageConsumptionError);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_SUCCEED, this::messageBroadcastSucceed);
         listOfFunctions.put(NetCodes.MESSAGE_BROADCAST_FAILED, this::messageBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.RESPONSE_JOIN_SUCCEED, this::responseRequestJoinChannelSucceeded);
+        listOfFunctions.put(NetCodes.RESPONSE_JOIN_FAILED, this::responseRequestJoinChannelFailed);
     }
 
     public void login(String username, String password) {
@@ -196,6 +220,15 @@ public abstract class ClientImpl {
         data.put(FieldsRequestName.userName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
         Request request = new Request(NetCodes.LIST_OF_JOINED_CHANNELS, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void listOfUnJoinedChannels() {
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName, this.user.getUsername());
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.LIST_OF_UN_JOINED_CHANNELS, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
@@ -278,6 +311,39 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
+    public void requestJoinChannel(){
+        Map<String ,String> data = new HashMap<>();
+        data.put(FieldsRequestName.adminName, this.user.getUsername());
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.LIST_REQUEST_JOIN_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void joinChannel(String channelName , String adminUsername){
+        Map<String ,String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName, this.user.getUsername());
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.adminName,adminUsername);
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.JOIN_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void responseRequestJoinChannel(String channelName , String username, String status){
+        Map<String ,String> data = new HashMap<>();
+        data.put(FieldsRequestName.adminName, this.user.getUsername());
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.userName,username);
+        data.put(FieldsRequestName.accept,status);
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.RESPONSE_JOIN_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+
     // Functions that don't do sql requests :
 
     public List<Message> listOfMessagesInChannel(String channelName) {
@@ -290,6 +356,13 @@ public abstract class ClientImpl {
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    public void setRqController(RequestToJoinChannelController rqController) {
+        this.rqController = rqController;}
+
+    public void setUcController(UnJoinedChannelsController ucController) {
+        this.ucController = ucController;
     }
 
     public String getIpAddress() {

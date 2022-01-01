@@ -81,6 +81,17 @@ public class User {
             channel.addMessage(message);
         });
     }
+    public Channel getChannelByName(String channelName) {
+        List<Channel> list =
+                this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(channelName)).collect(Collectors.toList());
+        if (!list.isEmpty()) return list.get(0);
+        return null;
+    }
+
+    public void addUserToChannel(String channelName,User user){
+        Channel channel = getChannelByName(channelName);
+        channel.addUser(user);
+    }
 
     @Override
     public String toString() {

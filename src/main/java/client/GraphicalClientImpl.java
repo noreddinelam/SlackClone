@@ -78,7 +78,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelSucceed(String responseData) {
-
+        //TODO
+        Channel channel = GsonConfiguration.gson.fromJson(responseData,Channel.class);
+        ((SlockController) this.controller).addChannelToListJoinedChannels(channel) ;
     }
 
     @Override
@@ -88,7 +90,12 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelBroadcastSucceeded(String responseData) {
-
+        Map<String,String> response = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapJsonTypeData);
+        String username = response.get(FieldsRequestName.userName);
+        String channelName = response.get(FieldsRequestName.channelName);
+        User user = new User(username);
+        this.user.addUserToChannel(channelName,user);
+        ((SlockController) this.controller).addUserToJoinedUsersChannel(user) ;
     }
 
     @Override
@@ -187,7 +194,10 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUnJoinedChannelsSucceeded(String responseData) {
-
+        Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapListChannelJsonTypeData);
+        List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
+        this.ucController.initRequestToJoinChannelListView(channels);
     }
 
     @Override
@@ -205,6 +215,19 @@ public class GraphicalClientImpl extends ClientImpl {
     @Override
     public void listOfUserInChannelFailed(String responseData) {
         this.controller.commandFailed(FailureMessages.listOfUserInChannelTitle,responseData);
+    }
+
+    @Override
+    public void listOfRequestsSucceeded(String responseData) {
+        List<Map<String,String>> listOfRequests = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.listMapChannelUsernameTypeData);
+        this.rqController.initRequestToJoinChannelListView(listOfRequests);
+
+    }
+
+    @Override
+    public void listOfRequestsFailed(String responseData) {
+
     }
 
     @Override
@@ -229,5 +252,25 @@ public class GraphicalClientImpl extends ClientImpl {
     @Override
     public void messageBroadcastFailed(String responseData) {
         this.controller.commandFailed(FailureMessages.messageBroadcastTitle,responseData);
+    }
+
+    @Override
+    public void joinPrivateChannel(String responseData) {
+        //TODO pop up
+    }
+
+    @Override
+    public void requestAlreadySent(String responseData) {
+        //TODO pop up
+    }
+
+    @Override
+    public void responseRequestJoinChannelSucceeded(String responseData) {
+        //TODO pop up
+    }
+
+    @Override
+    public void responseRequestJoinChannelFailed(String responseData) {
+        //TODO pop up
     }
 }
