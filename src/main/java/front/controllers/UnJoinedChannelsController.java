@@ -26,12 +26,13 @@ public class UnJoinedChannelsController extends Controller {
 
     @FXML
     void onJoin(ActionEvent event) {
-        if(this.selectedChannelName!=null) {
-            String [] data = this.selectedChannelName.split("-");
-            this.clientImpl.joinChannel(data[0].trim(),data[2].trim());
+        if (this.selectedChannelName != null) {
+            String[] data = this.selectedChannelName.split("-");
+            this.clientImpl.joinChannel(data[0].trim(), data[2].trim());
         }
 
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
@@ -47,8 +48,14 @@ public class UnJoinedChannelsController extends Controller {
     public void initRequestToJoinChannelListView(List<Channel> request) {
         Platform.runLater(() -> {
             request.forEach((e) -> {
-                this.unJoinedChannelList.getItems().add(e.getChannelName()+ " - " + (e.isPublic() ? "Public" : "Private")+ " - "+e.getAdmin().getUsername() );
+                this.unJoinedChannelList.getItems().add(e.getChannelName() + " - " + (e.isPublic() ? "Public" : "Private") + " - " + e.getAdmin().getUsername());
             });
+        });
+    }
+
+    public void removeJoinedChannel(Channel channel) {
+        Platform.runLater(() -> {
+            this.unJoinedChannelList.getItems().remove(channel.getChannelName() + " - " + (channel.isPublic() ? "Public" : "Private") + " - " + channel.getAdmin().getUsername());
         });
     }
 
