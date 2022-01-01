@@ -77,6 +77,10 @@ public abstract class ClientImpl {
 
     public abstract void joinChannelBroadcastFailed(String responseData);
 
+    public abstract void leaveChannelSucceeded(String responseData);
+
+    public abstract void leaveChannelFailed(String responseData);
+
     public abstract void deleteMessageSucceeded(String responseData);
 
     public abstract void deleteMessageFailed(String responseData);
@@ -132,6 +136,9 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_FAILED, this::joinChannelFailed);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, this::joinChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, this::joinChannelBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.LEAVE_CHANNEL_SUCCEED, this::leaveChannelSucceeded);
+        listOfFunctions.put(NetCodes.LEAVE_CHANNEL_FAILED, this::leaveChannelFailed);
 
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_SUCCEED, this::deleteMessageSucceeded);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_FAILED, this::deleteMessageFailed);
@@ -213,6 +220,21 @@ public abstract class ClientImpl {
         } else {
              this.controller.commandFailed(FailureMessages.deleteChannelNotAdminTitle,
                     FailureMessages.deleteChannelNotAdminMessage);
+        }
+    }
+
+    public void leaveChannel(String channelName){
+        if (!this.user.getChannelByName(channelName).getAdmin().getUsername().equalsIgnoreCase(this.user.getUsername())) {
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.channelName, channelName);
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.LEAVE_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        } else {
+            this.controller.commandFailed(FailureMessages.leaveChannelAdminTitle,
+                    FailureMessages.leaveChannelAdminMessage);
         }
     }
 

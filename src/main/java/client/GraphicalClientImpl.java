@@ -97,6 +97,18 @@ public class GraphicalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void leaveChannelSucceeded(String responseData) {
+        this.user.removeChannelByName(responseData); // responseData is channelName;
+        ((SlockController) this.controller).removeChannelFromListJoinedChannels(responseData);
+    }
+
+    @Override
+    public void leaveChannelFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.leaveChannelTitle,responseData);
+    }
+
+
+    @Override
     public void deleteMessageSucceeded(String responseData) {
 
     }

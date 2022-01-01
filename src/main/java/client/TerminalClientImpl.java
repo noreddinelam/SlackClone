@@ -3,6 +3,7 @@ package client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//To implement a terminal version.
 public class TerminalClientImpl extends ClientImpl {
     private static TerminalClientImpl instance = new TerminalClientImpl();
     private static final Logger logger = LoggerFactory.getLogger(TerminalClientImpl.class);
@@ -62,6 +63,16 @@ public class TerminalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void leaveChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void leaveChannelFailed(String responseData) {
 
     }
 

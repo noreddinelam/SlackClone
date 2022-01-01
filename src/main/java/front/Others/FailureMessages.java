@@ -7,6 +7,11 @@ public class FailureMessages {
     public static String deleteChannelNotAdminTitle = "Admin";
     public static String deleteChannelNotAdminMessage = "You are not the admin of this channel !";
 
+    public static String leaveChannelAdminTitle = "Admin";
+    public static String leaveChannelAdminMessage = "You can't leave because you are the admin !";
+
+    public static String leaveChannelTitle = "Leave Channel Failed";
+
     public static String authTitle = "Authentication Failed";
 
     public static String channelCreationTitle = "Channel Creation Failed";

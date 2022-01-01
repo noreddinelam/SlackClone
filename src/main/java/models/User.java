@@ -72,6 +72,10 @@ public class User {
         return null;
     }
 
+    public void removeChannelByName(String channelName){
+        this.channels.remove(new Channel(channelName));
+    }
+
     public void addMessage(Message message) {
         this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(message.getChannel().getChannelName())).forEach((channel) -> {
             channel.addMessage(message);
