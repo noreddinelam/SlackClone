@@ -1,5 +1,6 @@
 package client;
 
+import front.Others.FailureMessages;
 import front.controllers.AuthController;
 import front.controllers.SlockController;
 import javafx.application.Platform;
@@ -40,7 +41,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void connectFailed(String responseData) {
-        ((AuthController) this.controller).authFailed(responseData);
+        this.controller.commandFailed(FailureMessages.authTitle,responseData);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void registerFailed(String responseData) {
-        ((AuthController) this.controller).authFailed(responseData);
+        this.controller.commandFailed(FailureMessages.authTitle,responseData);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void createChannelFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.channelCreationTitle,responseData);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.joinChannelTitle,responseData);
     }
 
     @Override
@@ -99,8 +100,20 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelBroadcastFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.joinChannelBroadcastTitle,responseData);
     }
+
+    @Override
+    public void leaveChannelSucceeded(String responseData) {
+        this.user.removeChannelByName(responseData); // responseData is channelName;
+        ((SlockController) this.controller).removeChannelFromListJoinedChannels(responseData);
+    }
+
+    @Override
+    public void leaveChannelFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.leaveChannelTitle,responseData);
+    }
+
 
     @Override
     public void deleteMessageSucceeded(String responseData) {
@@ -109,7 +122,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteMessageFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.deleteMessageTitle,responseData);
     }
 
     @Override
@@ -119,7 +132,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyMessageFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.modifyMessageTitle,responseData);
     }
 
     @Override
@@ -138,12 +151,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteChannelFailed(String responseData) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Authentication Failed");
-            alert.setContentText("Deleting channel failed");
-            alert.showAndWait();
-        });
+        this.controller.commandFailed(FailureMessages.deleteChannelTitle,responseData);
     }
 
     @Override
@@ -153,7 +161,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listChannelsInServerFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.listChannelsInServerFailed,responseData);
     }
 
     @Override
@@ -167,7 +175,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfMessageInChannelFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle,responseData);
     }
 
     @Override
@@ -181,7 +189,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfJoinedChannelsFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle,responseData);
     }
 
     @Override
@@ -206,7 +214,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUserInChannelFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.listOfUserInChannelTitle,responseData);
     }
 
     @Override
@@ -231,7 +239,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageConsumptionError(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.messageConsumptionTitle,responseData);
     }
 
     @Override
@@ -243,7 +251,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageBroadcastFailed(String responseData) {
-
+        this.controller.commandFailed(FailureMessages.messageBroadcastTitle,responseData);
     }
 
     @Override

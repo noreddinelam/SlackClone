@@ -11,6 +11,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.ResourceBundle;
+
+
+
 
 public class RequestToJoinChannelController extends Controller {
     private String selectedRequest;
@@ -53,4 +57,8 @@ public class RequestToJoinChannelController extends Controller {
         });
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
+    }
 }

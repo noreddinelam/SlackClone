@@ -54,8 +54,8 @@ public class SQLStatements {
                     " VALUES (?,?,?) ;";
     public static String deleteUserFromMyChannel =
             "DELETE FROM " + clientChannelTable
-                    + " WHERE "+  clientChannelChannelNameColumn+" =? AND " +
-                    clientChannelUsernameColumn+"=? ;";
+                    + " WHERE " + clientChannelChannelNameColumn + " =? AND " +
+                    clientChannelUsernameColumn + "=? ;";
 
 
     public static String joinListChannelRequest =
@@ -80,7 +80,7 @@ public class SQLStatements {
 
     public static String insertAdminClientChannelTable =
             "INSERT INTO " + clientChannelTable
-                    + "(" + clientChannelChannelNameColumn+ "," + clientChannelUsernameColumn + ") "
+                    + "(" + clientChannelChannelNameColumn + "," + clientChannelUsernameColumn + ") "
                     + " VALUES (?,?) ;";
 
     public static String addMessage =
@@ -118,7 +118,9 @@ public class SQLStatements {
                     + " VALUES (?,?) ;";
 
     public static String listOfJoinedChannels =
-            "SELECT * FROM " + clientChannelTable + " WHERE " + clientChannelUsernameColumn + " = ?";
+            "SELECT * FROM " + clientChannelTable + " INNER JOIN " + channelTable + " ON "
+                    + clientChannelTable + "." + clientChannelChannelNameColumn + " = " + channelTable + "." + channelNameColumn
+                    + " WHERE " + clientChannelUsernameColumn + " = ?";
 
     public static String listOfUnJoinedChannels =
             "SELECT  * FROM " + channelTable +
@@ -136,7 +138,8 @@ public class SQLStatements {
 
     public static String modifyChannelStatus =
             "UPDATE " + channelTable
-                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn  + "=? ;";
+                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
+
     private SQLStatements() {
     }
 }

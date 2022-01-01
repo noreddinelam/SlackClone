@@ -69,7 +69,7 @@ public class SlockController extends Controller {
 
     @FXML
     void onLeaveCurrentChannel(ActionEvent event) {
-
+        this.clientImpl.leaveChannel(this.selectedChannelName);
     }
 
     @FXML
@@ -130,6 +130,8 @@ public class SlockController extends Controller {
         });
 
         // TODO : add the listener on double click message.
+        // TODO : models in front to remove.
+        // TODO : admin can't leave channel.
     }
 
     public void initListJoinedChannels(List<Channel> list) {
@@ -141,6 +143,16 @@ public class SlockController extends Controller {
     public void addChannelToListJoinedChannels(Channel channel) {
         Platform.runLater(() -> {
             this.listOfJoinedChannels.getItems().add(channel.getChannelName());
+        });
+    }
+
+    public void removeChannelFromListJoinedChannels(String channelName){
+        Platform.runLater(() -> {
+            if(channelName.equals(this.selectedChannelName)){
+                this.listOfMessages.getItems().clear();
+                this.usersListView.getItems().clear();
+            }
+            this.listOfJoinedChannels.getItems().remove(channelName);
         });
     }
 
