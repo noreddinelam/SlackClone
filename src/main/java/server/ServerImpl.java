@@ -34,7 +34,22 @@ public class ServerImpl {
 
     private ServerImpl() {
     }
-
+    public static void logout(String data)
+    {
+        Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
+        String username=requestData.get(FieldsRequestName.userName);
+        String guest = requestData.get(FieldsRequestName.guest);
+        AsynchronousSocketChannel client = listOfClients.get(username);
+        listOfClients.remove(username);
+        listOfGuests.put(guest,client);
+        Response response = new Response(NetCodes.LOGOUT_SUCCEED,
+                "Logout Succeed");
+        String responseJson = GsonConfiguration.gson.toJson(response);
+        ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+        client.write(attachment,attachment,new ServerWriterCompletionHandler());
+        ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
+        client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+    }
     public static void connect(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String guest = requestData.get(FieldsRequestName.guest);
@@ -623,6 +638,7 @@ public class ServerImpl {
 
     public static void initListOfFunctions() {
         // initialisation of methods;
+        listOfFunctions.put(NetCodes.LOGOUT, ServerImpl::logout);
         listOfFunctions.put(NetCodes.CONNECTION, ServerImpl::connect);
         listOfFunctions.put(NetCodes.REGISTER, ServerImpl::register);
         listOfFunctions.put(NetCodes.CREATE_CHANNEL, ServerImpl::createChannel);
