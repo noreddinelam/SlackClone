@@ -36,6 +36,8 @@ public class NetCodes {
     public static String DELETE_CHANNEL = "600";
     public static String DELETE_CHANNEL_SUCCEED = "601";
     public static String DELETE_CHANNEL_FAILED = "602";
+    public static String DELETE_CHANNEL_BROADCAST_SUCCEEDED = "603";
+    public static String DELETE_CHANNEL_BROADCAST_FAILED = "603";
 
     public static String LIST_CHANNELS_IN_SERVER = "700";
     public static String LIST_CHANNELS_IN_SERVER_SUCCEED = "701";

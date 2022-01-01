@@ -278,6 +278,7 @@ public class ServerImpl {
         AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
         try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, data);
+            Response responseBroadcast = new Response(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED,data);
             int result = repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             if (result != 0) {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
