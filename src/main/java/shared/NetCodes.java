@@ -2,6 +2,9 @@ package shared;
 
 public class NetCodes {
 
+    public static String LOGOUT ="99";
+    public static String LOGOUT_SUCCEED ="999";
+
     public static String REGISTER = "0";
     public static String REGISTER_SUCCEED = "1";
     public static String REGISTER_FAILED = "2";

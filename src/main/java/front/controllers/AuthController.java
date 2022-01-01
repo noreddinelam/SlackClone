@@ -32,6 +32,8 @@ public class AuthController extends Controller {
     public void authSucceeded() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/vue.fxml"));
         Parent root = loader.load();
+        SlockController controller=loader.getController();
+        controller.scene=this.scene;
         this.scene.setRoot(root);
     }
 
