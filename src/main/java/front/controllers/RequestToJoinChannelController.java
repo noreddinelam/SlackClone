@@ -56,9 +56,4 @@ public class RequestToJoinChannelController extends Controller {
             });
         });
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
-    }
 }

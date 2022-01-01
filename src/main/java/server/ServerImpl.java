@@ -141,7 +141,7 @@ public class ServerImpl {
                         Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,
                                 username + " has joined " +
                                         "the channel");
-                        response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, "Channel joined");
+                        response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(new Channel(new User(admin),channelName,"",true)));
                         String broadcastUsername;
                         AsynchronousSocketChannel broadcastClient;
                         while (resultSet.next()) {
@@ -599,7 +599,8 @@ public class ServerImpl {
             Map<String, List<Channel>> listOfChannels = new HashMap<>();
             List<Channel> unJoinedChannels = new ArrayList<>();
             while (channels.next()) {
-                unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn),
+                unJoinedChannels.add(new Channel(new User(channels.getString(SQLTablesInformation.channelNameColumn)),
+                        channels.getString(SQLTablesInformation.channelNameColumn),"",
                         channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
             }
             listOfChannels.put(FieldsRequestName.listChannels, unJoinedChannels);

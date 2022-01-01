@@ -19,8 +19,8 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
         this.logger.info("ReaderCompletionHandler completed with {}", result);
-        attachment.flip();
         String requestJson = new String(attachment.array()).substring(0, result);
+        this.logger.info("{}",requestJson);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
         ServerImpl.getFunctionWithRequestCode(requestObject).accept(requestObject.getRequestData());
     }
