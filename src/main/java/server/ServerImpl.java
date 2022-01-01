@@ -355,8 +355,8 @@ public class ServerImpl {
             Map<String, String> usernameChannelName;
             while (resultSet.next()) {
                 usernameChannelName = new HashMap<>();
-                usernameChannelName.put(resultSet.getString(FieldsRequestName.channelName),
-                        resultSet.getString(FieldsRequestName.userName));
+                usernameChannelName.put(FieldsRequestName.channelName,resultSet.getString(SQLTablesInformation.requestChannelName));
+                usernameChannelName.put(FieldsRequestName.userName,resultSet.getString(SQLTablesInformation.requestUsername));
                 requests.add(usernameChannelName);
             }
             String responseData = GsonConfiguration.gson.toJson(requests,
@@ -591,7 +591,7 @@ public class ServerImpl {
             List<Channel> unJoinedChannels = new ArrayList<>();
             while (channels.next()) {
 
-                unJoinedChannels.add(new Channel(channels.getString(SQLTablesInformation.channelNameColumn), channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
+                unJoinedChannels.add(new Channel(new User(channels.getString(SQLTablesInformation.channelAdminUsernameColumn)),channels.getString(SQLTablesInformation.channelNameColumn),"", channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
             }
             listOfChannels.put(FieldsRequestName.listChannels, unJoinedChannels);
             String dataJson = GsonConfiguration.gson.toJson(listOfChannels, CommunicationTypes.mapListChannelJsonTypeData);

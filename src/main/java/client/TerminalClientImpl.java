@@ -146,6 +146,16 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void listOfRequestsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfRequestsFailed(String responseData) {
+
+    }
+
+    @Override
     public void messageConsumed(String responseData) {
 
     }
@@ -162,6 +172,16 @@ public class TerminalClientImpl extends ClientImpl {
 
     @Override
     public void messageBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void joinPrivateChannel(String responseData) {
+
+    }
+
+    @Override
+    public void requestAlreadySent(String responseData) {
 
     }
 }

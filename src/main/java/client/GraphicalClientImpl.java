@@ -179,7 +179,10 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUnJoinedChannelsSucceeded(String responseData) {
-
+        Map<String, List<Channel>> listOfChannels = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapListChannelJsonTypeData);
+        List<Channel> channels = listOfChannels.get(FieldsRequestName.listChannels);
+        this.ucController.initRequestToJoinChannelListView(channels);
     }
 
     @Override
@@ -196,6 +199,19 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUserInChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfRequestsSucceeded(String responseData) {
+        List<Map<String,String>> listOfRequests = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.listMapChannelUsernameTypeData);
+        this.rqController.initRequestToJoinChannelListView(listOfRequests);
+
+    }
+
+    @Override
+    public void listOfRequestsFailed(String responseData) {
 
     }
 
@@ -221,5 +237,15 @@ public class GraphicalClientImpl extends ClientImpl {
     @Override
     public void messageBroadcastFailed(String responseData) {
 
+    }
+
+    @Override
+    public void joinPrivateChannel(String responseData) {
+        //TODO pop up
+    }
+
+    @Override
+    public void requestAlreadySent(String responseData) {
+        //TODO pop up
     }
 }
