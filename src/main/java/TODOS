@@ -1,9 +1,10 @@
-//TODO : verification if the message or the channel is mine or not before sending the request.
 //TODO : TRANSACTION
 //TODO : forget password
 //TODO: logout (connected to guest)
 //TODO : remove description
 // TODO : add page channel management
+
+
 // TODO : Brodcast to admin users in channel
 // TODO : broadcast delete channel and broadcast leave channel.
 

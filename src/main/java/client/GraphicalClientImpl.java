@@ -78,9 +78,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelSucceed(String responseData) {
-        //TODO
         Channel channel = GsonConfiguration.gson.fromJson(responseData,Channel.class);
-        ((SlockController) this.controller).addChannelToListJoinedChannels(channel) ;
+        this.user.addChannel(channel);
+        ((SlockController) this.controller).addChannelToListJoinedChannels(channel);
     }
 
     @Override
