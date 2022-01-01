@@ -56,6 +56,12 @@ public class SlockController extends Controller {
     }
 
     @FXML
+    void OnLogout(ActionEvent event) throws IOException {
+        this.clientImpl.logout();
+    }
+
+
+    @FXML
     void onDeleteCurrentChannel(ActionEvent event) {
         this.clientImpl.deleteChannel(this.selectedChannelName);
     }
@@ -138,6 +144,15 @@ public class SlockController extends Controller {
         List<String> channelsName = list.stream().map(Channel::getChannelName).collect(Collectors.toList());
         this.listOfJoinedChannels.getItems().addAll(channelsName);
         this.clientImpl.getAllMessages();
+    }
+
+    public void onLogoutSucceeded() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/loginregisterpage.fxml"));
+        Parent root = loader.load();
+        AuthController controller=loader.getController();
+        this.clientImpl.setController(controller);
+        controller.scene=this.scene;
+        this.scene.setRoot(root);
     }
 
     public void addChannelToListJoinedChannels(Channel channel) {

@@ -35,8 +35,8 @@ public abstract class ClientImpl {
     protected String ipAddress;
     protected AsynchronousSocketChannel client;
     protected Controller controller;
-    protected RequestToJoinChannelController rqController ;
-    protected UnJoinedChannelsController ucController ;
+    protected RequestToJoinChannelController rqController;
+    protected UnJoinedChannelsController ucController;
 
     public static Consumer<String> getFunctionWithRequestCode(Response response) {
         return listOfFunctions.get(response.getNetCode());
@@ -60,6 +60,8 @@ public abstract class ClientImpl {
         });
         reader.start();
     }
+
+    public abstract void logoutSucceeded(String responseData);
 
     public abstract void connectSucceeded(String responseData);
 
@@ -129,15 +131,16 @@ public abstract class ClientImpl {
 
     public abstract void messageBroadcastFailed(String responseData);
 
-    public abstract void  joinPrivateChannel (String responseData);
+    public abstract void joinPrivateChannel(String responseData);
 
-    public abstract void requestAlreadySent (String responseData);
+    public abstract void requestAlreadySent(String responseData);
 
-    public abstract void responseRequestJoinChannelSucceeded (String responseData);
+    public abstract void responseRequestJoinChannelSucceeded(String responseData);
 
-    public abstract void responseRequestJoinChannelFailed (String responseData);
+    public abstract void responseRequestJoinChannelFailed(String responseData);
 
     public void initListOfFunctions() {
+        listOfFunctions.put(NetCodes.LOGOUT_SUCCEED, this::logoutSucceeded);
 
         listOfFunctions.put(NetCodes.CONNECT_SUCCEED, this::connectSucceeded);
         listOfFunctions.put(NetCodes.CONNECT_FAILED, this::connectFailed);
@@ -153,7 +156,7 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, this::joinChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, this::joinChannelBroadcastFailed);
         listOfFunctions.put(NetCodes.JOIN_PRIVATE_CHANNEL, this::joinPrivateChannel);
-        listOfFunctions.put(NetCodes.REQUEST_JOIN_FAILED, this:: requestAlreadySent);
+        listOfFunctions.put(NetCodes.REQUEST_JOIN_FAILED, this::requestAlreadySent);
 
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_SUCCEED, this::leaveChannelSucceeded);
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_FAILED, this::leaveChannelFailed);
@@ -191,6 +194,17 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_SUCCEED, this::responseRequestJoinChannelSucceeded);
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_FAILED, this::responseRequestJoinChannelFailed);
+    }
+
+
+    public void logout() {
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName, this.user.getUsername());
+        data.put(FieldsRequestName.guest, this.ipAddress);
+        String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+        Request request = new Request(NetCodes.LOGOUT, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
     public void login(String username, String password) {
@@ -251,12 +265,12 @@ public abstract class ClientImpl {
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
             this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
         } else {
-             this.controller.commandFailed(FailureMessages.deleteChannelNotAdminTitle,
+            this.controller.commandFailed(FailureMessages.deleteChannelNotAdminTitle,
                     FailureMessages.deleteChannelNotAdminMessage);
         }
     }
 
-    public void leaveChannel(String channelName){
+    public void leaveChannel(String channelName) {
         if (!this.user.getChannelByName(channelName).getAdmin().getUsername().equalsIgnoreCase(this.user.getUsername())) {
             Map<String, String> data = new HashMap<>();
             data.put(FieldsRequestName.channelName, channelName);
@@ -311,8 +325,8 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void requestJoinChannel(){
-        Map<String ,String> data = new HashMap<>();
+    public void requestJoinChannel() {
+        Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.adminName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.LIST_REQUEST_JOIN_CHANNEL, requestData);
@@ -320,23 +334,23 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void joinChannel(String channelName , String adminUsername){
-        Map<String ,String> data = new HashMap<>();
+    public void joinChannel(String channelName, String adminUsername) {
+        Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.userName, this.user.getUsername());
         data.put(FieldsRequestName.channelName, channelName);
-        data.put(FieldsRequestName.adminName,adminUsername);
+        data.put(FieldsRequestName.adminName, adminUsername);
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.JOIN_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void responseRequestJoinChannel(String channelName , String username, String status){
-        Map<String ,String> data = new HashMap<>();
+    public void responseRequestJoinChannel(String channelName, String username, String status) {
+        Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.adminName, this.user.getUsername());
         data.put(FieldsRequestName.channelName, channelName);
-        data.put(FieldsRequestName.userName,username);
-        data.put(FieldsRequestName.accept,status);
+        data.put(FieldsRequestName.userName, username);
+        data.put(FieldsRequestName.accept, status);
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.RESPONSE_JOIN_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
@@ -359,7 +373,8 @@ public abstract class ClientImpl {
     }
 
     public void setRqController(RequestToJoinChannelController rqController) {
-        this.rqController = rqController;}
+        this.rqController = rqController;
+    }
 
     public void setUcController(UnJoinedChannelsController ucController) {
         this.ucController = ucController;

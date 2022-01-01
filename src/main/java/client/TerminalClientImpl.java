@@ -17,6 +17,11 @@ public class TerminalClientImpl extends ClientImpl {
 
 
     @Override
+    public void logoutSucceeded(String responseData) {
+
+    }
+
+    @Override
     public void connectSucceeded(String responseData) {
 
     }

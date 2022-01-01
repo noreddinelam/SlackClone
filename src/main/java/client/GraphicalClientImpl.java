@@ -14,6 +14,7 @@ import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.gson_configuration.GsonConfiguration;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,15 @@ public class GraphicalClientImpl extends ClientImpl {
 
     public static GraphicalClientImpl getUniqueInstanceOfGraphicalClientImpl() {
         return instance;
+    }
+
+    @Override
+    public void logoutSucceeded(String responseData) {
+        try {
+            ((SlockController) this.controller).onLogoutSucceeded();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
