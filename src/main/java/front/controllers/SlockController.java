@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 public class SlockController extends Controller {
 
     private String selectedChannelName;
+    private String adminUsername;
+    private boolean isPrivateChannel;
 
     @FXML
     private Text clientUsername;
@@ -51,6 +54,24 @@ public class SlockController extends Controller {
     private ListView<User> usersListView;
 
     @FXML
+    private CheckBox modifyIsPrivate;
+
+    @FXML
+    private TextField channelNameModTextField;
+
+    @FXML
+    private TextField modifyMessageTextField;
+
+    @FXML
+    private Button deleteMessageButton;
+
+    @FXML
+    private Button modifyChannelButton;
+
+    @FXML
+    private Button modifyMessageButton;
+
+    @FXML
     void onCreateChannel(ActionEvent event) {
         this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
     }
@@ -67,9 +88,14 @@ public class SlockController extends Controller {
     }
 
     @FXML
+    void onDeleteMessage(ActionEvent event) {
+
+    }
+
+    @FXML
     void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER && !this.messageTextField.getText().isEmpty() && this.selectedChannelName != null) {
-            this.clientImpl.sendMessage(this.messageTextField.getText(),this.selectedChannelName);
+            this.clientImpl.sendMessage(this.messageTextField.getText(), this.selectedChannelName);
         }
     }
 
@@ -113,6 +139,16 @@ public class SlockController extends Controller {
 
     }
 
+    @FXML
+    void onModifyChannel(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onModifyMessage(ActionEvent event) {
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
@@ -125,8 +161,21 @@ public class SlockController extends Controller {
     public void initListViewListeners() {
         this.listOfJoinedChannels.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
                                                                                           newValue) -> {
-            this.selectedChannelName = newValue;
-            if (this.selectedChannelName != null) {
+            if (newValue != null) {
+                String[] parts = newValue.split("-");
+                this.selectedChannelName = parts[0].trim();
+                this.adminUsername = parts[1].trim();
+                this.isPrivateChannel = !parts[2].trim().equalsIgnoreCase("Public");
+                if(this.adminUsername.equalsIgnoreCase(this.clientUsername.getText())){
+                    this.channelNameModTextField.setText(this.selectedChannelName);
+                    this.modifyIsPrivate.setSelected(this.isPrivateChannel);
+                    this.modifyChannelButton.setDisable(false);
+                }
+                else{
+                    this.channelNameModTextField.setText("");
+                    this.modifyIsPrivate.setSelected(false);
+                    this.modifyChannelButton.setDisable(true);
+                }
                 this.clientImpl.getUsersForChannel(this.selectedChannelName);
                 Platform.runLater(() -> {
                     List<Message> messages = this.clientImpl.listOfMessagesInChannel(this.selectedChannelName);
@@ -135,13 +184,28 @@ public class SlockController extends Controller {
             }
         });
 
-        // TODO : add the listener on double click message.
+        this.listOfMessages.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
+                                                                                          newValue) -> {
+            if (newValue != null) {
+                if(newValue.getUser().getUsername().equalsIgnoreCase(this.clientUsername.getText())){
+                    this.modifyMessageTextField.setText(newValue.getContent());
+                    this.modifyMessageButton.setDisable(false);
+                    this.deleteMessageButton.setDisable(false);
+                }
+                else{
+                    this.modifyMessageTextField.setText("");
+                    this.modifyMessageButton.setDisable(true);
+                    this.deleteMessageButton.setDisable(true);
+                }
+            }
+        });
         // TODO : models in front to remove.
-        // TODO : admin can't leave channel.
     }
 
     public void initListJoinedChannels(List<Channel> list) {
-        List<String> channelsName = list.stream().map(Channel::getChannelName).collect(Collectors.toList());
+        List<String> channelsName =
+                list.stream().map((channel) -> channel.getChannelName() + " - " + channel.getAdmin().getUsername() +
+                        " - " + (channel.isPublic() ? "Public" : "Private")).collect(Collectors.toList());
         this.listOfJoinedChannels.getItems().addAll(channelsName);
         this.clientImpl.getAllMessages();
     }
@@ -149,9 +213,9 @@ public class SlockController extends Controller {
     public void onLogoutSucceeded() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/ressources/loginregisterpage.fxml"));
         Parent root = loader.load();
-        AuthController controller=loader.getController();
+        AuthController controller = loader.getController();
         this.clientImpl.setController(controller);
-        controller.scene=this.scene;
+        controller.scene = this.scene;
         this.scene.setRoot(root);
     }
 
@@ -161,9 +225,9 @@ public class SlockController extends Controller {
         });
     }
 
-    public void removeChannelFromListJoinedChannels(String channelName){
+    public void removeChannelFromListJoinedChannels(String channelName) {
         Platform.runLater(() -> {
-            if(channelName.equals(this.selectedChannelName)){
+            if (channelName.equals(this.selectedChannelName)) {
                 this.listOfMessages.getItems().clear();
                 this.usersListView.getItems().clear();
             }
@@ -172,8 +236,11 @@ public class SlockController extends Controller {
     }
 
     public void deleteChannelToListJoinedChannels(String channelName) {
-        this.listOfMessages.getItems();
         Platform.runLater(() -> {
+            if (channelName.equals(this.selectedChannelName)) {
+                this.listOfMessages.getItems().clear();
+                this.usersListView.getItems().clear();
+            }
             this.listOfJoinedChannels.getItems().remove(channelName);
         });
     }
@@ -184,14 +251,14 @@ public class SlockController extends Controller {
         });
     }
 
-    public void addUserToJoinedUsersChannel(User user){
+    public void addUserToJoinedUsersChannel(User user) {
         Platform.runLater(() -> {
             this.usersListView.getItems().add(user);
         });
     }
 
-    public void addMessageToListOfMessages(Message message){
-        if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())){
+    public void addMessageToListOfMessages(Message message) {
+        if (this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(message.getChannel().getChannelName())) {
             this.messageTextField.clear();
             Platform.runLater(() -> {
                 this.listOfMessages.getItems().add(message);

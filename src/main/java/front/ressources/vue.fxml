@@ -53,10 +53,26 @@
                      </font>
                   </Text>
                   <Text fill="WHITE" layoutX="14.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel List :" wrappingWidth="191.13671875" />
-                  <ListView fx:id="listOfJoinedChannels" layoutX="8.0" layoutY="99.0" onMouseClicked="#onItemSelected" prefHeight="477.0" prefWidth="248.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                  <Button layoutX="55.0" layoutY="589.0" mnemonicParsing="false" onAction="#onPrintAllChannels" prefHeight="42.0" prefWidth="147.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="All Channels" textAlignment="CENTER" textFill="WHITE">
+                  <ListView fx:id="listOfJoinedChannels" layoutX="14.0" layoutY="99.0" onMouseClicked="#onItemSelected" prefHeight="354.0" prefWidth="235.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="9.0" />
+                  <Button layoutX="43.0" layoutY="467.0" mnemonicParsing="false" onAction="#onPrintAllChannels" prefHeight="42.0" prefWidth="147.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="All Channels" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="16.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="CLOSED_HAND" />
+                     </cursor>
+                  </Button>
+                  <Text fill="WHITE" layoutX="14.0" layoutY="533.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel Modification Section :" wrappingWidth="191.13671875" />
+                  <TextField fx:id="channelNameModTextField" layoutX="15.0" layoutY="551.0" prefHeight="27.0" prefWidth="219.0" promptText="Channel name..." style="-fx-background-color: transparent; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
+                  <CheckBox fx:id="modifyIsPrivate" alignment="CENTER" layoutX="15.0" layoutY="596.0" mnemonicParsing="false" opacity="0.44" style="-fx-background-color: #b7b2ff;" styleClass="background_color_2" stylesheets="@Stylesheet.css" textFill="#fffbfb" />
+                  <Text fill="WHITE" layoutX="40.0" layoutY="609.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Private">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="modifyChannelButton" layoutX="110.0" layoutY="591.0" mnemonicParsing="false" onAction="#onModifyChannel" prefHeight="21.0" prefWidth="109.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Modify Channel" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="12.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="CLOSED_HAND" />
@@ -87,10 +103,28 @@
                      </children>
                   </VBox>
                   <Text fill="WHITE" layoutX="8.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users in current channel :" wrappingWidth="242.13671875" />
-                  <ListView fx:id="usersListView" layoutX="11.0" layoutY="124.0" prefHeight="449.0" prefWidth="276.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="124.0" />
-                  <Button layoutX="70.0" layoutY="584.0" mnemonicParsing="false" onAction="#onPrintRequestsChannels" prefHeight="42.0" prefWidth="161.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="requests to join" textAlignment="CENTER" textFill="WHITE">
+                  <ListView fx:id="usersListView" layoutX="14.0" layoutY="124.0" prefHeight="329.0" prefWidth="277.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.bottomAnchor="195.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="124.0" />
+                  <Button layoutX="68.0" layoutY="472.0" mnemonicParsing="false" onAction="#onPrintRequestsChannels" prefHeight="42.0" prefWidth="161.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="requests to join" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="16.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="CLOSED_HAND" />
+                     </cursor>
+                  </Button>
+                  <Text fill="WHITE" layoutX="14.0" layoutY="539.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Message Modification Section" wrappingWidth="242.13671875" />
+                  <TextField fx:id="modifyMessageTextField" layoutX="14.0" layoutY="551.0" prefHeight="27.0" prefWidth="270.0" promptText="message..." style="-fx-background-color: transparent; -fx-border-color: #8280ff; -fx-border-width: 0px 0px 2px; -fx-prompt-text-fill: gray;" />
+                  <Button fx:id="modifyMessageButton" layoutX="20.0" layoutY="588.0" mnemonicParsing="false" onAction="#onModifyMessage" prefHeight="21.0" prefWidth="109.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Modify Message" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="CLOSED_HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="deleteMessageButton" layoutX="170.0" layoutY="588.0" mnemonicParsing="false" onAction="#onDeleteMessage" prefHeight="21.0" prefWidth="109.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Delete Message" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="12.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="CLOSED_HAND" />

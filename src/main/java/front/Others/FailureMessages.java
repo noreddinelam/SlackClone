@@ -26,6 +26,8 @@ public class FailureMessages {
 
     public static String deleteChannelTitle = "Delete Channel Failed";
 
+    public static String deleteChannelBroadcastTitle = "Delete Channel Broadcast Failed";
+
     public static String listChannelsInServerFailed = "List Channels In Server Failed";
 
     public static String listOfMessageInChannelTitle = "List Of Message In Channel Failed";

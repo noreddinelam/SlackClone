@@ -92,6 +92,10 @@ public abstract class ClientImpl {
 
     public abstract void deleteMessageFailed(String responseData);
 
+    public abstract void deleteChannelBroadcastSucceeded(String responseData);
+
+    public abstract void deleteChannelBroadcastFailed(String responseData);
+
     public abstract void modifyMessageSucceeded(String responseData);
 
     public abstract void modifyMessageFailed(String responseData);
@@ -170,6 +174,8 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
+        listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, this::deleteChannelBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_FAILED, this::deleteChannelBroadcastFailed);
 
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, this::listChannelsInServerSucceeded);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED, this::listChannelsInServerFailed);
