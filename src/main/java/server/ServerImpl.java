@@ -305,7 +305,7 @@ public class ServerImpl {
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
         } catch (FetchAllUsersWithChannelNameException e) {
-            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting deletion channel error");
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -337,9 +337,12 @@ public class ServerImpl {
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
         String newChannelName = requestData.get(FieldsRequestName.newChannelName);
-        boolean isPublic = Boolean.parseBoolean(requestData.get(FieldsRequestName.channelPublic));
+        boolean isPublic = requestData.get(FieldsRequestName.channelPublic).equalsIgnoreCase("true");
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
+            Response broadcastResponse = new Response(NetCodes.MODIFY_CHANNEL_BROADCAST_SUCCEED, data);
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             Response response = new Response(NetCodes.MODIFY_CHANNEL_SUCCEED, data);
             repository.modifyChannelDB(newChannelName,isPublic, channelName).orElseThrow(ModifyChannelException::new);
             String responseJson = GsonConfiguration.gson.toJson(response);
@@ -348,12 +351,23 @@ public class ServerImpl {
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            String broadcastUsername;
+            AsynchronousSocketChannel broadcastClient;
+            while (resultSet.next()) {
+                broadcastUsername = resultSet.getString("username");
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
         } catch (ModifyChannelException e) {
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_FAILED, "Modify channel failed");
+            requestFailure(response, client);
+        } catch (SQLException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.MODIFY_CHANNEL_FAILED, "Modify Channel failed");
+        } catch (FetchAllUsersWithChannelNameException e) {
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_BROADCAST_FAILED, "broadcasting channel error");
             requestFailure(response, client);
         }
-
     }
 
 //    public static void modifyChannelStatus(String data) {

@@ -86,6 +86,8 @@ public class NetCodes {
     public static String MODIFY_CHANNEL = "1800";
     public static String MODIFY_CHANNEL_SUCCEED = "1801";
     public static String MODIFY_CHANNEL_FAILED = "1802";
+    public static String MODIFY_CHANNEL_BROADCAST_SUCCEED = "1803";
+    public static String MODIFY_CHANNEL_BROADCAST_FAILED = "1804";
 
 //    public static String MODIFY_CHANNEL_STATUS = "1900";
 //    public static String MODIFY_CHANNEL_STATUS_SUCCEED = "1901";

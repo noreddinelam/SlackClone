@@ -2,6 +2,7 @@ package front.controllers;
 
 import client.GraphicalClientImpl;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -141,7 +142,7 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyChannel(ActionEvent event) {
-
+        this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(), !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
     }
 
     @FXML
@@ -166,12 +167,11 @@ public class SlockController extends Controller {
                 this.selectedChannelName = parts[0].trim();
                 this.adminUsername = parts[1].trim();
                 this.isPrivateChannel = !parts[2].trim().equalsIgnoreCase("Public");
-                if(this.adminUsername.equalsIgnoreCase(this.clientUsername.getText())){
+                if (this.adminUsername.equalsIgnoreCase(this.clientUsername.getText())) {
                     this.channelNameModTextField.setText(this.selectedChannelName);
                     this.modifyIsPrivate.setSelected(this.isPrivateChannel);
                     this.modifyChannelButton.setDisable(false);
-                }
-                else{
+                } else {
                     this.channelNameModTextField.setText("");
                     this.modifyIsPrivate.setSelected(false);
                     this.modifyChannelButton.setDisable(true);
@@ -185,14 +185,13 @@ public class SlockController extends Controller {
         });
 
         this.listOfMessages.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
-                                                                                          newValue) -> {
+                                                                                    newValue) -> {
             if (newValue != null) {
-                if(newValue.getUser().getUsername().equalsIgnoreCase(this.clientUsername.getText())){
+                if (newValue.getUser().getUsername().equalsIgnoreCase(this.clientUsername.getText())) {
                     this.modifyMessageTextField.setText(newValue.getContent());
                     this.modifyMessageButton.setDisable(false);
                     this.deleteMessageButton.setDisable(false);
-                }
-                else{
+                } else {
                     this.modifyMessageTextField.setText("");
                     this.modifyMessageButton.setDisable(true);
                     this.deleteMessageButton.setDisable(true);
@@ -264,6 +263,26 @@ public class SlockController extends Controller {
                 this.listOfMessages.getItems().add(message);
             });
         }
+    }
+
+    public void modifyChannelInListJoinedChannels(String oldChannelName, String newChannelName, String isPublic) {
+        Platform.runLater(() -> {
+            ObservableList<String> temp = this.listOfJoinedChannels.getItems();
+            int index = 0;
+            String newItem = null;
+            for (String listViewItem : temp) {
+                if (listViewItem.split("-")[0].trim().equalsIgnoreCase(oldChannelName)) {
+                    newItem = listViewItem;
+                    break;
+                }
+                index++;
+            }
+            if (newItem != null) {
+                String[] parts = newItem.split("-");
+                this.listOfJoinedChannels.getItems().set(index,
+                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" : "Private"));
+            }
+        });
     }
 
 }

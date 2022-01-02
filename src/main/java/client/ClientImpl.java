@@ -96,6 +96,14 @@ public abstract class ClientImpl {
 
     public abstract void deleteChannelBroadcastFailed(String responseData);
 
+    public abstract void modifyChannelSucceeded (String responseData);
+
+    public abstract void modifyChannelFailed(String responseData);
+
+    public abstract void modifyChannelBroadcastSucceeded (String responseData);
+
+    public abstract void modifyChannelBroadcastFailed (String responseData);
+
     public abstract void modifyMessageSucceeded(String responseData);
 
     public abstract void modifyMessageFailed(String responseData);
@@ -172,10 +180,16 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
 
+
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, this::deleteChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_FAILED, this::deleteChannelBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_SUCCEED, this::modifyChannelSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_FAILED, this::modifyChannelFailed);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_BROADCAST_SUCCEED, this::modifyChannelBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_BROADCAST_FAILED, this::modifyChannelBroadcastFailed);
 
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, this::listChannelsInServerSucceeded);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED, this::listChannelsInServerFailed);
@@ -216,16 +230,16 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void modifyChannel(String newChanneName, String isPublic , String channelName){
+    public void modifyChannel(String newChannelName, boolean isPublic , String channelName){
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.channelName, channelName);
-        data.put(FieldsRequestName.newChannelName, newChanneName);
-        data.put(FieldsRequestName.channelPublic, isPublic);
+        data.put(FieldsRequestName.newChannelName, newChannelName);
+        data.put(FieldsRequestName.channelPublic, isPublic ? "true" : "false");
+        data.put(FieldsRequestName.userName,this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.MODIFY_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
-
     }
 
     public void login(String username, String password) {
