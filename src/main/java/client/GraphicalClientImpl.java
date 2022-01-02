@@ -3,8 +3,6 @@ package client;
 import front.Others.FailureMessages;
 import front.controllers.AuthController;
 import front.controllers.SlockController;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import models.Channel;
 import models.Message;
 import models.User;
@@ -144,7 +142,32 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteChannelBroadcastFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.deleteChannelBroadcastTitle,responseData);
+        this.controller.commandFailed(FailureMessages.deleteChannelBroadcastTitle, responseData);
+    }
+
+    @Override
+    public void modifyChannelSucceeded(String responseData) {
+        Map<String,String > response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        String oldChannelName = response.get(FieldsRequestName.channelName);
+        String newChannelName = response.get(FieldsRequestName.newChannelName);
+        String isPublic = response.get(FieldsRequestName.channelPublic);
+        this.user.modifyChannelInformation(oldChannelName,newChannelName,isPublic.equalsIgnoreCase("true"));
+        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName,newChannelName,isPublic);
+    }
+
+    @Override
+    public void modifyChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastFailed(String responseData) {
+
     }
 
     @Override

@@ -102,6 +102,26 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void modifyChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
     public void modifyMessageSucceeded(String responseData) {
 
     }

@@ -10,6 +10,7 @@ import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import server.ServerImpl;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;
@@ -95,6 +96,14 @@ public abstract class ClientImpl {
 
     public abstract void deleteChannelBroadcastFailed(String responseData);
 
+    public abstract void modifyChannelSucceeded (String responseData);
+
+    public abstract void modifyChannelFailed(String responseData);
+
+    public abstract void modifyChannelBroadcastSucceeded (String responseData);
+
+    public abstract void modifyChannelBroadcastFailed (String responseData);
+
     public abstract void modifyMessageSucceeded(String responseData);
 
     public abstract void modifyMessageFailed(String responseData);
@@ -171,10 +180,16 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
 
+
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, this::deleteChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_FAILED, this::deleteChannelBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_SUCCEED, this::modifyChannelSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_FAILED, this::modifyChannelFailed);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_BROADCAST_SUCCEED, this::modifyChannelBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_BROADCAST_FAILED, this::modifyChannelBroadcastFailed);
 
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_SUCCEED, this::listChannelsInServerSucceeded);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER_FAILED, this::listChannelsInServerFailed);
@@ -200,6 +215,8 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_SUCCEED, this::responseRequestJoinChannelSucceeded);
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_FAILED, this::responseRequestJoinChannelFailed);
+
+
     }
 
 
@@ -209,6 +226,18 @@ public abstract class ClientImpl {
         data.put(FieldsRequestName.guest, this.ipAddress);
         String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
         Request request = new Request(NetCodes.LOGOUT, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void modifyChannel(String newChannelName, boolean isPublic , String channelName){
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.newChannelName, newChannelName);
+        data.put(FieldsRequestName.channelPublic, isPublic ? "true" : "false");
+        data.put(FieldsRequestName.userName,this.user.getUsername());
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.MODIFY_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }

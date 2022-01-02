@@ -243,11 +243,12 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> modifyChannelNameDB(String NewChannelName,String channelName) {
+    public Optional<Boolean> modifyChannelDB(String NewChannelName,boolean isPublic,String channelName) {
         try  {
-            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelName);
+            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannel);
             stmt.setString(1,NewChannelName);
-            stmt.setString(2, channelName);
+            stmt.setBoolean(2, isPublic);
+            stmt.setString(3, channelName);
             return Optional.of(stmt.execute());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -255,17 +256,17 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> modifyChannelStatusDB(boolean NewChannelStatus,String channelName) {
-        try  {
-            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelStatus);
-            stmt.setBoolean(1,NewChannelStatus);
-            stmt.setString(2, channelName);
-            return Optional.of(stmt.execute());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
+//    public Optional<Boolean> modifyChannelStatusDB(boolean NewChannelStatus,String channelName) {
+//        try  {
+//            PreparedStatement stmt = connectionDB.prepareStatement(SQLStatements.modifyChannelStatus);
+//            stmt.setBoolean(1,NewChannelStatus);
+//            stmt.setString(2, channelName);
+//            return Optional.of(stmt.execute());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return Optional.empty();
+//        }
+//    }
 
     public Optional<ResultSet> responseJoinChannelRequestDB(String admin) {
         try  {
