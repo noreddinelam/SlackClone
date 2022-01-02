@@ -15,9 +15,9 @@ public class Channel {
     public Channel() {
     }
 
-    public Channel(String channelName, boolean isPublic){
+    public Channel(String channelName, boolean isPublic) {
         this.channelName = channelName;
-        this.isPublic=isPublic;
+        this.isPublic = isPublic;
     }
 
 
@@ -41,15 +41,15 @@ public class Channel {
         return channelName;
     }
 
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
+    public void setChannelName(String newChannelName) {
+        this.channelName = newChannelName;
     }
 
     public String getChannelDescription() {
         return channelDescription;
     }
 
-    public void addMessages(List<Message> listOfMessages){
+    public void addMessages(List<Message> listOfMessages) {
         this.messages.addAll(listOfMessages);
     }
 
@@ -57,7 +57,7 @@ public class Channel {
         return messages;
     }
 
-    public void addMessage(Message message){
+    public void addMessage(Message message) {
         this.messages.add(message);
     }
 
@@ -69,11 +69,11 @@ public class Channel {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
-    public void addUser(User user){
+    public void addUser(User user) {
         this.users.add(user);
     }
 
@@ -99,4 +99,6 @@ public class Channel {
     public int hashCode() {
         return Objects.hash(channelName);
     }
+
+
 }

@@ -132,13 +132,13 @@ public class SQLStatements {
             "DELETE FROM " + clientChannelTable
                     + " WHERE " + requestChannelName + "=?  AND " + requestUsername + "=? ;";
 
-    public static String modifyChannelName =
+    public static String modifyChannel =
             "UPDATE " + channelTable
-                    + " SET " + channelNameColumn + "=?  WHERE " + channelNameColumn + "=? ;";
+                    + " SET " + channelNameColumn + "=? , "+  channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
 
-    public static String modifyChannelStatus =
-            "UPDATE " + channelTable
-                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
+//    public static String modifyChannelStatus =
+//            "UPDATE " + channelTable
+//                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
 
     private SQLStatements() {
     }

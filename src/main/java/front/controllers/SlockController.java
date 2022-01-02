@@ -142,7 +142,7 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyChannel(ActionEvent event) {
-
+        this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(), !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
     }
 
     @FXML
@@ -265,20 +265,22 @@ public class SlockController extends Controller {
         }
     }
 
-    public void modifyChannelInListJoinedChannels(String oldChannelName, String newChannelName, boolean isPublic) {
+    public void modifyChannelInListJoinedChannels(String oldChannelName, String newChannelName, String isPublic) {
         Platform.runLater(() -> {
             ObservableList<String> temp = this.listOfJoinedChannels.getItems();
             int index = 0;
             String newItem = null;
             for (String listViewItem : temp) {
-                if ((newItem = listViewItem.split("-")[0].trim()).equalsIgnoreCase(oldChannelName))
+                if (listViewItem.split("-")[0].trim().equalsIgnoreCase(oldChannelName)) {
+                    newItem = listViewItem;
                     break;
+                }
                 index++;
             }
             if (newItem != null) {
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
-                        newChannelName + " - " + parts[1] + " - " + (isPublic ? "Public" : "Private"));
+                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" : "Private"));
             }
         });
     }

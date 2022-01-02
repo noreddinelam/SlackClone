@@ -40,7 +40,11 @@ public class Client {
                 try {
                     line = scanner.nextLine();
                     Map<String, String> requestData = new HashMap<>();
+                    requestData.put(FieldsRequestName.userName, "norredine");
+                    requestData.put(FieldsRequestName.channelName, "haha");
+                    requestData.put(FieldsRequestName.newChannelName, "newname");
                     requestData.put(FieldsRequestName.userName, "dola");
+                    requestData.put(FieldsRequestName.channelPublic,"true");
                     //requestData.put(FieldsRequestName.guest, clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());

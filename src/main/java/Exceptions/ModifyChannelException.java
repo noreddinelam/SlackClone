@@ -1,7 +1,7 @@
 package Exceptions;
 
-public class ModifyChannelNameException extends Exception{
-    public  ModifyChannelNameException (){
+public class ModifyChannelException extends Exception{
+    public ModifyChannelException(){
         super("Insert admin to clientchannel table when channel is created error");
     }
 }

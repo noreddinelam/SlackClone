@@ -65,7 +65,7 @@ public class User {
                 .flatMap((channel) -> channel.getUsers().stream()).collect(Collectors.toList());
     }
 
-    public void removeChannelByName(String channelName){
+    public void removeChannelByName(String channelName) {
         this.channels.remove(new Channel(channelName));
     }
 
@@ -74,6 +74,7 @@ public class User {
             channel.addMessage(message);
         });
     }
+
     public Channel getChannelByName(String channelName) {
         List<Channel> list =
                 this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(channelName)).collect(Collectors.toList());
@@ -81,12 +82,12 @@ public class User {
         return null;
     }
 
-    public void addUserToChannel(String channelName,User user){
+    public void addUserToChannel(String channelName, User user) {
         Channel channel = getChannelByName(channelName);
         channel.addUser(user);
     }
 
-    public void modifyChannelInformation(String channelName,String newChannelName,boolean isPublic){
+    public void modifyChannelInformation(String channelName, String newChannelName, boolean isPublic) {
         Channel channel = this.getChannelByName(channelName);
         channel.setChannelName(newChannelName);
         channel.setPublic(isPublic);

@@ -30,7 +30,6 @@ public class UnJoinedChannelsController extends Controller {
             String[] data = this.selectedChannelName.split("-");
             this.clientImpl.joinChannel(data[0].trim(), data[2].trim());
         }
-
     }
 
     @Override
