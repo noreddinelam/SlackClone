@@ -86,6 +86,12 @@ public class User {
         channel.addUser(user);
     }
 
+    public void modifyChannelInformation(String channelName,String newChannelName,boolean isPublic){
+        Channel channel = this.getChannelByName(channelName);
+        channel.setChannelName(newChannelName);
+        channel.setPublic(isPublic);
+    }
+
     @Override
     public String toString() {
         return " " + username + " ";

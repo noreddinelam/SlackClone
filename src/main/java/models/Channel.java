@@ -41,6 +41,10 @@ public class Channel {
         return channelName;
     }
 
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
     public String getChannelDescription() {
         return channelDescription;
     }
@@ -63,6 +67,10 @@ public class Channel {
 
     public boolean isPublic() {
         return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 
     public void addUser(User user){
