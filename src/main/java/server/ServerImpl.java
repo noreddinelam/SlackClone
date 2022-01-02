@@ -314,47 +314,48 @@ public class ServerImpl {
         }
     }
 
-    public static void modifyChannelName(String data) {
+    public static void modifyChannel(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
         String newChannelName = requestData.get(FieldsRequestName.newChannelName);
+        boolean isPublic = Boolean.parseBoolean(requestData.get(FieldsRequestName.channelPublic));
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
-            repository.modifyChannelNameDB(newChannelName, channelName).orElseThrow(ModifyChannelNameException::new);
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_SUCCEED, data);
+            repository.modifyChannelDB(newChannelName,isPublic, channelName).orElseThrow(ModifyChannelException::new);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        } catch (ModifyChannelNameException e) {
+        } catch (ModifyChannelException e) {
             e.printStackTrace();
-            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_FAILED, "Modify Channel NAME failed");
+            Response response = new Response(NetCodes.MODIFY_CHANNEL_FAILED, "Modify Channel failed");
             requestFailure(response, client);
         }
 
     }
 
-    public static void modifyChannelStatus(String data) {
-        Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
-        AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
-        try {
-            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
-            repository.modifyChannelStatusDB(requestData.isPublic(), requestData.getChannelName()).orElseThrow(ModifyChannelStatusException::new);
-            String responseJson = GsonConfiguration.gson.toJson(response);
-            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler());
-            attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
-        } catch (ModifyChannelStatusException e) {
-            e.printStackTrace();
-            Response response = new Response(NetCodes.MODIFY_CHANNEL_STATUS_FAILED, "Modify Channel Status failed");
-            requestFailure(response, client);
-        }
-    }
+//    public static void modifyChannelStatus(String data) {
+//        Channel requestData = GsonConfiguration.gson.fromJson(data, Channel.class);
+//        AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
+//        try {
+//            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
+//            repository.modifyChannelStatusDB(requestData.isPublic(), requestData.getChannelName()).orElseThrow(ModifyChannelStatusException::new);
+//            String responseJson = GsonConfiguration.gson.toJson(response);
+//            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+//            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+//            attachment.clear();
+//            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
+//            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+//        } catch (ModifyChannelStatusException e) {
+//            e.printStackTrace();
+//            Response response = new Response(NetCodes.MODIFY_CHANNEL_STATUS_FAILED, "Modify Channel Status failed");
+//            requestFailure(response, client);
+//        }
+//    }
 
     public static void listOfRequests(String data) {
         logger.info("list of requests {} ", data);
@@ -665,8 +666,8 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL, ServerImpl::leaveChannel);
         listOfFunctions.put(NetCodes.LIST_OF_UN_JOINED_CHANNELS, ServerImpl::listOfUnJoinedChannels);
         listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL, ServerImpl::deleteUserFromMyChannel);
-        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_NAME, ServerImpl::modifyChannelName);
-        listOfFunctions.put(NetCodes.MODIFY_CHANNEL_STATUS, ServerImpl::modifyChannelStatus);
+        listOfFunctions.put(NetCodes.MODIFY_CHANNEL, ServerImpl::modifyChannel);
+        //listOfFunctions.put(NetCodes.MODIFY_CHANNEL_STATUS, ServerImpl::modifyChannelStatus);
 
     }
 

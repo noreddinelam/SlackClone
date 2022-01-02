@@ -10,6 +10,7 @@ import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import server.ServerImpl;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;
@@ -194,6 +195,8 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_SUCCEED, this::responseRequestJoinChannelSucceeded);
         listOfFunctions.put(NetCodes.RESPONSE_JOIN_FAILED, this::responseRequestJoinChannelFailed);
+
+
     }
 
 
@@ -205,6 +208,18 @@ public abstract class ClientImpl {
         Request request = new Request(NetCodes.LOGOUT, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
+    public void modifyChannel(String newChanneName, String isPublic , String channelName){
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.channelName, channelName);
+        data.put(FieldsRequestName.newChannelName, newChanneName);
+        data.put(FieldsRequestName.channelPublic, isPublic);
+        String requestData = GsonConfiguration.gson.toJson(data);
+        Request request = new Request(NetCodes.MODIFY_CHANNEL, requestData);
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+
     }
 
     public void login(String username, String password) {

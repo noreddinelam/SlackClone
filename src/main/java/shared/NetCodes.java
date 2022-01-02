@@ -83,13 +83,13 @@ public class NetCodes {
     public static String DELETE_USER_FROM_CHANNEL_SUCCEED = "1701";
     public static String DELETE_USER_FROM_CHANNEL_FAILED = "1702";
 
-    public static String MODIFY_CHANNEL_NAME = "1800";
-    public static String MODIFY_CHANNEL_NAME_SUCCEED = "1801";
-    public static String MODIFY_CHANNEL_NAME_FAILED = "1802";
+    public static String MODIFY_CHANNEL = "1800";
+    public static String MODIFY_CHANNEL_SUCCEED = "1801";
+    public static String MODIFY_CHANNEL_FAILED = "1802";
 
-    public static String MODIFY_CHANNEL_STATUS = "1900";
-    public static String MODIFY_CHANNEL_STATUS_SUCCEED = "1901";
-    public static String MODIFY_CHANNEL_STATUS_FAILED = "1902";
+//    public static String MODIFY_CHANNEL_STATUS = "1900";
+//    public static String MODIFY_CHANNEL_STATUS_SUCCEED = "1901";
+//    public static String MODIFY_CHANNEL_STATUS_FAILED = "1902";
 
 
     private NetCodes() {
