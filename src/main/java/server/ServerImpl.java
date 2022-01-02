@@ -456,7 +456,6 @@ public class ServerImpl {
                     attachment.clear();
                 }
             }
-            System.out.println("deleting the request \n");
             repository.deleteRequestJoinChannelDB(channelName, username).orElseThrow(DeleteRequestJoinChannelException::new);
             Response responseAdmin = new Response(NetCodes.RESPONSE_JOIN_SUCCEED,
                     GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));

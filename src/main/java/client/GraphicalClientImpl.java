@@ -51,7 +51,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void connectFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.authTitle,responseData);
+        this.controller.commandFailed(FailureMessages.authTitle, responseData);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void registerFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.authTitle,responseData);
+        this.controller.commandFailed(FailureMessages.authTitle, responseData);
     }
 
     @Override
@@ -83,34 +83,35 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void createChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.channelCreationTitle,responseData);
+        this.controller.commandFailed(FailureMessages.channelCreationTitle, responseData);
     }
 
     @Override
     public void joinChannelSucceed(String responseData) {
-        Channel channel = GsonConfiguration.gson.fromJson(responseData,Channel.class);
+        Channel channel = GsonConfiguration.gson.fromJson(responseData, Channel.class);
         this.user.addChannel(channel);
         ((SlockController) this.controller).addChannelToListJoinedChannels(channel);
+        if (this.ucController != null) this.ucController.removeJoinedChannel(channel);
     }
 
     @Override
     public void joinChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.joinChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.joinChannelTitle, responseData);
     }
 
     @Override
     public void joinChannelBroadcastSucceeded(String responseData) {
-        Map<String,String> response = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapJsonTypeData);
+        Map<String, String> response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
         String username = response.get(FieldsRequestName.userName);
         String channelName = response.get(FieldsRequestName.channelName);
         User user = new User(username);
-        this.user.addUserToChannel(channelName,user);
-        ((SlockController) this.controller).addUserToJoinedUsersChannel(user) ;
+        this.user.addUserToChannel(channelName, user);
+        ((SlockController) this.controller).addUserToJoinedUsersChannel(user);
     }
 
     @Override
     public void joinChannelBroadcastFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.joinChannelBroadcastTitle,responseData);
+        this.controller.commandFailed(FailureMessages.joinChannelBroadcastTitle, responseData);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void leaveChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.leaveChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.leaveChannelTitle, responseData);
     }
 
 
@@ -132,7 +133,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteMessageFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.deleteMessageTitle,responseData);
+        this.controller.commandFailed(FailureMessages.deleteMessageTitle, responseData);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyMessageFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.modifyMessageTitle,responseData);
+        this.controller.commandFailed(FailureMessages.modifyMessageTitle, responseData);
     }
 
     @Override
@@ -171,7 +172,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.deleteChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.deleteChannelTitle, responseData);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listChannelsInServerFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.listChannelsInServerFailed,responseData);
+        this.controller.commandFailed(FailureMessages.listChannelsInServerFailed, responseData);
     }
 
     @Override
@@ -195,7 +196,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfMessageInChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle, responseData);
     }
 
     @Override
@@ -209,7 +210,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfJoinedChannelsFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.listOfMessageInChannelTitle, responseData);
     }
 
     @Override
@@ -234,12 +235,12 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void listOfUserInChannelFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.listOfUserInChannelTitle,responseData);
+        this.controller.commandFailed(FailureMessages.listOfUserInChannelTitle, responseData);
     }
 
     @Override
     public void listOfRequestsSucceeded(String responseData) {
-        List<Map<String,String>> listOfRequests = GsonConfiguration.gson.fromJson(responseData,
+        List<Map<String, String>> listOfRequests = GsonConfiguration.gson.fromJson(responseData,
                 CommunicationTypes.listMapChannelUsernameTypeData);
         this.rqController.initRequestToJoinChannelListView(listOfRequests);
 
@@ -259,7 +260,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageConsumptionError(String responseData) {
-        this.controller.commandFailed(FailureMessages.messageConsumptionTitle,responseData);
+        this.controller.commandFailed(FailureMessages.messageConsumptionTitle, responseData);
     }
 
     @Override
@@ -271,7 +272,7 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void messageBroadcastFailed(String responseData) {
-        this.controller.commandFailed(FailureMessages.messageBroadcastTitle,responseData);
+        this.controller.commandFailed(FailureMessages.messageBroadcastTitle, responseData);
     }
 
     @Override
@@ -287,6 +288,8 @@ public class GraphicalClientImpl extends ClientImpl {
     @Override
     public void responseRequestJoinChannelSucceeded(String responseData) {
         //TODO pop up
+        Map<String, String> request = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        this.rqController.removeRequestChannel(request);
     }
 
     @Override
