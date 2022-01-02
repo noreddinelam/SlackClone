@@ -9,7 +9,9 @@ public class FieldsRequestName {
 
     //User Fields
     public static String userName = "UserNAME";
+    public static String adminName = "AdminNAME";
     public static String password= "password";
+    public static String listUsers= "ListUSERS";
 
     //Server Fields
     public static String serverId = "ServerID";
@@ -19,10 +21,14 @@ public class FieldsRequestName {
     public static String channelPublic = "ChannelPUBLIC";
     public static String channelDescription = "ChannelDESCRIPTION";
     public static String listChannels = "listCHANNELS";
+    public static String newChannelName = "NewChannelNAME";
 
     //Messages Fields
     public static String messageID = "MessageID";
     public static String messageContent = "MessageCONTENT";
+    public static String listMessages = "listMESSAGES";
+
+    public static String accept = "Accept";
 
     private FieldsRequestName(){}
 }

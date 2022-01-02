@@ -22,9 +22,10 @@ public class Client {
     private final static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
     private final static Scanner scanner = new Scanner(System.in);
     private final static Logger logger = LoggerFactory.getLogger(Client.class);
+    private final static ClientImpl[] clientImplementations =
+            {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
+                    GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl()};
     private static String clientIpAddress = "";
-    private final static ClientImpl[] clientImplementations = {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
-            GraphicalClientImpl.getUniqueInstanceOfTerminalClientImpl()};
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         AsynchronousSocketChannel socket = AsynchronousSocketChannel.open();
@@ -39,9 +40,12 @@ public class Client {
                 try {
                     line = scanner.nextLine();
                     Map<String, String> requestData = new HashMap<>();
-                    requestData.put(FieldsRequestName.userName, "test");
-                    requestData.put(FieldsRequestName.password, "admin");
-                    requestData.put(FieldsRequestName.guest,clientIpAddress);
+                    requestData.put(FieldsRequestName.userName, "norredine");
+                    requestData.put(FieldsRequestName.channelName, "haha");
+                    requestData.put(FieldsRequestName.newChannelName, "newname");
+                    requestData.put(FieldsRequestName.userName, "dola");
+                    requestData.put(FieldsRequestName.channelPublic,"true");
+                    //requestData.put(FieldsRequestName.guest, clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
                     System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
@@ -54,7 +58,7 @@ public class Client {
         });
 
         Thread reader = new Thread(() -> {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             try {
                 while (socket.isOpen()) {
                     int nb = socket.read(buffer).get();

@@ -3,6 +3,7 @@ package client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//To implement a terminal version.
 public class TerminalClientImpl extends ClientImpl {
     private static TerminalClientImpl instance = new TerminalClientImpl();
     private static final Logger logger = LoggerFactory.getLogger(TerminalClientImpl.class);
@@ -12,6 +13,32 @@ public class TerminalClientImpl extends ClientImpl {
 
     public static TerminalClientImpl getUniqueInstanceOfTerminalClientImpl(){
         return instance;
+    }
+
+
+    @Override
+    public void logoutSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void connectSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void connectFailed(String responseData) {
+
+    }
+
+    @Override
+    public void registerSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void registerFailed(String responseData) {
+
     }
 
     @Override
@@ -45,12 +72,52 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void leaveChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void leaveChannelFailed(String responseData) {
+
+    }
+
+    @Override
     public void deleteMessageSucceeded(String responseData) {
 
     }
 
     @Override
     public void deleteMessageFailed(String responseData) {
+
+    }
+
+    @Override
+    public void deleteChannelBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void deleteChannelBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void modifyChannelBroadcastFailed(String responseData) {
 
     }
 
@@ -85,12 +152,52 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void listOfMessageInChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfMessageInChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfJoinedChannelsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfJoinedChannelsFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfUnJoinedChannelsFailed(String responseData) {
+
+    }
+
+    @Override
     public void listOfUserInChannelSucceeded(String responseData) {
 
     }
 
     @Override
     public void listOfUserInChannelFailed(String responseData) {
+
+    }
+
+    @Override
+    public void listOfRequestsSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void listOfRequestsFailed(String responseData) {
 
     }
 
@@ -111,6 +218,26 @@ public class TerminalClientImpl extends ClientImpl {
 
     @Override
     public void messageBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void joinPrivateChannel(String responseData) {
+
+    }
+
+    @Override
+    public void requestAlreadySent(String responseData) {
+
+    }
+
+    @Override
+    public void responseRequestJoinChannelSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void responseRequestJoinChannelFailed(String responseData) {
 
     }
 }

@@ -33,7 +33,7 @@ public class Server {
                             SocketAddress socketAddress = result.getRemoteAddress();
                             ServerImpl.addGuestClients(result);
                             logger.info("A client is connected from {}", socketAddress);
-                            ByteBuffer buffer = ByteBuffer.allocate(1024);
+                            ByteBuffer buffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                             logger.info("{} {}",result.getRemoteAddress(),result.getLocalAddress());
                             result.read(buffer, buffer, new ServerReaderCompletionHandler());
                         } catch (IOException e) {

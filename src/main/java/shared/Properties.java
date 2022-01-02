@@ -9,5 +9,8 @@ public class Properties {
     public static String DATABASE_PASSWORD = "admin";
     public static String DATABASE_USE_SSL = "true";
     public static String SERVER_TIME_ZONE = "UTC";
+
+    // Buffer size
+    public static int BUFFER_SIZE = 10240;
     private Properties(){}
 }
