@@ -34,22 +34,23 @@ public class ServerImpl {
 
     private ServerImpl() {
     }
-    public static void logout(String data)
-    {
+
+    public static void logout(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        String username=requestData.get(FieldsRequestName.userName);
+        String username = requestData.get(FieldsRequestName.userName);
         String guest = requestData.get(FieldsRequestName.guest);
         AsynchronousSocketChannel client = listOfClients.get(username);
         listOfClients.remove(username);
-        listOfGuests.put(guest,client);
+        listOfGuests.put(guest, client);
         Response response = new Response(NetCodes.LOGOUT_SUCCEED,
                 "Logout Succeed");
         String responseJson = GsonConfiguration.gson.toJson(response);
         ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-        client.write(attachment,attachment,new ServerWriterCompletionHandler());
+        client.write(attachment, attachment, new ServerWriterCompletionHandler());
         ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
         client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
     }
+
     public static void connect(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String guest = requestData.get(FieldsRequestName.guest);
@@ -156,7 +157,8 @@ public class ServerImpl {
                         Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,
                                 username + " has joined " +
                                         "the channel");
-                        response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(new Channel(new User(admin), channelName, "", true)));
+                        response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED,
+                                GsonConfiguration.gson.toJson(new Channel(new User(admin), channelName, "", true)));
                         String broadcastUsername;
                         AsynchronousSocketChannel broadcastClient;
                         while (resultSet.next()) {
@@ -172,7 +174,8 @@ public class ServerImpl {
 
                 } else {
                     logger.info("Channel is private, request sent to the admin");
-                    int res = repository.joinChannelStatusRequestDB(admin, channelName, username).orElseThrow(ResponseJoinChannelException::new);
+                    int res =
+                            repository.joinChannelStatusRequestDB(admin, channelName, username).orElseThrow(ResponseJoinChannelException::new);
                     if (res != 0)
                         response = new Response(NetCodes.JOIN_PRIVATE_CHANNEL, "Your request is sent to the admin to " +
                                 "join the channel");
@@ -275,10 +278,13 @@ public class ServerImpl {
         //todo broadcast channel deletion
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String channelName = requestData.get(FieldsRequestName.channelName);
-        AsynchronousSocketChannel client = listOfClients.get(requestData.get(FieldsRequestName.userName));
+        String username = requestData.get(FieldsRequestName.userName);
+        AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             Response response = new Response(NetCodes.DELETE_CHANNEL_SUCCEED, data);
-            Response responseBroadcast = new Response(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED,data);
+            Response broadcastResponse = new Response(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, channelName);
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             int result = repository.deleteChannelDB(channelName).orElseThrow(DeleteChannelException::new);
             if (result != 0) {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
@@ -286,15 +292,27 @@ public class ServerImpl {
                 buffer.clear();
                 ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
                 client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+                String broadcastUsername;
+                AsynchronousSocketChannel broadcastClient;
+                while (resultSet.next()) {
+                    broadcastUsername = resultSet.getString("username");
+                    broadcastClient = listOfClients.get(broadcastUsername);
+                    if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                        broadcastResponseClient(broadcastClient, broadcastResponse);
+                }
             } else throw new DeleteChannelException();
         } catch (DeleteChannelException e) {
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
+        } catch (FetchAllUsersWithChannelNameException e) {
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     public static void deleteUserFromMyChannel(String data) {
-        //todo : gestion de l'admin coté front
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
@@ -368,8 +386,10 @@ public class ServerImpl {
             Map<String, String> usernameChannelName;
             while (resultSet.next()) {
                 usernameChannelName = new HashMap<>();
-                usernameChannelName.put(FieldsRequestName.channelName, resultSet.getString(SQLTablesInformation.requestChannelName));
-                usernameChannelName.put(FieldsRequestName.userName, resultSet.getString(SQLTablesInformation.requestUsername));
+                usernameChannelName.put(FieldsRequestName.channelName,
+                        resultSet.getString(SQLTablesInformation.requestChannelName));
+                usernameChannelName.put(FieldsRequestName.userName,
+                        resultSet.getString(SQLTablesInformation.requestUsername));
                 requests.add(usernameChannelName);
             }
             String responseData = GsonConfiguration.gson.toJson(requests,
@@ -408,9 +428,11 @@ public class ServerImpl {
                 Map<String, String> broadcast = new HashMap<>();
                 broadcast.put(FieldsRequestName.userName, username);
                 broadcast.put(FieldsRequestName.channelName, channelName);
-                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED, GsonConfiguration.gson.toJson(broadcast, CommunicationTypes.mapJsonTypeData));
+                Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,
+                        GsonConfiguration.gson.toJson(broadcast, CommunicationTypes.mapJsonTypeData));
                 Channel joinedChannel = new Channel(new User(adminChannel), channelName, "", false);
-                Response responseClient = new Response(NetCodes.JOIN_CHANNEL_SUCCEED, GsonConfiguration.gson.toJson(joinedChannel));
+                Response responseClient = new Response(NetCodes.JOIN_CHANNEL_SUCCEED,
+                        GsonConfiguration.gson.toJson(joinedChannel));
                 String responseJson = GsonConfiguration.gson.toJson(responseClient);
                 ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
                 if (client != null) {
@@ -436,7 +458,8 @@ public class ServerImpl {
             }
             System.out.println("deleting the request \n");
             repository.deleteRequestJoinChannelDB(channelName, username).orElseThrow(DeleteRequestJoinChannelException::new);
-            Response responseAdmin = new Response(NetCodes.RESPONSE_JOIN_SUCCEED, GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));
+            Response responseAdmin = new Response(NetCodes.RESPONSE_JOIN_SUCCEED,
+                    GsonConfiguration.gson.toJson(requestData, CommunicationTypes.mapJsonTypeData));
             String responseJsonAdmin = GsonConfiguration.gson.toJson(responseAdmin);
             ByteBuffer adminBuffer = ByteBuffer.wrap(responseJsonAdmin.getBytes());
             adminUser.write(adminBuffer, adminBuffer, new ServerWriterCompletionHandler());

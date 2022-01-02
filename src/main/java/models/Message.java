@@ -55,7 +55,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return "[ " + user + " | "+ date + " ]" + content ;
+        return "[ " + user + " - "+ date + " ]" + content ;
     }
 
     @Override

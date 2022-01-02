@@ -136,6 +136,17 @@ public class GraphicalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void deleteChannelBroadcastSucceeded(String responseData) {
+        this.user.removeChannelByName(responseData);
+        ((SlockController) this.controller).removeChannelFromListJoinedChannels(responseData);
+    }
+
+    @Override
+    public void deleteChannelBroadcastFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.deleteChannelBroadcastTitle,responseData);
+    }
+
+    @Override
     public void modifyMessageSucceeded(String responseData) {
 
     }
@@ -152,7 +163,6 @@ public class GraphicalClientImpl extends ClientImpl {
                     CommunicationTypes.mapJsonTypeData);
             this.user.removeChannel(new Channel(response.get(FieldsRequestName.channelName)));
             ((SlockController) this.controller).deleteChannelToListJoinedChannels(response.get(FieldsRequestName.channelName));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
