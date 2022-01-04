@@ -13,6 +13,9 @@ public class FailureMessages {
     public static String emptyTextFieldNameTitle = "Empty name is given !";
     public static String emptyTextFieldMessage = "Please provide a valid name !";
 
+    public static String emptyMessageContentIsGivenTitle = "Message content is Empty !";
+    public static String emptyMessageContentIsGivenMessage = "Please a provide a valid message !";
+
     public static String leaveChannelTitle = "Leave Channel Failed";
 
     public static String authTitle = "Authentication Failed";

@@ -165,11 +165,11 @@ public class Repository {
         }
     }
 
-    public Optional<Boolean> modifyMessageDB(String content, String idMessage) {
+    public Optional<Integer> modifyMessageDB(String content, String idMessage) {
         try (PreparedStatement addMessage = connectionDB.prepareStatement(SQLStatements.modifyMessage)) {
             addMessage.setString(1, content);
             addMessage.setString(2, idMessage);
-            return Optional.of(addMessage.execute());
+            return Optional.of(addMessage.executeUpdate());
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();

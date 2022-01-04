@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Channel {
     private User admin;
@@ -75,6 +76,10 @@ public class Channel {
 
     public void addUser(User user) {
         this.users.add(user);
+    }
+
+    public Message getMessageById(int idMessage){
+        return this.messages.stream().filter((mes) -> mes.getId() == idMessage).findFirst().get();
     }
 
     @Override

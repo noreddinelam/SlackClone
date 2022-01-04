@@ -256,26 +256,43 @@ public class ServerImpl {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String idMessage = requestData.get(FieldsRequestName.messageID);
         String username = requestData.get(FieldsRequestName.userName);
+        String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            repository.modifyMessageDB(requestData.get(FieldsRequestName.messageContent), idMessage).orElseThrow(ModifyMessageException::new);
-            Response response = new Response(NetCodes.MODIFY_MESSAGE_SUCCEED, "message modified");
+            int modLines =
+                    repository.modifyMessageDB(requestData.get(FieldsRequestName.messageContent), idMessage).orElseThrow(ModifyMessageException::new);
+            logger.info("modified lines {}", modLines);
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+            Response broadcastResponse = new Response(NetCodes.MODIFY_MESSAGE_BROADCAST_SUCCEEDED, data);
+            Response response = new Response(NetCodes.MODIFY_MESSAGE_SUCCEED, data);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            logger.info("idMessage {}", idMessage);
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            String broadcastUsername;
+            AsynchronousSocketChannel broadcastClient;
+            while (resultSet.next()) {
+                broadcastUsername = resultSet.getString("username");
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
         } catch (ModifyMessageException e) {
             Response response = new Response(NetCodes.MODIFY_MESSAGE_FAILED, "Message modification failed");
             requestFailure(response, client);
+        } catch (FetchAllUsersWithChannelNameException e) {
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
 
     }
 
     public static void deleteChannel(String data) {
-        //todo broadcast channel deletion
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String channelName = requestData.get(FieldsRequestName.channelName);
         String username = requestData.get(FieldsRequestName.userName);
@@ -305,7 +322,8 @@ public class ServerImpl {
             Response response = new Response(NetCodes.DELETE_CHANNEL_FAILED, "Channel deletion failed");
             requestFailure(response, client);
         } catch (FetchAllUsersWithChannelNameException e) {
-            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting deletion channel error");
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting deletion channel " +
+                    "error");
             requestFailure(response, client);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -344,7 +362,7 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             Response response = new Response(NetCodes.MODIFY_CHANNEL_SUCCEED, data);
-            repository.modifyChannelDB(newChannelName,isPublic, channelName).orElseThrow(ModifyChannelException::new);
+            repository.modifyChannelDB(newChannelName, isPublic, channelName).orElseThrow(ModifyChannelException::new);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
@@ -375,7 +393,8 @@ public class ServerImpl {
 //        AsynchronousSocketChannel client = listOfClients.get(requestData.getAdmin().getUsername());
 //        try {
 //            Response response = new Response(NetCodes.MODIFY_CHANNEL_NAME_SUCCEED, data);
-//            repository.modifyChannelStatusDB(requestData.isPublic(), requestData.getChannelName()).orElseThrow(ModifyChannelStatusException::new);
+//            repository.modifyChannelStatusDB(requestData.isPublic(), requestData.getChannelName()).orElseThrow
+//            (ModifyChannelStatusException::new);
 //            String responseJson = GsonConfiguration.gson.toJson(response);
 //            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
 //            client.write(attachment, attachment, new ServerWriterCompletionHandler());

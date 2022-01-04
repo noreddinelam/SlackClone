@@ -172,7 +172,12 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyMessageSucceeded(String responseData) {
-
+        Map<String,String> data = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapJsonTypeData);
+        int idMessage = Integer.valueOf(data.get(FieldsRequestName.messageID));
+        String messageContent = data.get(FieldsRequestName.messageContent);
+        String channelName = data.get(FieldsRequestName.channelName);
+        this.user.modifyMessageContent(channelName,idMessage,messageContent);
+        ((SlockController) this.controller).modifyMessageInListOfMessages(idMessage,messageContent,channelName);
     }
 
     @Override

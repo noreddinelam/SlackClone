@@ -360,6 +360,18 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
+    public void modifyMessage(Message message,String newContent){
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName,this.user.getUsername());
+        data.put(FieldsRequestName.messageContent,message.getContent());
+        data.put(FieldsRequestName.messageID,String.valueOf(message.getId()));
+        data.put(FieldsRequestName.newMessageContent,newContent);
+        data.put(FieldsRequestName.channelName,message.getChannel().getChannelName());
+        Request request = new Request(NetCodes.MODIFY_MESSAGE, GsonConfiguration.gson.toJson(data));
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
+
     public void requestJoinChannel() {
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.adminName, this.user.getUsername());
@@ -391,7 +403,6 @@ public abstract class ClientImpl {
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
-
 
     // Functions that don't do sql requests :
 

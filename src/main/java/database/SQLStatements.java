@@ -92,7 +92,7 @@ public class SQLStatements {
 
     public static String modifyMessage =
             "UPDATE " + messageTable
-                    + " set " + messageContentColumn + "=? "
+                    + " SET " + messageContentColumn + "= ? "
                     + " WHERE " + messageIdMessageColumn + " = ? ;";
 
     public static String fetchMessageFromChannel =

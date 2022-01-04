@@ -33,6 +33,7 @@ public class SlockController extends Controller {
     private String selectedChannelName;
     private String adminUsername;
     private boolean isPrivateChannel;
+    private Message selectedMessage;
 
     @FXML
     private Text clientUsername;
@@ -153,7 +154,11 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyMessage(ActionEvent event) {
-
+        if (!this.modifyMessageTextField.getText().isEmpty())
+            this.clientImpl.modifyMessage(this.selectedMessage, this.modifyMessageTextField.getText().trim());
+        else
+            this.commandFailed(FailureMessages.emptyMessageContentIsGivenTitle,
+                    FailureMessages.emptyMessageContentIsGivenMessage);
     }
 
     @Override
@@ -197,6 +202,7 @@ public class SlockController extends Controller {
                     this.modifyMessageTextField.setText(newValue.getContent());
                     this.modifyMessageButton.setDisable(false);
                     this.deleteMessageButton.setDisable(false);
+                    this.selectedMessage = newValue;
                 } else {
                     this.modifyMessageTextField.setText("");
                     this.modifyMessageButton.setDisable(true);
@@ -226,7 +232,8 @@ public class SlockController extends Controller {
 
     public void addChannelToListJoinedChannels(Channel channel) {
         Platform.runLater(() -> {
-            this.listOfJoinedChannels.getItems().add(channel.getChannelName());
+            this.listOfJoinedChannels.getItems().add(channel.getChannelName() + " - " + channel.getAdmin().getUsername() +
+                    " - " + (channel.isPublic() ? "Public" : "Private"));
         });
     }
 
@@ -290,6 +297,25 @@ public class SlockController extends Controller {
                                 "Private"));
             }
         });
+    }
+
+    public void modifyMessageInListOfMessages(int idMessage, String messageContent, String channelName) {
+        if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
+            ObservableList<Message> temp = this.listOfMessages.getItems();
+            int index = 0;
+            Message newItem = null;
+            for (Message listViewItem : temp) {
+                if (listViewItem.getId() == idMessage) {
+                    newItem = listViewItem;
+                    break;
+                }
+                index++;
+            }
+            if (newItem != null) {
+                newItem.setContent(messageContent);
+                this.listOfMessages.getItems().set(index, newItem);
+            }
+        }
     }
 
 }

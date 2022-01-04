@@ -93,8 +93,15 @@ public class User {
         channel.setPublic(isPublic);
     }
 
+    public void modifyMessageContent(String channelName, int idMessage, String messageContent) {
+        Channel channel = this.getChannelByName(channelName);
+        Message message = channel.getMessageById(idMessage);
+        message.setContent(messageContent);
+    }
+
     @Override
     public String toString() {
         return " " + username + " ";
     }
+
 }
