@@ -163,6 +163,9 @@ public class SlockController extends Controller {
         this.clientUsername.setText(this.clientImpl.getUser().getUsername());
         this.clientImpl.listOfJoinedChannels();
         this.initListViewListeners();
+        this.modifyChannelButton.setDisable(true);
+        this.deleteMessageButton.setDisable(true);
+        this.modifyMessageButton.setDisable(true);
     }
 
     public void initListViewListeners() {
@@ -285,12 +288,17 @@ public class SlockController extends Controller {
                 index++;
             }
             if (newItem != null) {
+                this.selectedChannelName=newChannelName;
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
                         newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
                                 "Private"));
             }
         });
+    }
+    @FXML
+    void onDeleteUser(ActionEvent event) {
+
     }
 
 }

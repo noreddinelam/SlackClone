@@ -1,13 +1,15 @@
 //TODO : TRANSACTION
 //TODO : forget password
-//TODO: logout (connected to guest)
 //TODO : remove description
 // TODO : add page channel management
 // TODO : broadcast delete channel and broadcast leave channel.
 // TODO ; pop up of refusin join channel must have  the name of the channel
-//TODO : Broadcast the new name of channel for other client [GraphicalClientImplementation - modifyChannelBroadcastSucceeded]
-
 
 
 // Warning
 //TODO delete user from my channel
+
+
+
+//BUG
+//TODO DESACTIVATE MODIFY CHANNEL IF A CHANNEL IS NOT SELECTED
