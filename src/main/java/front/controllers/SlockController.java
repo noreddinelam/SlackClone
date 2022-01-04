@@ -74,7 +74,8 @@ public class SlockController extends Controller {
 
     @FXML
     void onCreateChannel(ActionEvent event) {
-        this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
+        if (!createChannelTextField.getText().isEmpty())
+            this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
     }
 
     @FXML
@@ -142,7 +143,8 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyChannel(ActionEvent event) {
-        this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(), !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
+        this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(),
+                !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
     }
 
     @FXML
@@ -280,7 +282,8 @@ public class SlockController extends Controller {
             if (newItem != null) {
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
-                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" : "Private"));
+                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
+                                "Private"));
             }
         });
     }
