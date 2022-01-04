@@ -22,7 +22,7 @@
                     <children>
                         <ImageView fitHeight="96.0" fitWidth="333.0" layoutX="55.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../image/slock.png" />
+                                <Image url="@slock.png" />
                             </image>
                         </ImageView>
                     </children>
@@ -57,11 +57,7 @@
                                 <Font size="24.0" />
                             </font>
                         </Text>
-                        <Button layoutX="653.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="44.0" style="-fx-background-color: transparent;">
-                            <graphic>
-                                <FontAwesomeIconView fill="#b7b2ff" glyphName="CLOSE" size="25" />
-                            </graphic>
-                        </Button>
+                        <Button layoutX="653.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="44.0" style="-fx-background-color: transparent;" />
                         <Button layoutX="359.0" layoutY="430.0" mnemonicParsing="false" onAction="#onRegister" prefHeight="35.0" prefWidth="128.0" style="-fx-border-color: #b7b2ff; -fx-border-width: 2px;" styleClass="background_color_1" text="Register" textAlignment="CENTER" textFill="WHITE">
                             <font>
                                 <Font name="Arial" size="15.0" />
