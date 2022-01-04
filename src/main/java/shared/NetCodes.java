@@ -2,8 +2,8 @@ package shared;
 
 public class NetCodes {
 
-    public static String LOGOUT ="99";
-    public static String LOGOUT_SUCCEED ="999";
+    public static String LOGOUT = "99";
+    public static String LOGOUT_SUCCEED = "999";
 
     public static String REGISTER = "0";
     public static String REGISTER_SUCCEED = "1";
@@ -84,6 +84,9 @@ public class NetCodes {
     public static String DELETE_USER_FROM_CHANNEL = "1700";
     public static String DELETE_USER_FROM_CHANNEL_SUCCEED = "1701";
     public static String DELETE_USER_FROM_CHANNEL_FAILED = "1702";
+    public static String DELETE_USER_FROM_CHANNEL_BRODCAST_SUCCEED = "1703";
+    public static String DELETE_USER_FROM_CHANNEL_BRODCAST_FAILED = "1704";
+
 
     public static String MODIFY_CHANNEL = "1800";
     public static String MODIFY_CHANNEL_SUCCEED = "1801";

@@ -332,19 +332,38 @@ public class ServerImpl {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
+        String admin = requestData.get(FieldsRequestName.adminName);
+        AsynchronousSocketChannel adminClient = listOfClients.get(admin);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_SUCCEED, data);
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             repository.deleteUserFromMyChannelDB(channelName, username).orElseThrow(DeleteUserFromMyChannelException::new);
+            Response broadcastResponse = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_BRODCAST_SUCCEED, data);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            if (client != null)
+                client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            adminClient.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            String broadcastUsername;
+            AsynchronousSocketChannel broadcastClient;
+            while (resultSet.next()) {
+                broadcastUsername = resultSet.getString("username");
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
+
         } catch (DeleteUserFromMyChannelException e) {
             Response response = new Response(NetCodes.DELETE_USER_FROM_CHANNEL_FAILED, "DELETE USER failed");
             requestFailure(response, client);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FetchAllUsersWithChannelNameException e) {
+            e.printStackTrace();
         }
     }
 

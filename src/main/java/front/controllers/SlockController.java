@@ -34,6 +34,7 @@ public class SlockController extends Controller {
     private String adminUsername;
     private boolean isPrivateChannel;
     private Message selectedMessage;
+    private String selectedUsername;
 
     @FXML
     private Text clientUsername;
@@ -73,6 +74,9 @@ public class SlockController extends Controller {
 
     @FXML
     private Button modifyMessageButton;
+
+    @FXML
+    private Button deleteUserButton;
 
     @FXML
     void onCreateChannel(ActionEvent event) {
@@ -162,6 +166,14 @@ public class SlockController extends Controller {
                     FailureMessages.emptyMessageContentIsGivenMessage);
     }
 
+    @FXML
+    void onDeleteUser(ActionEvent event) {
+        if (this.selectedChannelName != null) {
+            this.clientImpl.deleteUser(this.selectedChannelName, this.selectedUsername);
+        }
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.clientImpl = GraphicalClientImpl.getUniqueInstanceOfGraphicalClientImpl();
@@ -172,6 +184,7 @@ public class SlockController extends Controller {
         this.modifyChannelButton.setDisable(true);
         this.deleteMessageButton.setDisable(true);
         this.modifyMessageButton.setDisable(true);
+        this.deleteUserButton.setDisable(true);
     }
 
     public void initListViewListeners() {
@@ -214,6 +227,14 @@ public class SlockController extends Controller {
                 }
             }
         });
+
+        this.usersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
+                                                                                   newValue) -> {
+            if (newValue != null) {
+                this.selectedUsername = newValue.getUsername();
+            }
+        });
+
         // TODO : models in front to remove.
     }
 
@@ -241,13 +262,14 @@ public class SlockController extends Controller {
         });
     }
 
-    public void removeChannelFromListJoinedChannels(String channelName) {
+    public void removeChannelFromListJoinedChannels(Channel channel) {
         Platform.runLater(() -> {
-            if (channelName.equals(this.selectedChannelName)) {
+            if (channel.getChannelName().equals(this.selectedChannelName)) {
                 this.listOfMessages.getItems().clear();
                 this.usersListView.getItems().clear();
             }
-            this.listOfJoinedChannels.getItems().remove(channelName);
+            this.listOfJoinedChannels.getItems().remove(channel.getChannelName() + " - " + channel.getAdmin().getUsername() +
+                    " - " + (channel.isPublic() ? "Public" : "Private"));
         });
     }
 
@@ -305,11 +327,6 @@ public class SlockController extends Controller {
         });
     }
 
-    @FXML
-    void onDeleteUser(ActionEvent event) {
-
-    }
-
     public void modifyMessageInListOfMessages(int idMessage, String messageContent, String channelName) {
         Platform.runLater(() -> {
             if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
@@ -329,6 +346,15 @@ public class SlockController extends Controller {
                 }
             }
         });
+    }
+
+    public void removeUserFromChannel(String channelName, String username) {
+        Platform.runLater(() -> {
+            if (this.selectedChannelName.equalsIgnoreCase(channelName)){
+                this.usersListView.getItems().remove(new User(username));
+            }
+        });
+
     }
 
 }
