@@ -330,6 +330,8 @@ public abstract class ClientImpl {
                 Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
                 this.client.write(buffer).get();
+                buffer.clear();
+                Thread.sleep(200);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

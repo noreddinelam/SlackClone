@@ -155,8 +155,7 @@ public class ServerImpl {
                         ResultSet resultSet =
                                 repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
                         Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,
-                                username + " has joined " +
-                                        "the channel");
+                                data);
                         response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED,
                                 GsonConfiguration.gson.toJson(new Channel(new User(admin), channelName, "", true)));
                         String broadcastUsername;
@@ -344,7 +343,7 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             Response response = new Response(NetCodes.MODIFY_CHANNEL_SUCCEED, data);
-            repository.modifyChannelDB(newChannelName,isPublic, channelName).orElseThrow(ModifyChannelException::new);
+            repository.modifyChannelDB(newChannelName, isPublic, channelName).orElseThrow(ModifyChannelException::new);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
