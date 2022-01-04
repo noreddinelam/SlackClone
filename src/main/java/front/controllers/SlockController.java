@@ -226,7 +226,8 @@ public class SlockController extends Controller {
 
     public void addChannelToListJoinedChannels(Channel channel) {
         Platform.runLater(() -> {
-            this.listOfJoinedChannels.getItems().add(channel.getChannelName());
+            this.listOfJoinedChannels.getItems().add(channel.getChannelName() + " - " + channel.getAdmin().getUsername() +
+                    " - " + (channel.isPublic() ? "Public" : "Private"));
         });
     }
 
