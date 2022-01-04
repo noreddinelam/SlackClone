@@ -10,7 +10,6 @@ import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.ServerImpl;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;
@@ -96,13 +95,13 @@ public abstract class ClientImpl {
 
     public abstract void deleteChannelBroadcastFailed(String responseData);
 
-    public abstract void modifyChannelSucceeded (String responseData);
+    public abstract void modifyChannelSucceeded(String responseData);
 
     public abstract void modifyChannelFailed(String responseData);
 
-    public abstract void modifyChannelBroadcastSucceeded (String responseData);
+    public abstract void modifyChannelBroadcastSucceeded(String responseData);
 
-    public abstract void modifyChannelBroadcastFailed (String responseData);
+    public abstract void modifyChannelBroadcastFailed(String responseData);
 
     public abstract void modifyMessageSucceeded(String responseData);
 
@@ -152,6 +151,14 @@ public abstract class ClientImpl {
 
     public abstract void responseRequestJoinChannelFailed(String responseData);
 
+    public abstract void deleteUserSucceeded(String responseData);
+
+    public abstract void deleteUserFailed(String responseData);
+
+    public abstract void deleteUserBroadcastFailed(String responseData);
+
+    public abstract void deleteUserBroadcastSucceeded(String responseData);
+
     public void initListOfFunctions() {
         listOfFunctions.put(NetCodes.LOGOUT_SUCCEED, this::logoutSucceeded);
 
@@ -184,6 +191,11 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, this::deleteChannelBroadcastSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_FAILED, this::deleteChannelBroadcastFailed);
+
+        listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL_SUCCEED, this::deleteUserSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL_FAILED, this::deleteUserFailed);
+        listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL_BRODCAST_SUCCEED, this::deleteUserBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL_BRODCAST_FAILED, this::deleteUserBroadcastFailed);
 
         listOfFunctions.put(NetCodes.MODIFY_CHANNEL_SUCCEED, this::modifyChannelSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_CHANNEL_FAILED, this::modifyChannelFailed);
@@ -229,12 +241,12 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void modifyChannel(String newChannelName, boolean isPublic , String channelName){
+    public void modifyChannel(String newChannelName, boolean isPublic, String channelName) {
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.channelName, channelName);
         data.put(FieldsRequestName.newChannelName, newChannelName);
         data.put(FieldsRequestName.channelPublic, isPublic ? "true" : "false");
-        data.put(FieldsRequestName.userName,this.user.getUsername());
+        data.put(FieldsRequestName.userName, this.user.getUsername());
         String requestData = GsonConfiguration.gson.toJson(data);
         Request request = new Request(NetCodes.MODIFY_CHANNEL, requestData);
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
@@ -304,6 +316,29 @@ public abstract class ClientImpl {
         }
     }
 
+    public void deleteUser(String channelName, String userName) {
+        String adminUsername = this.user.getChannelByName(channelName).getAdmin().getUsername();
+        if (adminUsername.equalsIgnoreCase(this.user.getUsername())) {
+            if (!adminUsername.equalsIgnoreCase(userName)) {
+                Map<String, String> data = new HashMap<>();
+                data.put(FieldsRequestName.channelName, channelName);
+                data.put(FieldsRequestName.userName, userName);
+                data.put(FieldsRequestName.adminName, adminUsername);
+                String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+                Request request = new Request(NetCodes.DELETE_USER_FROM_CHANNEL, requestData);
+                ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+                this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+            }
+            else {
+                this.controller.commandFailed(FailureMessages.deleteUserNotAdminTitle,
+                        FailureMessages.deleteUserAdminMessage);
+            }
+        } else {
+            this.controller.commandFailed(FailureMessages.deleteUserNotAdminTitle,
+                    FailureMessages.deleteUserNotAdminMessage);
+        }
+    }
+
     public void leaveChannel(String channelName) {
         if (!this.user.getChannelByName(channelName).getAdmin().getUsername().equalsIgnoreCase(this.user.getUsername())) {
             Map<String, String> data = new HashMap<>();
@@ -361,13 +396,13 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void modifyMessage(Message message,String newContent){
-        Map<String,String> data = new HashMap<>();
-        data.put(FieldsRequestName.userName,this.user.getUsername());
-        data.put(FieldsRequestName.messageContent,message.getContent());
-        data.put(FieldsRequestName.messageID,String.valueOf(message.getId()));
-        data.put(FieldsRequestName.newMessageContent,newContent);
-        data.put(FieldsRequestName.channelName,message.getChannel().getChannelName());
+    public void modifyMessage(Message message, String newContent) {
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.userName, this.user.getUsername());
+        data.put(FieldsRequestName.messageContent, message.getContent());
+        data.put(FieldsRequestName.messageID, String.valueOf(message.getId()));
+        data.put(FieldsRequestName.newMessageContent, newContent);
+        data.put(FieldsRequestName.channelName, message.getChannel().getChannelName());
         Request request = new Request(NetCodes.MODIFY_MESSAGE, GsonConfiguration.gson.toJson(data));
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());

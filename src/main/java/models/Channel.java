@@ -78,6 +78,10 @@ public class Channel {
         this.users.add(user);
     }
 
+    public void removeUser(String username) {
+        this.users.remove(new User(username));
+    }
+
     public Message getMessageById(int idMessage){
         return this.messages.stream().filter((mes) -> mes.getId() == idMessage).findFirst().get();
     }

@@ -114,8 +114,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void leaveChannelSucceeded(String responseData) {
-        this.user.removeChannelByName(responseData); // responseData is channelName;
-        ((SlockController) this.controller).removeChannelFromListJoinedChannels(responseData);
+        Channel channel = this.user.getChannelByName(responseData);
+        this.user.removeChannelByName(responseData);
+        ((SlockController) this.controller).removeChannelFromListJoinedChannels(channel);
     }
 
     @Override
@@ -136,8 +137,9 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteChannelBroadcastSucceeded(String responseData) {
+        Channel channel= this.user.getChannelByName(responseData);
         this.user.removeChannelByName(responseData);
-        ((SlockController) this.controller).removeChannelFromListJoinedChannels(responseData);
+        ((SlockController) this.controller).removeChannelFromListJoinedChannels(channel);
     }
 
     @Override
@@ -328,5 +330,33 @@ public class GraphicalClientImpl extends ClientImpl {
     @Override
     public void responseRequestJoinChannelFailed(String responseData) {
         //TODO pop up
+    }
+
+    @Override
+    public void deleteUserSucceeded(String responseData) {
+        Map<String, String> request = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        String channelName =request.get(FieldsRequestName.channelName);
+        Channel channel = this.user.getChannelByName(channelName);
+        this.user.removeChannelByName(channelName);
+        ((SlockController)this.controller).removeChannelFromListJoinedChannels(channel);
+    }
+
+    @Override
+    public void deleteUserFailed(String responseData) {
+
+    }
+
+    @Override
+    public void deleteUserBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void deleteUserBroadcastSucceeded(String responseData) {
+        Map<String, String> request = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        String channelName =request.get(FieldsRequestName.channelName);
+        String username =request.get(FieldsRequestName.userName);
+        this.user.removeUserFromChannel(channelName,username);
+        ((SlockController)this.controller).removeUserFromChannel(channelName,username);
     }
 }

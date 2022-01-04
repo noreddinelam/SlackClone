@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class User {
@@ -87,6 +88,13 @@ public class User {
         channel.addUser(user);
     }
 
+    public void removeUserFromChannel(String channelName,String username){
+        Channel channel = this.getChannelByName(channelName);
+        if (channel != null) {
+            channel.removeUser(username);
+        }
+    }
+
     public void modifyChannelInformation(String channelName, String newChannelName, boolean isPublic) {
         Channel channel = this.getChannelByName(channelName);
         if (channel != null) {
@@ -107,4 +115,16 @@ public class User {
         return " " + username + " ";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }
