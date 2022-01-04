@@ -1,8 +1,8 @@
 package client;
 
 import front.Others.FailureMessages;
-import front.controllers.AuthController;
-import front.controllers.SlockController;
+import front.AuthController;
+import front.SlockController;
 import models.Channel;
 import models.Message;
 import models.User;

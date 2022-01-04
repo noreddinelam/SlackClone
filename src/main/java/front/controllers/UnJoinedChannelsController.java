@@ -1,4 +1,4 @@
-package front.controllers;
+package front;
 
 import client.GraphicalClientImpl;
 import javafx.application.Platform;
@@ -7,12 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import models.Channel;
-import models.Message;
-import shared.FieldsRequestName;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class UnJoinedChannelsController extends Controller {

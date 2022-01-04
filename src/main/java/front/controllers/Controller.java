@@ -1,4 +1,4 @@
-package front.controllers;
+package front;
 
 import client.ClientImpl;
 import client.GraphicalClientImpl;

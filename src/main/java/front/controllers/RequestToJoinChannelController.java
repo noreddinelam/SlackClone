@@ -1,4 +1,4 @@
-package front.controllers;
+package front;
 
 import client.GraphicalClientImpl;
 import javafx.application.Platform;
@@ -10,7 +10,6 @@ import shared.FieldsRequestName;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.ResourceBundle;
 
 

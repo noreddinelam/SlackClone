@@ -1,4 +1,4 @@
-package front.controllers;
+package front;
 
 import client.GraphicalClientImpl;
 import front.Others.FailureMessages;

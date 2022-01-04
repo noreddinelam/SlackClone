@@ -17,11 +17,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.controllers.SlockController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.SlockController">
    <children>
       <BorderPane prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <AnchorPane prefHeight="72.0" prefWidth="888.0" styleClass="background_color_1" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="72.0" prefWidth="888.0" styleClass="background_color_1" stylesheets="@../ressources/Stylesheet.css" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="50.0" fitWidth="171.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -102,7 +102,7 @@
                      </children>
                   </VBox>
                   <Text fill="WHITE" layoutX="8.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users in current channel :" wrappingWidth="242.13671875" />
-                  <ListView fx:id="usersListView" layoutX="11.0" layoutY="124.0" prefHeight="449.0" prefWidth="276.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="124.0" />
+                  <ListView fx:id="usersListView" layoutX="11.0" layoutY="124.0" prefHeight="449.0" prefWidth="276.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" stylesheets="@../ressources/Stylesheet.css" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="124.0" />
                   <Button layoutX="70.0" layoutY="584.0" mnemonicParsing="false" onAction="#onPrintRequestsChannels" prefHeight="42.0" prefWidth="161.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="requests to join" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="16.0" />

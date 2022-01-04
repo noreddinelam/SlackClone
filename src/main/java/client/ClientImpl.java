@@ -1,16 +1,15 @@
 package client;
 
 import front.Others.FailureMessages;
-import front.controllers.Controller;
-import front.controllers.RequestToJoinChannelController;
-import front.controllers.SlockController;
-import front.controllers.UnJoinedChannelsController;
+import front.Controller;
+import front.RequestToJoinChannelController;
+import front.SlockController;
+import front.UnJoinedChannelsController;
 import models.Channel;
 import models.Message;
 import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.ServerImpl;
 import shared.CommunicationTypes;
 import shared.FieldsRequestName;
 import shared.NetCodes;

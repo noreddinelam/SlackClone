@@ -1,6 +1,6 @@
 package client;
 
-import front.controllers.AuthController;
+import front.AuthController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
