@@ -83,8 +83,15 @@ public class User {
     }
 
     public void addUserToChannel(String channelName, User user) {
-        Channel channel = getChannelByName(channelName);
+        Channel channel = this.getChannelByName(channelName);
         channel.addUser(user);
+    }
+
+    public void removeUserFromChannel(String channelName,String username){
+        Channel channel = this.getChannelByName(channelName);
+        if (channel != null) {
+            channel.removeUser(username);
+        }
     }
 
     public void modifyChannelInformation(String channelName, String newChannelName, boolean isPublic) {
@@ -93,7 +100,6 @@ public class User {
             channel.setChannelName(newChannelName);
             channel.setPublic(isPublic);
         }
-
     }
 
     public void modifyMessageContent(String channelName, int idMessage, String messageContent) {

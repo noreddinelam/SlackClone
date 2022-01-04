@@ -105,7 +105,7 @@ public class GraphicalClientImpl extends ClientImpl {
         String channelName = response.get(FieldsRequestName.channelName);
         User user = new User(username);
         this.user.addUserToChannel(channelName, user);
-        ((SlockController) this.controller).addUserToJoinedUsersChannel(user);
+        ((SlockController) this.controller).addUserToJoinedUsersChannel(user,channelName);
     }
 
     @Override
@@ -338,9 +338,16 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void responseRequestJoinChannelSucceeded(String responseData) {
-        //TODO pop up
         Map<String, String> request = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
         this.rqController.removeRequestChannel(request);
+        String accept = request.get(FieldsRequestName.accept);
+        String channelName = request.get(FieldsRequestName.channelName);
+        String username = request.get(FieldsRequestName.userName);
+        if(accept.equalsIgnoreCase("true")){
+            User user = new User(username);
+            this.user.addUserToChannel(channelName,user);
+            ((SlockController)this.controller).addUserToJoinedUsersChannel(user,channelName);
+        }
     }
 
     @Override

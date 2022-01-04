@@ -379,6 +379,8 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
+    public void deleteMessage(int idMessage){}
+
     public void requestJoinChannel() {
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.adminName, this.user.getUsername());

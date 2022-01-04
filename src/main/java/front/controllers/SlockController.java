@@ -94,7 +94,8 @@ public class SlockController extends Controller {
 
     @FXML
     void onDeleteMessage(ActionEvent event) {
-
+        if (this.selectedMessage != null)
+            this.clientImpl.deleteMessage(this.selectedMessage.getId());
     }
 
     @FXML
@@ -266,7 +267,8 @@ public class SlockController extends Controller {
         });
     }
 
-    public void addUserToJoinedUsersChannel(User user) {
+    public void addUserToJoinedUsersChannel(User user,String channelName) {
+        if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName))
         Platform.runLater(() -> {
             this.usersListView.getItems().add(user);
         });
