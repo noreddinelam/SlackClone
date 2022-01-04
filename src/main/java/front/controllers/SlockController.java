@@ -267,11 +267,11 @@ public class SlockController extends Controller {
         });
     }
 
-    public void addUserToJoinedUsersChannel(User user,String channelName) {
-        if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName))
-        Platform.runLater(() -> {
-            this.usersListView.getItems().add(user);
-        });
+    public void addUserToJoinedUsersChannel(User user, String channelName) {
+        if (this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName))
+            Platform.runLater(() -> {
+                this.usersListView.getItems().add(user);
+            });
     }
 
     public void addMessageToListOfMessages(Message message) {
@@ -330,5 +330,4 @@ public class SlockController extends Controller {
             }
         });
     }
-
 }

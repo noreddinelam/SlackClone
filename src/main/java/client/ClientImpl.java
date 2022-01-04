@@ -379,7 +379,14 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void deleteMessage(int idMessage){}
+    public void deleteMessage(int idMessage){
+        Map<String,String> data = new HashMap<>();
+        data.put(FieldsRequestName.messageID,String.valueOf(idMessage));
+        data.put(FieldsRequestName.userName,this.user.getUsername());
+        Request request = new Request(NetCodes.DELETE_MESSAGE, GsonConfiguration.gson.toJson(data));
+        ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+        this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+    }
 
     public void requestJoinChannel() {
         Map<String, String> data = new HashMap<>();
