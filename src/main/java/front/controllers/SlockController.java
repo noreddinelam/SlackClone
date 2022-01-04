@@ -302,6 +302,10 @@ public class SlockController extends Controller {
             }
         });
     }
+    @FXML
+    void onDeleteUser(ActionEvent event) {
+
+    }
 
     public void modifyMessageInListOfMessages(int idMessage, String messageContent, String channelName) {
         if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
