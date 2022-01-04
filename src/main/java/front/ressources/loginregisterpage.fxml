@@ -22,7 +22,7 @@
                     <children>
                         <ImageView fitHeight="96.0" fitWidth="333.0" layoutX="55.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../image/slock.png" />
+                                <Image url="@../../../../../target/classes/front/ressources/image/slock.png" />
                             </image>
                         </ImageView>
                     </children>
