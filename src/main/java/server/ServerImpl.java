@@ -677,7 +677,7 @@ public class ServerImpl {
             Map<String, List<Channel>> listOfChannels = new HashMap<>();
             List<Channel> unJoinedChannels = new ArrayList<>();
             while (channels.next()) {
-                unJoinedChannels.add(new Channel(new User(channels.getString(SQLTablesInformation.channelAdminUsernameColumn)),
+                unJoinedChannels.add(new Channel(new User(channels.getString(SQLTablesInformation.channelNameColumn)),
                         channels.getString(SQLTablesInformation.channelNameColumn), "",
                         channels.getBoolean(SQLTablesInformation.channelIsPublicChannelColumn)));
             }

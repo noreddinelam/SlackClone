@@ -330,7 +330,7 @@ public abstract class ClientImpl {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
                 this.client.write(buffer).get();
                 buffer.clear();
-                Thread.sleep(20);
+                Thread.sleep(200);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
