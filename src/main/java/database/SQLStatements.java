@@ -90,11 +90,6 @@ public class SQLStatements {
                     + "," + messageDate + ")" +
                     " VALUES (?,?,?,?) ;";
 
-    public static String modifyMessage =
-            "UPDATE " + messageTable
-                    + " SET " + messageContentColumn + "= ? "
-                    + " WHERE " + messageIdMessageColumn + " = ? ;";
-
     public static String fetchMessageFromChannel =
             "SELECT * FROM " + messageTable + " where " + messageIdMessageColumn + "=? ;";
 
@@ -136,9 +131,9 @@ public class SQLStatements {
             "UPDATE " + channelTable
                     + " SET " + channelNameColumn + "=? , "+  channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
 
-//    public static String modifyChannelStatus =
-//            "UPDATE " + channelTable
-//                    + "  SET " + channelIsPublicChannelColumn + "=?  WHERE " + channelNameColumn + "=? ;";
+    public static String modifyMessage =
+            "UPDATE " + messageTable
+                    + " SET " + messageContentColumn + "= ? WHERE " + messageIdMessageColumn + " = ? ;";
 
     private SQLStatements() {
     }

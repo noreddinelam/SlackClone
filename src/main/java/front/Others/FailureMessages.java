@@ -34,6 +34,8 @@ public class FailureMessages {
 
     public static String modifyMessageTitle = "Modify Message Failed";
 
+    public static String modifyMessageBroadcastTitle = "Modify Message Broadcast Failed";
+
     public static String deleteChannelTitle = "Delete Channel Failed";
 
     public static String deleteChannelBroadcastTitle = "Delete Channel Broadcast Failed";

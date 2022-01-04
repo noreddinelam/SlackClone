@@ -98,7 +98,8 @@ public class SlockController extends Controller {
 
     @FXML
     void onDeleteMessage(ActionEvent event) {
-
+        if (this.selectedMessage != null)
+            this.clientImpl.deleteMessage(this.selectedMessage.getId());
     }
 
     @FXML
@@ -288,7 +289,8 @@ public class SlockController extends Controller {
         });
     }
 
-    public void addUserToJoinedUsersChannel(User user) {
+    public void addUserToJoinedUsersChannel(User user,String channelName) {
+        if(this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName))
         Platform.runLater(() -> {
             this.usersListView.getItems().add(user);
         });
@@ -326,22 +328,24 @@ public class SlockController extends Controller {
     }
 
     public void modifyMessageInListOfMessages(int idMessage, String messageContent, String channelName) {
-        if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
-            ObservableList<Message> temp = this.listOfMessages.getItems();
-            int index = 0;
-            Message newItem = null;
-            for (Message listViewItem : temp) {
-                if (listViewItem.getId() == idMessage) {
-                    newItem = listViewItem;
-                    break;
+        Platform.runLater(() -> {
+            if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
+                ObservableList<Message> temp = this.listOfMessages.getItems();
+                int index = 0;
+                Message newItem = null;
+                for (Message listViewItem : temp) {
+                    if (listViewItem.getId() == idMessage) {
+                        newItem = listViewItem;
+                        break;
+                    }
+                    index++;
                 }
-                index++;
+                if (newItem != null) {
+                    newItem.setContent(messageContent);
+                    this.listOfMessages.getItems().set(index, newItem);
+                }
             }
-            if (newItem != null) {
-                newItem.setContent(messageContent);
-                this.listOfMessages.getItems().set(index, newItem);
-            }
-        }
+        });
     }
 
     public void removeUserFromChannel(String channelName, String username) {

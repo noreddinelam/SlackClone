@@ -109,5 +109,4 @@ public class Channel {
         return Objects.hash(channelName);
     }
 
-
 }

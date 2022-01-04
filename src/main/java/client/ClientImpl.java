@@ -91,6 +91,10 @@ public abstract class ClientImpl {
 
     public abstract void deleteMessageFailed(String responseData);
 
+    public abstract void modifyMessageBroadcastSucceeded(String responseData);
+
+    public abstract void modifyMessageBroadcastFailed(String responseData);
+
     public abstract void deleteChannelBroadcastSucceeded(String responseData);
 
     public abstract void deleteChannelBroadcastFailed(String responseData);
@@ -186,6 +190,8 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_SUCCEEDED,this::modifyMessageBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_FAILED,this::modifyMessageBroadcastFailed);
 
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
@@ -365,7 +371,7 @@ public abstract class ClientImpl {
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
                 this.client.write(buffer).get();
                 buffer.clear();
-                Thread.sleep(200);
+                Thread.sleep(20);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -407,6 +413,8 @@ public abstract class ClientImpl {
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
+
+    public void deleteMessage(int idMessage){}
 
     public void requestJoinChannel() {
         Map<String, String> data = new HashMap<>();
