@@ -1,6 +1,7 @@
 package front.controllers;
 
 import client.GraphicalClientImpl;
+import front.Others.FailureMessages;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -74,7 +75,9 @@ public class SlockController extends Controller {
 
     @FXML
     void onCreateChannel(ActionEvent event) {
-        this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
+        if (!createChannelTextField.getText().isEmpty())
+            this.clientImpl.createChannel(createChannelTextField.getText(), !isPrivate.isSelected());
+        else this.commandFailed(FailureMessages.emptyTextFieldNameTitle, FailureMessages.emptyTextFieldMessage);
     }
 
     @FXML
@@ -142,7 +145,10 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyChannel(ActionEvent event) {
-        this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(), !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
+        if (!this.channelNameModTextField.getText().isEmpty())
+            this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(),
+                    !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
+        else this.commandFailed(FailureMessages.emptyTextFieldNameTitle, FailureMessages.emptyTextFieldMessage);
     }
 
     @FXML
@@ -280,7 +286,8 @@ public class SlockController extends Controller {
             if (newItem != null) {
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
-                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" : "Private"));
+                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
+                                "Private"));
             }
         });
     }
