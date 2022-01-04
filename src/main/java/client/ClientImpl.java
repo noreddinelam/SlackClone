@@ -180,7 +180,6 @@ public abstract class ClientImpl {
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
 
-
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_BROADCAST_SUCCEEDED, this::deleteChannelBroadcastSucceeded);

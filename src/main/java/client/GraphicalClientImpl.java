@@ -162,7 +162,12 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyChannelBroadcastSucceeded(String responseData) {
-
+        Map<String,String > response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        String oldChannelName = response.get(FieldsRequestName.channelName);
+        String newChannelName = response.get(FieldsRequestName.newChannelName);
+        String isPublic = response.get(FieldsRequestName.channelPublic);
+        this.user.modifyChannelInformation(oldChannelName,newChannelName,isPublic.equalsIgnoreCase("true"));
+        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName,newChannelName,isPublic);
     }
 
     @Override

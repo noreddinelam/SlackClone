@@ -375,14 +375,8 @@ public class ServerImpl {
                 broadcastUsername = resultSet.getString("username");
                 broadcastClient = listOfClients.get(broadcastUsername);
                 if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
-                    broadcastResponseClient(broadcastClient, response);
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
             }
-            String responseJson = GsonConfiguration.gson.toJson(response);
-            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler());
-            attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
         } catch (ModifyChannelException e) {
             Response response = new Response(NetCodes.MODIFY_CHANNEL_FAILED, "Modify channel failed");
             requestFailure(response, client);
