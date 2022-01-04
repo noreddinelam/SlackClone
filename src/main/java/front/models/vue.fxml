@@ -21,11 +21,11 @@
    <children>
       <BorderPane prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <AnchorPane prefHeight="72.0" prefWidth="888.0" styleClass="background_color_1" stylesheets="@../ressources/Stylesheet.css" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="72.0" prefWidth="888.0" styleClass="background_color_1" stylesheets="@Stylesheet.css" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="50.0" fitWidth="171.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@image/slock.png" />
+                        <Image url="@../image/slock.png" />
                      </image>
                   </ImageView>
                   <Text fx:id="clientUsername" layoutX="881.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name" textAlignment="CENTER" wrappingWidth="111.3515625">
