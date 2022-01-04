@@ -225,11 +225,6 @@ public class GraphicalClientImpl extends ClientImpl {
         List<Message> listOfMessages = responseMap.get(FieldsRequestName.listMessages);
         if (!listOfMessages.isEmpty())
             this.user.addListOfMessagesToChannel(listOfMessages.get(0).getChannel().getChannelName(), listOfMessages);
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
