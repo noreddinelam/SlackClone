@@ -10,6 +10,9 @@ public class FailureMessages {
     public static String leaveChannelAdminTitle = "Admin";
     public static String leaveChannelAdminMessage = "You can't leave because you are the admin !";
 
+    public static String emptyTextFieldNameTitle = "Empty name is given !";
+    public static String emptyTextFieldMessage = "Please provide a valid name !";
+
     public static String leaveChannelTitle = "Leave Channel Failed";
 
     public static String authTitle = "Authentication Failed";
