@@ -21,7 +21,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="171.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../image/slock.png" />
+                        <Image url="@../../../../../target/classes/front/ressources/image/slock.png" />
                      </image>
                   </ImageView>
                   <Text fx:id="clientUsername" layoutX="881.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name" textAlignment="CENTER" wrappingWidth="111.3515625">
