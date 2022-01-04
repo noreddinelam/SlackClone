@@ -253,14 +253,13 @@ public class ServerImpl {
     public static void modifyMessage(String data) {
         logger.info("modify message {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
-        String idMessage = requestData.get(FieldsRequestName.messageID);
+        int idMessage = Integer.valueOf(requestData.get(FieldsRequestName.messageID));
         String username = requestData.get(FieldsRequestName.userName);
         String channelName = requestData.get(FieldsRequestName.channelName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
             int modLines =
-                    repository.modifyMessageDB(requestData.get(FieldsRequestName.messageContent), idMessage).orElseThrow(ModifyMessageException::new);
-            logger.info("modified lines {}", modLines);
+                    repository.modifyMessageDB(requestData.get(FieldsRequestName.newMessageContent), idMessage).orElseThrow(ModifyMessageException::new);
             ResultSet resultSet =
                     repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             Response broadcastResponse = new Response(NetCodes.MODIFY_MESSAGE_BROADCAST_SUCCEEDED, data);

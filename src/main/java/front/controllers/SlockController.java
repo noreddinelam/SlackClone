@@ -294,7 +294,7 @@ public class SlockController extends Controller {
                 index++;
             }
             if (newItem != null) {
-                this.selectedChannelName=newChannelName;
+                this.selectedChannelName = newChannelName;
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
                         newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
@@ -302,28 +302,31 @@ public class SlockController extends Controller {
             }
         });
     }
+
     @FXML
     void onDeleteUser(ActionEvent event) {
 
     }
 
     public void modifyMessageInListOfMessages(int idMessage, String messageContent, String channelName) {
-        if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
-            ObservableList<Message> temp = this.listOfMessages.getItems();
-            int index = 0;
-            Message newItem = null;
-            for (Message listViewItem : temp) {
-                if (listViewItem.getId() == idMessage) {
-                    newItem = listViewItem;
-                    break;
+        Platform.runLater(() -> {
+            if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
+                ObservableList<Message> temp = this.listOfMessages.getItems();
+                int index = 0;
+                Message newItem = null;
+                for (Message listViewItem : temp) {
+                    if (listViewItem.getId() == idMessage) {
+                        newItem = listViewItem;
+                        break;
+                    }
+                    index++;
                 }
-                index++;
+                if (newItem != null) {
+                    newItem.setContent(messageContent);
+                    this.listOfMessages.getItems().set(index, newItem);
+                }
             }
-            if (newItem != null) {
-                newItem.setContent(messageContent);
-                this.listOfMessages.getItems().set(index, newItem);
-            }
-        }
+        });
     }
 
 }

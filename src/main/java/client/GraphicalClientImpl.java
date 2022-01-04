@@ -99,7 +99,8 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinChannelBroadcastSucceeded(String responseData) {
-        Map<String, String> response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapJsonTypeData);
         String username = response.get(FieldsRequestName.userName);
         String channelName = response.get(FieldsRequestName.channelName);
         User user = new User(username);
@@ -147,12 +148,13 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyChannelSucceeded(String responseData) {
-        Map<String,String > response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapJsonTypeData);
         String oldChannelName = response.get(FieldsRequestName.channelName);
         String newChannelName = response.get(FieldsRequestName.newChannelName);
         String isPublic = response.get(FieldsRequestName.channelPublic);
-        this.user.modifyChannelInformation(oldChannelName,newChannelName,isPublic.equalsIgnoreCase("true"));
-        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName,newChannelName,isPublic);
+        this.user.modifyChannelInformation(oldChannelName, newChannelName, isPublic.equalsIgnoreCase("true"));
+        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName, newChannelName, isPublic);
     }
 
     @Override
@@ -162,12 +164,13 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyChannelBroadcastSucceeded(String responseData) {
-        Map<String,String > response = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapJsonTypeData);
         String oldChannelName = response.get(FieldsRequestName.channelName);
         String newChannelName = response.get(FieldsRequestName.newChannelName);
         String isPublic = response.get(FieldsRequestName.channelPublic);
-        this.user.modifyChannelInformation(oldChannelName,newChannelName,isPublic.equalsIgnoreCase("true"));
-        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName,newChannelName,isPublic);
+        this.user.modifyChannelInformation(oldChannelName, newChannelName, isPublic.equalsIgnoreCase("true"));
+        ((SlockController) this.controller).modifyChannelInListJoinedChannels(oldChannelName, newChannelName, isPublic);
     }
 
     @Override
@@ -177,17 +180,32 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void modifyMessageSucceeded(String responseData) {
-        Map<String,String> data = GsonConfiguration.gson.fromJson(responseData,CommunicationTypes.mapJsonTypeData);
+        Map<String, String> data = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
         int idMessage = Integer.valueOf(data.get(FieldsRequestName.messageID));
-        String messageContent = data.get(FieldsRequestName.messageContent);
+        String messageContent = data.get(FieldsRequestName.newMessageContent);
         String channelName = data.get(FieldsRequestName.channelName);
-        this.user.modifyMessageContent(channelName,idMessage,messageContent);
-        ((SlockController) this.controller).modifyMessageInListOfMessages(idMessage,messageContent,channelName);
+        this.user.modifyMessageContent(channelName, idMessage, messageContent);
+        ((SlockController) this.controller).modifyMessageInListOfMessages(idMessage, messageContent, channelName);
     }
 
     @Override
     public void modifyMessageFailed(String responseData) {
         this.controller.commandFailed(FailureMessages.modifyMessageTitle, responseData);
+    }
+
+    @Override
+    public void modifyMessageBroadcastSucceeded(String responseData) {
+        Map<String, String> data = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        int idMessage = Integer.valueOf(data.get(FieldsRequestName.messageID));
+        String messageContent = data.get(FieldsRequestName.newMessageContent);
+        String channelName = data.get(FieldsRequestName.channelName);
+        this.user.modifyMessageContent(channelName, idMessage, messageContent);
+        ((SlockController) this.controller).modifyMessageInListOfMessages(idMessage, messageContent, channelName);
+    }
+
+    @Override
+    public void modifyMessageBroadcastFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.modifyMessageBroadcastTitle, responseData);
     }
 
     @Override
