@@ -250,4 +250,24 @@ public class TerminalClientImpl extends ClientImpl {
     public void responseRequestJoinChannelFailed(String responseData) {
 
     }
+
+    @Override
+    public void deleteUserSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void deleteUserFailed(String responseData) {
+
+    }
+
+    @Override
+    public void deleteUserBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
+    public void deleteUserBroadcastSucceeded(String responseData) {
+
+    }
 }

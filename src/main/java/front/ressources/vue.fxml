@@ -104,7 +104,7 @@
                   </VBox>
                   <Text fill="WHITE" layoutX="8.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users in current channel :" wrappingWidth="242.13671875" />
                   <ListView fx:id="usersListView" layoutX="20.0" layoutY="124.0" prefHeight="332.0" prefWidth="267.0" style="-fx-border-color: #8280ff;" styleClass="background_color_3" AnchorPane.bottomAnchor="192.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="124.0" />
-                  <Button layoutX="155.0" layoutY="469.0" mnemonicParsing="false" onAction="#onDeleteUser" prefHeight="42.0" prefWidth="135.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Delete User" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="deleteUserButton" layoutX="155.0" layoutY="469.0" mnemonicParsing="false" onAction="#onDeleteUser" prefHeight="42.0" prefWidth="135.0" style="-fx-border-color: #8280ff; -fx-border-width: 2px;" styleClass="background_color_2" text="Delete User" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="16.0" />
                      </font>
