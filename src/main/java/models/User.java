@@ -89,8 +89,11 @@ public class User {
 
     public void modifyChannelInformation(String channelName, String newChannelName, boolean isPublic) {
         Channel channel = this.getChannelByName(channelName);
-        channel.setChannelName(newChannelName);
-        channel.setPublic(isPublic);
+        if (channel != null) {
+            channel.setChannelName(newChannelName);
+            channel.setPublic(isPublic);
+        }
+
     }
 
     public void modifyMessageContent(String channelName, int idMessage, String messageContent) {
