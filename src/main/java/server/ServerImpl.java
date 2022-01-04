@@ -155,8 +155,7 @@ public class ServerImpl {
                         ResultSet resultSet =
                                 repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
                         Response broadcastResponse = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_SUCCEED,
-                                username + " has joined " +
-                                        "the channel");
+                                data);
                         response = new Response(NetCodes.JOIN_CHANNEL_SUCCEED,
                                 GsonConfiguration.gson.toJson(new Channel(new User(admin), channelName, "", true)));
                         String broadcastUsername;

@@ -9,8 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.CompletionHandler;
 
 public class ServerReaderCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
-    private final static Logger logger = LoggerFactory.getLogger(ServerReaderCompletionHandler.class);
 
+    private final static Logger logger = LoggerFactory.getLogger(ServerReaderCompletionHandler.class);
 
     ServerReaderCompletionHandler() {
         this.logger.info("ReaderCompletionHandler instantiated");
@@ -18,9 +18,9 @@ public class ServerReaderCompletionHandler implements CompletionHandler<Integer,
 
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
-        this.logger.info("ReaderCompletionHandler completed with {}", result);
+        logger.info("ReaderCompletionHandler completed with {}", result);
         String requestJson = new String(attachment.array()).substring(0, result);
-        this.logger.info("{}",requestJson);
+        logger.info("{}", requestJson);
         Request requestObject = GsonConfiguration.gson.fromJson(requestJson, Request.class);
         ServerImpl.getFunctionWithRequestCode(requestObject).accept(requestObject.getRequestData());
     }
