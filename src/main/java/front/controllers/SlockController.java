@@ -295,5 +295,9 @@ public class SlockController extends Controller {
             }
         });
     }
+    @FXML
+    void onDeleteUser(ActionEvent event) {
+
+    }
 
 }

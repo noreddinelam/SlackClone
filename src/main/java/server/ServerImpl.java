@@ -345,12 +345,6 @@ public class ServerImpl {
                     repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             Response response = new Response(NetCodes.MODIFY_CHANNEL_SUCCEED, data);
             repository.modifyChannelDB(newChannelName,isPublic, channelName).orElseThrow(ModifyChannelException::new);
-            String responseJson = GsonConfiguration.gson.toJson(response);
-            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
-            client.write(attachment, attachment, new ServerWriterCompletionHandler());
-            attachment.clear();
-            ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
-            client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
             String broadcastUsername;
             AsynchronousSocketChannel broadcastClient;
             while (resultSet.next()) {
