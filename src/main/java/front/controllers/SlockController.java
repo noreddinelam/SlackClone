@@ -151,10 +151,10 @@ public class SlockController extends Controller {
 
     @FXML
     void onModifyChannel(ActionEvent event) {
-        if (!this.channelNameModTextField.getText().isEmpty())
+        if (!this.channelNameModTextField.getText().isEmpty()) {
             this.clientImpl.modifyChannel(this.channelNameModTextField.getText().trim(),
                     !this.modifyIsPrivate.isSelected(), this.selectedChannelName);
-        else this.commandFailed(FailureMessages.emptyTextFieldNameTitle, FailureMessages.emptyTextFieldMessage);
+        } else this.commandFailed(FailureMessages.emptyTextFieldNameTitle, FailureMessages.emptyTextFieldMessage);
     }
 
     @FXML
@@ -244,7 +244,7 @@ public class SlockController extends Controller {
         this.listOfJoinedChannels.getItems().addAll(channelsName);
     }
 
-    public void initListMessagesInChannel(String channelName,List<Message> messages) {
+    public void initListMessagesInChannel(String channelName, List<Message> messages) {
         if (channelName.equalsIgnoreCase(this.selectedChannelName))
             Platform.runLater(() -> {
                 this.listOfMessages.getItems().setAll(messages);
@@ -316,7 +316,7 @@ public class SlockController extends Controller {
                 this.selectedChannelName = newChannelName;
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
-                        newChannelName + " - " + parts[1] + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
+                        newChannelName + " - " + parts[1].trim() + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
                                 "Private"));
             }
         });
