@@ -125,6 +125,21 @@ public class GraphicalClientImpl extends ClientImpl {
         this.controller.commandFailed(FailureMessages.leaveChannelTitle, responseData);
     }
 
+    @Override
+    public void leaveChannelBroadcastSucceeded(String responseData) {
+        Map<String,String> response = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapJsonTypeData);
+        String channelName = response.get(FieldsRequestName.channelName);
+        String username = response.get(FieldsRequestName.userName);
+        this.user.removeUserFromChannel(channelName,username);
+        ((SlockController) this.controller).removeUserFromChannel(channelName,username);
+    }
+
+    @Override
+    public void leaveChannelBroadcastFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.leaveChannelTitle, responseData);
+    }
+
 
     @Override
     public void deleteMessageSucceeded(String responseData) {
