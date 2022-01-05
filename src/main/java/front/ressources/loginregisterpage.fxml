@@ -3,7 +3,6 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
@@ -46,11 +45,6 @@
                                 <Cursor fx:constant="CLOSED_HAND" />
                             </cursor>
                         </Button>
-                        <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="219.0" layoutY="482.0" prefHeight="29.0" prefWidth="260.0" text="Forgot your password ?" textAlignment="CENTER" textFill="#b7b2ff" underline="true">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Hyperlink>
                         <FontAwesomeIconView fill="#b7b2ff" glyphName="USERS" layoutX="319.0" layoutY="140.0" size="50" wrappingWidth="54.428571701049805" />
                         <Text fill="#b7b2ff" layoutX="270.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register Page" textAlignment="CENTER" wrappingWidth="153.13671875">
                             <font>
