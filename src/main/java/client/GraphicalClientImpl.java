@@ -243,8 +243,13 @@ public class GraphicalClientImpl extends ClientImpl {
         Map<String, List<Message>> responseMap = GsonConfiguration.gson.fromJson(responseData,
                 CommunicationTypes.mapListMessageJsonTypeData);
         List<Message> listOfMessages = responseMap.get(FieldsRequestName.listMessages);
-        if (!listOfMessages.isEmpty())
-            this.user.addListOfMessagesToChannel(listOfMessages.get(0).getChannel().getChannelName(), listOfMessages);
+        Message testMessage = listOfMessages.get(0);
+        String channelName = testMessage.getChannel().getChannelName();
+        if(testMessage.getContent() == null){
+            listOfMessages.clear();
+        }
+        this.user.addListOfMessagesToChannel(channelName, listOfMessages);
+        ((SlockController)this.controller).initListMessagesInChannel(channelName,listOfMessages);
     }
 
     @Override

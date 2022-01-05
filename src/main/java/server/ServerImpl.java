@@ -593,6 +593,9 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.listOfMessageInChannelDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
             List<Message> messages = mapper.resultSetToMessage(resultSet);
+            if(messages.isEmpty()){
+                messages.add(new Message(new Channel(channelName)));
+            }
             Map<String, List<Message>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.listMessages, messages);
             Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_SUCCEED,

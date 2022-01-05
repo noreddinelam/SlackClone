@@ -193,6 +193,8 @@ public class SlockController extends Controller {
             if (newValue != null) {
                 String[] parts = newValue.split("-");
                 this.selectedChannelName = parts[0].trim();
+                if (newValue != oldValue)
+                    this.clientImpl.getMessagesOfChannel(this.selectedChannelName);
                 this.adminUsername = parts[1].trim();
                 this.isPrivateChannel = !parts[2].trim().equalsIgnoreCase("Public");
                 if (this.adminUsername.equalsIgnoreCase(this.clientUsername.getText())) {
@@ -205,10 +207,6 @@ public class SlockController extends Controller {
                     this.modifyChannelButton.setDisable(true);
                 }
                 this.clientImpl.getUsersForChannel(this.selectedChannelName);
-                Platform.runLater(() -> {
-                    List<Message> messages = this.clientImpl.listOfMessagesInChannel(this.selectedChannelName);
-                    this.listOfMessages.getItems().setAll(messages);
-                });
             }
         });
 
@@ -244,7 +242,13 @@ public class SlockController extends Controller {
                 list.stream().map((channel) -> channel.getChannelName() + " - " + channel.getAdmin().getUsername() +
                         " - " + (channel.isPublic() ? "Public" : "Private")).collect(Collectors.toList());
         this.listOfJoinedChannels.getItems().addAll(channelsName);
-        this.clientImpl.getAllMessages();
+    }
+
+    public void initListMessagesInChannel(String channelName,List<Message> messages) {
+        if (channelName.equalsIgnoreCase(this.selectedChannelName))
+            Platform.runLater(() -> {
+                this.listOfMessages.getItems().setAll(messages);
+            });
     }
 
     public void onLogoutSucceeded() throws IOException {
@@ -351,7 +355,7 @@ public class SlockController extends Controller {
 
     public void removeUserFromChannel(String channelName, String username) {
         Platform.runLater(() -> {
-            if (this.selectedChannelName.equalsIgnoreCase(channelName)){
+            if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
                 this.usersListView.getItems().remove(new User(username));
             }
         });
