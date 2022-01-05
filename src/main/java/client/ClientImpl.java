@@ -391,7 +391,7 @@ public abstract class ClientImpl {
 
     public void getUsersForChannel(String channelName) {
         List<User> users = this.user.getListOfUsersFromChannel(channelName);
-        if (users.isEmpty()) {
+        //if (users.isEmpty()) {
             Map<String, String> data = new HashMap<>();
             data.put(FieldsRequestName.userName, this.user.getUsername());
             data.put(FieldsRequestName.channelName, channelName);
@@ -399,9 +399,9 @@ public abstract class ClientImpl {
             Request request = new Request(NetCodes.LIST_OF_USER_IN_CHANNEL, requestData);
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
             this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
-        } else {
-            ((SlockController) this.controller).setJoinedUsersToChannel(users,channelName);
-        }
+//        } else {
+//            ((SlockController) this.controller).setJoinedUsersToChannel(users,channelName);
+//        }
     }
 
     public void sendMessage(String messageContent, String channelName) {
