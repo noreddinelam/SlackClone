@@ -62,6 +62,11 @@ public class Channel {
         this.messages.add(message);
     }
 
+
+    public void removeMessage(Message message) {
+        this.messages.remove(message);
+    }
+
     public List<User> getUsers() {
         return users;
     }

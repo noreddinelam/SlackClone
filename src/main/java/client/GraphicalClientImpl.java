@@ -143,12 +143,31 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void deleteMessageSucceeded(String responseData) {
-
+        Map<String, String> data = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        int idMessage = Integer.valueOf(data.get(FieldsRequestName.messageID));
+        String channelName = data.get(FieldsRequestName.channelName);
+        this.user.deleteMessage(idMessage,channelName);
+        ((SlockController) this.controller).deleteMessageInListOfMessages(idMessage,channelName);
     }
 
     @Override
     public void deleteMessageFailed(String responseData) {
         this.controller.commandFailed(FailureMessages.deleteMessageTitle, responseData);
+    }
+
+    @Override
+    public void deleteMessageBroadcastSucceeded(String responseData) {
+        System.out.println("delete message broadcast succeded");
+        Map<String, String> data = GsonConfiguration.gson.fromJson(responseData, CommunicationTypes.mapJsonTypeData);
+        int idMessage = Integer.valueOf(data.get(FieldsRequestName.messageID));
+        String channelName = data.get(FieldsRequestName.channelName);
+        this.user.deleteMessage(idMessage,channelName);
+        ((SlockController) this.controller).deleteMessageInListOfMessages(idMessage,channelName);
+    }
+
+    @Override
+    public void deleteMessageBroadcastFailed(String responseData) {
+
     }
 
     @Override
