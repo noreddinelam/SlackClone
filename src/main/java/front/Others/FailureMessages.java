@@ -66,8 +66,7 @@ public class FailureMessages {
 
     public static String modifyChannelBroadcastFailed = "Modify Channel  BroadcastFailed";
 
-
-
-
+    public static String joinPrivateChannelTitle = "Private Channel";
+    public static String joinPrivateAlreadyHaveRequest = "You have one opened request to join this channel !";
 
 }
