@@ -49,4 +49,8 @@ public class FailureMessages {
     public static String messageConsumptionTitle = "Message Consumption Failed";
 
     public static String messageBroadcastTitle = "Message Broadcast Failed";
+
+    public static String joinPrivateChannelTitle = "Private Channel";
+    public static String joinPrivateAlreadyHaveRequest = "You have one opened request to join this channel !";
+
 }

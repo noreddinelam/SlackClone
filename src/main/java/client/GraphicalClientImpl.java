@@ -373,12 +373,12 @@ public class GraphicalClientImpl extends ClientImpl {
 
     @Override
     public void joinPrivateChannel(String responseData) {
-        //TODO pop up
+        this.controller.commandFailed(FailureMessages.joinPrivateChannelTitle, responseData);
     }
 
     @Override
     public void requestAlreadySent(String responseData) {
-        //TODO pop up
+        this.controller.commandFailed(FailureMessages.joinPrivateAlreadyHaveRequest, responseData);
     }
 
     @Override
