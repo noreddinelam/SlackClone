@@ -102,6 +102,16 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void deleteMessageBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void deleteMessageBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
     public void modifyMessageBroadcastSucceeded(String responseData) {
 
     }

@@ -75,7 +75,7 @@ public class ServerImpl {
             }
         } catch (ConnectionException e) {
             Response response = new Response(NetCodes.CONNECT_FAILED, "Connection FAILED " +
-                    "! Please create an account before signing in ");
+                    "! Please enter a valid credentials ");
             requestFailure(response, client);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -248,19 +248,38 @@ public class ServerImpl {
     public static void deleteMessage(String data) {
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
         int idMessage = Integer.parseInt(requestData.get(FieldsRequestName.messageID));
+        String channelName = requestData.get(FieldsRequestName.channelName);
         String username = requestData.get(FieldsRequestName.userName);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
-            Response response = new Response(NetCodes.DELETE_MESSAGE_SUCCEED, "Message deletion succeeded");
+            Response response = new Response(NetCodes.DELETE_MESSAGE_SUCCEED, data);
             repository.deleteMessageDB(idMessage).orElseThrow(DeleteMessageException::new);
-            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(response).getBytes());
-            client.write(buffer, buffer, new ServerWriterCompletionHandler());
-            buffer.clear();
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
+            Response broadcastResponse = new Response(NetCodes.DELETE_MESSAGE_BROADCAST_SUCCEED, data);
+            String responseJson = GsonConfiguration.gson.toJson(response);
+            ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
+            client.write(attachment, attachment, new ServerWriterCompletionHandler());
+            attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            String broadcastUsername;
+            AsynchronousSocketChannel broadcastClient;
+            while (resultSet.next()) {
+                broadcastUsername = resultSet.getString("username");
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
+
         } catch (DeleteMessageException e) {
-            e.printStackTrace();
             Response response = new Response(NetCodes.DELETE_MESSAGE_FAILED, "Message deletion failed");
+            requestFailure(response, client);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FetchAllUsersWithChannelNameException e) {
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting deletion message " +
+                    "error");
             requestFailure(response, client);
         }
     }
@@ -378,7 +397,10 @@ public class ServerImpl {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (FetchAllUsersWithChannelNameException e) {
-            e.printStackTrace();
+            Response response = new Response(NetCodes.JOIN_CHANNEL_BROADCAST_FAILED, "broadcasting deletion user " +
+                    "error");
+            requestFailure(response, client);
+            ;
         }
     }
 

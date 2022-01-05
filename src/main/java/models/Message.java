@@ -25,6 +25,10 @@ public class Message {
         this.date = date;
     }
 
+    public Message(int id){
+       this.id=id;
+    }
+
     public Message(String content) {
         this.content=content;
     }

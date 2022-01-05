@@ -76,6 +76,11 @@ public class User {
         });
     }
 
+    public void deleteMessage(int idMessage , String channelName) {
+        Channel channel = this.getChannelByName(channelName);
+        channel.removeMessage(new Message(idMessage));
+    }
+
     public Channel getChannelByName(String channelName) {
         List<Channel> list =
                 this.channels.stream().filter((channel) -> channel.getChannelName().equalsIgnoreCase(channelName)).collect(Collectors.toList());
