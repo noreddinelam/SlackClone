@@ -278,16 +278,6 @@ public class SlockController extends Controller {
         });
     }
 
-    public void deleteChannelToListJoinedChannels(String channelName) {
-        Platform.runLater(() -> {
-            if (channelName.equals(this.selectedChannelName)) {
-                this.listOfMessages.getItems().clear();
-                this.usersListView.getItems().clear();
-            }
-            this.listOfJoinedChannels.getItems().remove(channelName);
-        });
-    }
-
     public void setJoinedUsersToChannel(List<User> users) {
         Platform.runLater(() -> {
             this.usersListView.getItems().setAll(users);

@@ -215,8 +215,9 @@ public class GraphicalClientImpl extends ClientImpl {
         try {
             Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
                     CommunicationTypes.mapJsonTypeData);
-            this.user.removeChannel(new Channel(response.get(FieldsRequestName.channelName)));
-            ((SlockController) this.controller).deleteChannelToListJoinedChannels(response.get(FieldsRequestName.channelName));
+            Channel channel = this.user.getChannelByName(response.get(FieldsRequestName.channelName));
+            this.user.removeChannel(channel);
+            ((SlockController) this.controller).removeChannelFromListJoinedChannels(channel);
         } catch (Exception e) {
             e.printStackTrace();
         }
