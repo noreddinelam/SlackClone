@@ -40,7 +40,6 @@ public class User {
 
     public void setChannels(List<Channel> channels) {
         this.channels = channels;
-        this.channels.forEach(System.out::println);
     }
 
     public void addChannel(Channel channel) {

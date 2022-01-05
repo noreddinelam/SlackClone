@@ -601,7 +601,6 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
             List<User> users = mapper.resultSetToUser(resultSet);
-            users.forEach(System.out::println);
             Map<String, List<User>> responseData = new HashMap<>();
             responseData.put(channelName, users);
             Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED,
@@ -743,7 +742,6 @@ public class ServerImpl {
             listOfChannels.put(FieldsRequestName.listChannels, unJoinedChannels);
             String dataJson = GsonConfiguration.gson.toJson(listOfChannels,
                     CommunicationTypes.mapListChannelJsonTypeData);
-            System.out.println(dataJson);
             Response response = new Response(NetCodes.LIST_OF_UN_JOINED_CHANNELS_SUCCEEDED, dataJson);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer buffer = ByteBuffer.wrap(responseJson.getBytes());
@@ -779,7 +777,6 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.LIST_OF_UN_JOINED_CHANNELS, ServerImpl::listOfUnJoinedChannels);
         listOfFunctions.put(NetCodes.DELETE_USER_FROM_CHANNEL, ServerImpl::deleteUserFromMyChannel);
         listOfFunctions.put(NetCodes.MODIFY_CHANNEL, ServerImpl::modifyChannel);
-        //listOfFunctions.put(NetCodes.MODIFY_CHANNEL_STATUS, ServerImpl::modifyChannelStatus);
 
     }
 

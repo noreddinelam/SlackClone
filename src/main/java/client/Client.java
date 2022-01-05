@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 
 public class Client {
     private final static InetSocketAddress serverIpAddress = new InetSocketAddress("localhost", Properties.PORT);
-    private final static Scanner scanner = new Scanner(System.in);
     private final static Logger logger = LoggerFactory.getLogger(Client.class);
     private final static ClientImpl[] clientImplementations =
             {TerminalClientImpl.getUniqueInstanceOfTerminalClientImpl(),
@@ -38,16 +37,8 @@ public class Client {
             ByteBuffer buffer;
             while (true) {
                 try {
-                    line = scanner.nextLine();
                     Map<String, String> requestData = new HashMap<>();
-                    requestData.put(FieldsRequestName.userName, "norredine");
-                    requestData.put(FieldsRequestName.channelName, "haha");
-                    requestData.put(FieldsRequestName.newChannelName, "newname");
-                    requestData.put(FieldsRequestName.userName, "dola");
-                    requestData.put(FieldsRequestName.channelPublic,"true");
-                    //requestData.put(FieldsRequestName.guest, clientIpAddress);
                     Request request = new Request(line, GsonConfiguration.gson.toJson(requestData));
-                    System.out.println(request.getRequestData());
                     String jsonRes = GsonConfiguration.gson.toJson(request);
                     buffer = ByteBuffer.wrap(jsonRes.getBytes("UTF-8"));
                     socket.write(buffer, buffer, new ClientWriterCompletionHandler());
