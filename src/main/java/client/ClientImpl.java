@@ -95,6 +95,12 @@ public abstract class ClientImpl {
 
     public abstract void deleteMessageFailed(String responseData);
 
+    public abstract void deleteMessageBroadcastSucceeded(String responseData);
+
+    public abstract void deleteMessageBroadcastFailed(String responseData);
+
+
+
     public abstract void modifyMessageBroadcastSucceeded(String responseData);
 
     public abstract void modifyMessageBroadcastFailed(String responseData);
@@ -193,6 +199,8 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_SUCCEED, this::deleteMessageSucceeded);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_FAILED, this::deleteMessageFailed);
+        listOfFunctions.put(NetCodes.DELETE_MESSAGE_BROADCAST_SUCCEED, this::deleteMessageBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.DELETE_MESSAGE_BROADCAST_FAILED, this::deleteMessageBroadcastFailed);
 
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
@@ -241,7 +249,6 @@ public abstract class ClientImpl {
 
 
     }
-
 
     public void logout() {
         Map<String, String> data = new HashMap<>();
@@ -418,10 +425,11 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void deleteMessage(int idMessage) {
+    public void deleteMessage(int idMessage,String channelName) {
         Map<String, String> data = new HashMap<>();
         data.put(FieldsRequestName.messageID, String.valueOf(idMessage));
         data.put(FieldsRequestName.userName, this.user.getUsername());
+        data.put(FieldsRequestName.channelName, channelName);
         Request request = new Request(NetCodes.DELETE_MESSAGE, GsonConfiguration.gson.toJson(data));
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());

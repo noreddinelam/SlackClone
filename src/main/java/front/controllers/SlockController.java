@@ -99,7 +99,7 @@ public class SlockController extends Controller {
     @FXML
     void onDeleteMessage(ActionEvent event) {
         if (this.selectedMessage != null)
-            this.clientImpl.deleteMessage(this.selectedMessage.getId());
+            this.clientImpl.deleteMessage(this.selectedMessage.getId(),this.selectedChannelName);
     }
 
     @FXML
@@ -342,6 +342,14 @@ public class SlockController extends Controller {
                     this.listOfMessages.getItems().set(index, newItem);
                 }
             }
+        });
+    }
+
+    public void deleteMessageInListOfMessages(int idMessage, String channelName) {
+        Platform.runLater(() -> {
+            if (this.selectedChannelName !=null && this.selectedChannelName.equalsIgnoreCase(channelName))
+                this.listOfMessages.getItems().remove(new Message(idMessage));
+                System.out.println("delete message");
         });
     }
 

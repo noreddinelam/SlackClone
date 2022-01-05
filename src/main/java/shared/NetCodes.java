@@ -28,6 +28,8 @@ public class NetCodes {
     public static String DELETE_MESSAGE = "400";
     public static String DELETE_MESSAGE_SUCCEED = "401";
     public static String DELETE_MESSAGE_FAILED = "402";
+    public static String DELETE_MESSAGE_BROADCAST_SUCCEED = "403";
+    public static String DELETE_MESSAGE_BROADCAST_FAILED = "404";
 
     public static String MODIFY_MESSAGE = "500";
     public static String MODIFY_MESSAGE_SUCCEED = "501";
