@@ -384,7 +384,6 @@ public abstract class ClientImpl {
 
     public void getUsersForChannel(String channelName) {
         List<User> users = this.user.getListOfUsersFromChannel(channelName);
-        users.forEach(System.out::println);
         if (users.isEmpty()) {
             Map<String, String> data = new HashMap<>();
             data.put(FieldsRequestName.userName, this.user.getUsername());
@@ -394,7 +393,7 @@ public abstract class ClientImpl {
             ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
             this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
         } else {
-            ((SlockController) this.controller).setJoinedUsersToChannel(users);
+            ((SlockController) this.controller).setJoinedUsersToChannel(users,channelName);
         }
     }
 

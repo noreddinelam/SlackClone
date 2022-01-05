@@ -579,8 +579,9 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.listOfUserInChannelDB(channelName).orElseThrow(ListOfUserInChannelException::new);
             List<User> users = mapper.resultSetToUser(resultSet);
+            users.forEach(System.out::println);
             Map<String, List<User>> responseData = new HashMap<>();
-            responseData.put(FieldsRequestName.listUsers, users);
+            responseData.put(channelName, users);
             Response response = new Response(NetCodes.LIST_OF_USER_IN_CHANNEL_SUCCEED,
                     GsonConfiguration.gson.toJson(responseData, CommunicationTypes.mapListUserJsonTypeData));
             String responseJson = GsonConfiguration.gson.toJson(response);
@@ -746,7 +747,6 @@ public class ServerImpl {
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE, ServerImpl::modifyMessage);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL, ServerImpl::deleteChannel);
         listOfFunctions.put(NetCodes.LIST_CHANNELS_IN_SERVER, ServerImpl::listChannelsInServer);
-        listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
         listOfFunctions.put(NetCodes.LIST_OF_USER_IN_CHANNEL, ServerImpl::listOfUserInChannel);
         listOfFunctions.put(NetCodes.CONSUME_MESSAGE, ServerImpl::consumeMessage);
         listOfFunctions.put(NetCodes.List_Of_MESSAGE_IN_CHANNEL, ServerImpl::listOfMessageInChannel);

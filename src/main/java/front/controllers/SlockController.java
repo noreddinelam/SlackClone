@@ -278,10 +278,11 @@ public class SlockController extends Controller {
         });
     }
 
-    public void setJoinedUsersToChannel(List<User> users) {
-        Platform.runLater(() -> {
-            this.usersListView.getItems().setAll(users);
-        });
+    public void setJoinedUsersToChannel(List<User> users, String channelName) {
+        if (this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName))
+            Platform.runLater(() -> {
+                this.usersListView.getItems().setAll(users);
+            });
     }
 
     public void addUserToJoinedUsersChannel(User user, String channelName) {
@@ -316,7 +317,8 @@ public class SlockController extends Controller {
                 this.selectedChannelName = newChannelName;
                 String[] parts = newItem.split("-");
                 this.listOfJoinedChannels.getItems().set(index,
-                        newChannelName + " - " + parts[1].trim() + " - " + (isPublic.equalsIgnoreCase("true") ? "Public" :
+                        newChannelName + " - " + parts[1].trim() + " - " + (isPublic.equalsIgnoreCase("true") ?
+                                "Public" :
                                 "Private"));
             }
         });
@@ -345,7 +347,7 @@ public class SlockController extends Controller {
 
     public void removeUserFromChannel(String channelName, String username) {
         Platform.runLater(() -> {
-            if (this.selectedChannelName.equalsIgnoreCase(channelName)) {
+            if (this.selectedChannelName != null && this.selectedChannelName.equalsIgnoreCase(channelName)) {
                 this.usersListView.getItems().remove(new User(username));
             }
         });

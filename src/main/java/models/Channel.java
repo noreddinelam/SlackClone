@@ -66,6 +66,10 @@ public class Channel {
         return users;
     }
 
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public boolean isPublic() {
         return isPublic;
     }

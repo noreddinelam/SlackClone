@@ -304,8 +304,10 @@ public class GraphicalClientImpl extends ClientImpl {
     public void listOfUserInChannelSucceeded(String responseData) {
         Map<String, List<User>> listOfUsers = GsonConfiguration.gson.fromJson(responseData,
                 CommunicationTypes.mapListUserJsonTypeData);
-        //this.
-        ((SlockController) this.controller).setJoinedUsersToChannel(listOfUsers.get(FieldsRequestName.listUsers));
+        String channelName = listOfUsers.keySet().stream().findFirst().get();
+        List<User> users = listOfUsers.get(channelName);
+        this.user.setUsersOfChannel(channelName,users);
+        ((SlockController) this.controller).setJoinedUsersToChannel(users,channelName);
     }
 
     @Override
