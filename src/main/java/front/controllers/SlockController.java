@@ -349,7 +349,6 @@ public class SlockController extends Controller {
         Platform.runLater(() -> {
             if (this.selectedChannelName !=null && this.selectedChannelName.equalsIgnoreCase(channelName))
                 this.listOfMessages.getItems().remove(new Message(idMessage));
-                System.out.println("delete message");
         });
     }
 
