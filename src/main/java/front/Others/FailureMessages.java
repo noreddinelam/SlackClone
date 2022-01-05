@@ -50,6 +50,22 @@ public class FailureMessages {
 
     public static String messageBroadcastTitle = "Message Broadcast Failed";
 
+    public static String deleteUserBroadcastFailed = "deleteUserBroadcastFailed";
+
+    public static String deleteUserFailed = "Delete User Failed";
+
+    public static String responseRequestJoinChannelFailed = "Response Request JoinChannel Failed";
+
+    public static String listOfRequestsFailed = "List Of Requests Failed";
+
+    public static String listOfUnJoinedChannelsFailed = "List Of UnJoined Channels Failed";
+
+    public static String deleteMessageBroadcastFailed = "Delete Messag eBroadcast Failed";
+
+    public static String modifyChannelFailed = "Modify Channel Failed";
+
+    public static String modifyChannelBroadcastFailed = "Modify Channel  BroadcastFailed";
+
     public static String joinPrivateChannelTitle = "Private Channel";
     public static String joinPrivateAlreadyHaveRequest = "You have one opened request to join this channel !";
 
