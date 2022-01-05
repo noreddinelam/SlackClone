@@ -29,6 +29,10 @@ public class Message {
         this.content=content;
     }
 
+    public Message(Channel channel){
+        this.channel = channel;
+    }
+
     public int getId() {
         return id;
     }

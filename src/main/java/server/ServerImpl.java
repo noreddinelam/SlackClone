@@ -214,17 +214,33 @@ public class ServerImpl {
         logger.info("leaving channel {} ", data);
         AsynchronousSocketChannel client = listOfClients.get(username);
         try {
+            ResultSet resultSet =
+                    repository.fetchAllUsersWithChannelName(channelName).orElseThrow(FetchAllUsersWithChannelNameException::new);
             repository.leaveChannelDB(channelName, username).orElseThrow(LeaveChannelException::new);
             Response response = new Response(NetCodes.LEAVE_CHANNEL_SUCCEED, channelName);
+            Response broadcastResponse = new Response(NetCodes.LEAVE_CHANNEL_BROADCAST_SUCCEED, data);
             String responseJson = GsonConfiguration.gson.toJson(response);
             ByteBuffer attachment = ByteBuffer.wrap(responseJson.getBytes());
             client.write(attachment, attachment, new ServerWriterCompletionHandler());
             attachment.clear();
             ByteBuffer newByteBuffer = ByteBuffer.allocate(Properties.BUFFER_SIZE);
             client.read(newByteBuffer, newByteBuffer, new ServerReaderCompletionHandler());
+            String broadcastUsername;
+            AsynchronousSocketChannel broadcastClient;
+            while (resultSet.next()) {
+                broadcastUsername = resultSet.getString("username");
+                broadcastClient = listOfClients.get(broadcastUsername);
+                if (broadcastClient != null && !broadcastUsername.equalsIgnoreCase(username))
+                    broadcastResponseClient(broadcastClient, broadcastResponse);
+            }
         } catch (LeaveChannelException e) {
             Response response = new Response(NetCodes.LEAVE_CHANNEL_FAILED, "Leaving channel failed");
             requestFailure(response, client);
+        } catch (FetchAllUsersWithChannelNameException e) {
+            Response response = new Response(NetCodes.LEAVE_CHANNEL_BROADCAST_FAILED, "broadcasting message error");
+            requestFailure(response, client);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -249,7 +265,6 @@ public class ServerImpl {
         }
     }
 
-    //TODO : there is enhancements in future
     public static void modifyMessage(String data) {
         logger.info("modify message {} ", data);
         Map<String, String> requestData = GsonConfiguration.gson.fromJson(data, CommunicationTypes.mapJsonTypeData);
@@ -593,6 +608,9 @@ public class ServerImpl {
             ResultSet resultSet =
                     repository.listOfMessageInChannelDB(channelName).orElseThrow(ListOfMessageInChannelException::new);
             List<Message> messages = mapper.resultSetToMessage(resultSet);
+            if (messages.isEmpty()) {
+                messages.add(new Message(new Channel(channelName)));
+            }
             Map<String, List<Message>> responseData = new HashMap<>();
             responseData.put(FieldsRequestName.listMessages, messages);
             Response response = new Response(NetCodes.List_Of_MESSAGE_IN_CHANNEL_SUCCEED,

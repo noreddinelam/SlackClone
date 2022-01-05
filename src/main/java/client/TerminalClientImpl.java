@@ -82,6 +82,16 @@ public class TerminalClientImpl extends ClientImpl {
     }
 
     @Override
+    public void leaveChannelBroadcastSucceeded(String responseData) {
+
+    }
+
+    @Override
+    public void leaveChannelBroadcastFailed(String responseData) {
+
+    }
+
+    @Override
     public void deleteMessageSucceeded(String responseData) {
 
     }

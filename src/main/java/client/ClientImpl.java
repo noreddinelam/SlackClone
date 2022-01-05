@@ -87,6 +87,10 @@ public abstract class ClientImpl {
 
     public abstract void leaveChannelFailed(String responseData);
 
+    public abstract void leaveChannelBroadcastSucceeded(String responseData);
+
+    public abstract void leaveChannelBroadcastFailed(String responseData);
+
     public abstract void deleteMessageSucceeded(String responseData);
 
     public abstract void deleteMessageFailed(String responseData);
@@ -184,14 +188,16 @@ public abstract class ClientImpl {
 
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_SUCCEED, this::leaveChannelSucceeded);
         listOfFunctions.put(NetCodes.LEAVE_CHANNEL_FAILED, this::leaveChannelFailed);
+        listOfFunctions.put(NetCodes.LEAVE_CHANNEL_BROADCAST_SUCCEED, this::leaveChannelBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.LEAVE_CHANNEL_BROADCAST_FAILED, this::leaveChannelBroadcastFailed);
 
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_SUCCEED, this::deleteMessageSucceeded);
         listOfFunctions.put(NetCodes.DELETE_MESSAGE_FAILED, this::deleteMessageFailed);
 
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_SUCCEED, this::modifyMessageSucceeded);
         listOfFunctions.put(NetCodes.MODIFY_MESSAGE_FAILED, this::modifyMessageFailed);
-        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_SUCCEEDED,this::modifyMessageBroadcastSucceeded);
-        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_FAILED,this::modifyMessageBroadcastFailed);
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_SUCCEEDED, this::modifyMessageBroadcastSucceeded);
+        listOfFunctions.put(NetCodes.MODIFY_MESSAGE_BROADCAST_FAILED, this::modifyMessageBroadcastFailed);
 
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_SUCCEED, this::deleteChannelSucceeded);
         listOfFunctions.put(NetCodes.DELETE_CHANNEL_FAILED, this::deleteChannelFailed);
@@ -334,8 +340,7 @@ public abstract class ClientImpl {
                 Request request = new Request(NetCodes.DELETE_USER_FROM_CHANNEL, requestData);
                 ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
                 this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
-            }
-            else {
+            } else {
                 this.controller.commandFailed(FailureMessages.deleteUserNotAdminTitle,
                         FailureMessages.deleteUserAdminMessage);
             }
@@ -360,22 +365,21 @@ public abstract class ClientImpl {
         }
     }
 
-    public void getAllMessages() {
-        this.user.getChannels().forEach(channel -> {
-            try {
-                Map<String, String> data = new HashMap<>();
-                data.put(FieldsRequestName.userName, this.user.getUsername());
-                data.put(FieldsRequestName.channelName, channel.getChannelName());
-                String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
-                Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
-                ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
-                this.client.write(buffer).get();
-                buffer.clear();
-                Thread.sleep(20);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
+    public void getMessagesOfChannel(String channelName) {
+        Channel channel = this.user.getChannelByName(channelName);
+        List<Message> messages = channel.getMessages();
+        if(messages.isEmpty()) {
+            Map<String, String> data = new HashMap<>();
+            data.put(FieldsRequestName.userName, this.user.getUsername());
+            data.put(FieldsRequestName.channelName, channel.getChannelName());
+            String requestData = GsonConfiguration.gson.toJson(data, CommunicationTypes.mapJsonTypeData);
+            Request request = new Request(NetCodes.List_Of_MESSAGE_IN_CHANNEL, requestData);
+            ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
+            this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
+        }
+        else{
+            ((SlockController) this.controller).initListMessagesInChannel(channelName,messages);
+        }
     }
 
     public void getUsersForChannel(String channelName) {
@@ -414,10 +418,10 @@ public abstract class ClientImpl {
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
     }
 
-    public void deleteMessage(int idMessage){
-        Map<String,String> data = new HashMap<>();
-        data.put(FieldsRequestName.messageID,String.valueOf(idMessage));
-        data.put(FieldsRequestName.userName,this.user.getUsername());
+    public void deleteMessage(int idMessage) {
+        Map<String, String> data = new HashMap<>();
+        data.put(FieldsRequestName.messageID, String.valueOf(idMessage));
+        data.put(FieldsRequestName.userName, this.user.getUsername());
         Request request = new Request(NetCodes.DELETE_MESSAGE, GsonConfiguration.gson.toJson(data));
         ByteBuffer buffer = ByteBuffer.wrap(GsonConfiguration.gson.toJson(request).getBytes());
         this.client.write(buffer, buffer, new ClientWriterCompletionHandler());
@@ -456,10 +460,6 @@ public abstract class ClientImpl {
     }
 
     // Functions that don't do sql requests :
-
-    public List<Message> listOfMessagesInChannel(String channelName) {
-        return this.user.getListOfMessagesFromChannel(channelName);
-    }
 
     public void setAsynchronousSocketChannel(AsynchronousSocketChannel client) {
         this.client = client;

@@ -125,6 +125,21 @@ public class GraphicalClientImpl extends ClientImpl {
         this.controller.commandFailed(FailureMessages.leaveChannelTitle, responseData);
     }
 
+    @Override
+    public void leaveChannelBroadcastSucceeded(String responseData) {
+        Map<String,String> response = GsonConfiguration.gson.fromJson(responseData,
+                CommunicationTypes.mapJsonTypeData);
+        String channelName = response.get(FieldsRequestName.channelName);
+        String username = response.get(FieldsRequestName.userName);
+        this.user.removeUserFromChannel(channelName,username);
+        ((SlockController) this.controller).removeUserFromChannel(channelName,username);
+    }
+
+    @Override
+    public void leaveChannelBroadcastFailed(String responseData) {
+        this.controller.commandFailed(FailureMessages.leaveChannelTitle, responseData);
+    }
+
 
     @Override
     public void deleteMessageSucceeded(String responseData) {
@@ -215,8 +230,9 @@ public class GraphicalClientImpl extends ClientImpl {
         try {
             Map<String, String> response = GsonConfiguration.gson.fromJson(responseData,
                     CommunicationTypes.mapJsonTypeData);
-            this.user.removeChannel(new Channel(response.get(FieldsRequestName.channelName)));
-            ((SlockController) this.controller).deleteChannelToListJoinedChannels(response.get(FieldsRequestName.channelName));
+            Channel channel = this.user.getChannelByName(response.get(FieldsRequestName.channelName));
+            this.user.removeChannel(channel);
+            ((SlockController) this.controller).removeChannelFromListJoinedChannels(channel);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,8 +259,13 @@ public class GraphicalClientImpl extends ClientImpl {
         Map<String, List<Message>> responseMap = GsonConfiguration.gson.fromJson(responseData,
                 CommunicationTypes.mapListMessageJsonTypeData);
         List<Message> listOfMessages = responseMap.get(FieldsRequestName.listMessages);
-        if (!listOfMessages.isEmpty())
-            this.user.addListOfMessagesToChannel(listOfMessages.get(0).getChannel().getChannelName(), listOfMessages);
+        Message testMessage = listOfMessages.get(0);
+        String channelName = testMessage.getChannel().getChannelName();
+        if(testMessage.getContent() == null){
+            listOfMessages.clear();
+        }
+        this.user.addListOfMessagesToChannel(channelName, listOfMessages);
+        ((SlockController)this.controller).initListMessagesInChannel(channelName,listOfMessages);
     }
 
     @Override
